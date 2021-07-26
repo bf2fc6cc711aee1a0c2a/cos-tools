@@ -1,0 +1,15 @@
+target
+kubeconfig
+
+*.iml
+
+tests/output/kind-*
+.idea
+.vscode
+.project
+.metadata
+.settings
+.factorypath
+.classpath
+kamel
+.kamel/

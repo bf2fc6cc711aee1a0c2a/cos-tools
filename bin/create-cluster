@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE=${COS_COS_BASE_PATH}/api/connector_mgmt/v1
+BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
 CLUSTER_BASE=${BASE}/kafka_connector_clusters
 
 if [ "$#" -eq 1 ]; then

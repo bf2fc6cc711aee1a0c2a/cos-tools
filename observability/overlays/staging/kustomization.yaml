@@ -1,0 +1,8 @@
+resources:
+  - ../../base
+namespace: cos-observability
+commonLabels:
+  app.kubernetes.io/component: observability
+  app.kubernetes.io/managed-by: mas-connectors
+  app.kubernetes.io/part-of: cos
+  environment: staging

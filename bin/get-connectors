@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
 CONNECTORS_BASE=${BASE}/kafka_connectors
@@ -21,13 +21,13 @@ curl --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
                 .id, 
                 .connector_type_id, 
                 .channel,
-                .metadata.owner, 
-                .metadata.name, 
+                .owner, 
+                .name, 
                 .deployment_location.cluster_id, 
-                .metadata.kafka_id, 
-                .metadata.created_at,
+                .kafka.id, 
+                .created_at,
                 .desired_state, 
-                .status
+                .status.state
             ]) 
             | @tsv
         ' \

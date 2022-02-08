@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
 CLUSTER_BASE=${BASE}/kafka_connector_clusters

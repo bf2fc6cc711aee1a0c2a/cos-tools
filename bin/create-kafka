@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BASE=${KAS_BASE_PATH}/api/kafkas_mgmt/v1
 KAFKA_BASE=${BASE}/kafkas

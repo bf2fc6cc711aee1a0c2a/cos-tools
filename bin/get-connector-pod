@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+kubectl get pods -l "cos.bf2.org/connector.id=${1}"

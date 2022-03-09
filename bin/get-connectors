@@ -3,32 +3,66 @@
 BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
 CONNECTORS_BASE=${BASE}/kafka_connectors
 
-curl --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
-    | jq -r '
-            ([
-                "ID",
-                "TYPE",
-                "CHANNEL",
-                "OWNER",
-                "NAME",
-                "CLUSTER_ID",
-                "KAFKA_ID",
-                "CREATED_AT",
-                "DESIRED_STATE",
-                "STATUS"] 
-            | (., map(length*"-"))), 
-            (.items[]? | [
-                .id, 
-                .connector_type_id, 
-                .channel,
-                .owner, 
-                .name, 
-                .deployment_location.cluster_id, 
-                .kafka.id, 
-                .created_at,
-                .desired_state, 
-                .status.state
-            ]) 
-            | @tsv
-        ' \
-    | column -t -s $'\t' 
+if [ $# -eq 0 ]; then
+    curl --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
+        | jq -r '
+                ([
+                    "ID",
+                    "TYPE",
+                    "CHANNEL",
+                    "OWNER",
+                    "NAME",
+                    "CLUSTER_ID",
+                    "KAFKA_ID",
+                    "CREATED_AT",
+                    "DESIRED_STATE",
+                    "STATUS"] 
+                | (., map(length*"-"))), 
+                (.items[]? | [
+                    .id, 
+                    .connector_type_id, 
+                    .channel,
+                    .owner, 
+                    .name, 
+                    .deployment_location.cluster_id, 
+                    .kafka.id, 
+                    .created_at,
+                    .desired_state, 
+                    .status.state
+                ]) 
+                | @tsv
+            ' \
+        | column -t -s $'\t' 
+else
+    export CID=${1}
+
+    curl --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
+        | jq -r --arg CID ${1} '
+                ([
+                    "ID",
+                    "TYPE",
+                    "CHANNEL",
+                    "OWNER",
+                    "NAME",
+                    "CLUSTER_ID",
+                    "KAFKA_ID",
+                    "CREATED_AT",
+                    "DESIRED_STATE",
+                    "STATUS"] 
+                | (., map(length*"-"))), 
+                (.items[]? | select( .deployment_location.cluster_id == $CID) | [
+                    .id, 
+                    .connector_type_id, 
+                    .channel,
+                    .owner, 
+                    .name, 
+                    .deployment_location.cluster_id, 
+                    .kafka.id, 
+                    .created_at,
+                    .desired_state, 
+                    .status.state
+                ]) 
+                | @tsv
+            ' \
+        | column -t -s $'\t' 
+fi

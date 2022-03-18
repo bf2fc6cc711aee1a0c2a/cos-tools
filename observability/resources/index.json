@@ -1,0 +1,27 @@
+{
+  "id": "managed-connectors-staging",
+  "config": {
+    "grafana": {
+      "dashboards": [
+        "grafana/overview.yaml"
+      ]
+    },
+    "promtail": {
+      "enabled": false,
+      "observatorium": "default",
+      "namespaceLabelSelector": {
+        "observability-operator/scrape-logging": "true"
+      }
+    },
+    "prometheus": {
+      "pod_monitors": [
+        "prometheus/pod_monitors/cos-fleetshard-sync-operator-metrics.yaml",
+        "prometheus/pod_monitors/cos-fleetshard-camel-operator-metrics.yaml",
+        "prometheus/pod_monitors/cos-fleetshard-debezium-operator-metrics.yaml"
+      ],
+      "rules": [
+        "prometheus/prometheus-rules.yaml"
+      ]
+    }
+  }
+}

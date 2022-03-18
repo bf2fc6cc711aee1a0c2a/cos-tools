@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cos-fleetshard-camel-metrics
+  labels:
+    app: cos-fleetshard-camel
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: "cos-fleetshard-camel"
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+    - path: /q/metrics
+      port: http

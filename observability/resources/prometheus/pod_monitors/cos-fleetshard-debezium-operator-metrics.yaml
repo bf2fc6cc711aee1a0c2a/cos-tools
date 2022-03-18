@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cos-fleetshard-debezium-metrics
+  labels:
+    app: cos-fleetshard-debezium
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: "cos-fleetshard-debezium"
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+    - path: /q/metrics
+      port: http

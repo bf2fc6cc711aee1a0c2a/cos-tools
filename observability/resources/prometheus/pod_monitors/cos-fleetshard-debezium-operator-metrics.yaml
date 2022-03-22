@@ -3,7 +3,7 @@ kind: PodMonitor
 metadata:
   name: cos-fleetshard-debezium-metrics
   labels:
-    app: cos-fleetshard-debezium
+    app: rhoc
 spec:
   selector:
     matchLabels:

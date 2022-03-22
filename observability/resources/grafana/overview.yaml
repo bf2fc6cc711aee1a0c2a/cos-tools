@@ -3,7 +3,6 @@ kind: GrafanaDashboard
 metadata:
   labels:
     app: rhoc
-    monitoring-key: middleware
   name: rhoc-operators
 spec:
   name: rhoc-operators.json

@@ -3,7 +3,7 @@ kind: PrometheusRule
 metadata:
   labels:
     app: rhoc
-  name: cos-fleetshard-sync-rules
+  name: cos-fleetshard
 spec:
   groups:
     - name: deadmanssnitch

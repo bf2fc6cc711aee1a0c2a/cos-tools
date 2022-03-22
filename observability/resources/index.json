@@ -20,7 +20,10 @@
         "prometheus/pod_monitors/cos-fleetshard-debezium-operator-metrics.yaml"
       ],
       "rules": [
-        "prometheus/prometheus-rules.yaml"
+        "prometheus/prometheus-rules.yaml",
+        "prometheus/cos-fleetshard-sync-rules.yaml",
+        "prometheus/cos-fleetshard-operator-camel-rules.yaml",
+        "prometheus/cos-fleetshard-operator-debezium-rules.yaml"
       ],
       "federation": "prometheus/federation-config.yaml",
       "overridePrometheusPvcSize": "50Gi"

@@ -23,3 +23,25 @@ spec:
           expr: vector(1)
           labels:
             name: DeadMansSwitchAlert
+    - name: federation
+      rules:
+        - alert: OpenshiftMonitoringFederationScrapeTargetDown
+          expr: up{job="openshift-monitoring-federation"} != 1 or absent(up{job="openshift-monitoring-federation"})
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: 'Openshift monitoring federation scrape target is down'
+            description: 'The Openshift monitoring federation scrape target has been down for longer than 10 minutes'
+            sop_url: 'https://TODO'
+    - name: observability-operator
+      rules:
+        - alert: ObservabilityOperatorPrometheusPersistentVolumeFillingUp
+          expr: predict_linear(kubelet_volume_stats_available_bytes{persistentvolumeclaim=~"managed-services-prometheus-kafka-prometheus-[0-9]"}[6h], 3 * 24 * 3600) < 0
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: 'The Observability Operators Prometheus persistent volume is filling up'
+            description: 'Based on recent sampling, the Observability Operators Prometheus persistent volume claimed by {{ $labels.persistentvolumeclaim }} in the namespace {{ $labels.namespace }} is expected to fill up within three days. Currently {{ $value | humanizePercentage }} is available.'
+            sop_url: 'https://TODO'

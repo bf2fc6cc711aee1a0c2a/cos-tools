@@ -21,7 +21,9 @@
       ],
       "rules": [
         "prometheus/prometheus-rules.yaml"
-      ]
+      ],
+      "federation": "prometheus/federation-config.yaml",
+      "overridePrometheusPvcSize": "50Gi"
     }
   }
 }

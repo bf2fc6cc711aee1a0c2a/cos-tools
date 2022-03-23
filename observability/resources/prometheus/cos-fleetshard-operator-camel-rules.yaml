@@ -22,6 +22,6 @@ spec:
           labels:
             severity: warning
           annotations:
-            summary: 'cos-fleetshard-operator-camel-operator restarting frequently'
-            description: 'cos-fleetshard-operator-camel-operator container restarted frequently in the last 60 minutes'
+            summary: 'cos-fleetshard-operator-camel is restarting frequently'
+            description: 'cos-fleetshard-operator-camel container restarted frequently in the last 60 minutes'
             sop_url: 'https://TODO'

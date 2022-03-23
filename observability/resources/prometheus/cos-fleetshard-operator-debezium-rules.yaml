@@ -3,25 +3,25 @@ kind: PrometheusRule
 metadata:
   labels:
     app: rhoc
-  name: cos-fleetshard-debezium-rules
+  name: cos-fleetshard-operator-debezium-rules
 spec:
   groups:
-    - name: cos-fleetshard-debezium
+    - name: cos-fleetshard-operator-debezium
       rules:
         - alert: CosFleetShardOperatorDebeziumTargetDown
-          expr: up{container="cos-fleetshard-debezium"} !=1 or absent(up{container="cos-fleetshard-debezium"})
+          expr: up{container="cos-fleetshard-operator-debezium"} !=1 or absent(up{container="cos-fleetshard-operator-debezium"})
           for: 10m
           labels:
             severity: critical
           annotations:
-            summary: 'The cos-fleetshard-debezium target is down'
-            description: 'The cos-fleetshard-debezium target has been unable to scrape the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
+            summary: 'The cos-fleetshard-operator-debezium target is down'
+            description: 'The cos-fleetshard-operator-debezium target has been unable to scrape the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
             sop_url: 'https://TODO'
         - alert: CosFleetShardOperatorDebeziumContainerFrequentlyRestarting
-          expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-debezium"}[60m]) > 3
+          expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-operator-debezium"}[60m]) > 3
           labels:
             severity: warning
           annotations:
-            summary: 'cos-fleetshard-debezium-operator restarting frequently'
-            description: 'cos-fleetshard-debezium-operator container restarted frequently in the last 60 minutes'
+            summary: 'cos-fleetshard-operator-debezium is restarting frequently'
+            description: 'cos-fleetshard-operator-debezium container restarted frequently in the last 60 minutes'
             sop_url: 'https://TODO'

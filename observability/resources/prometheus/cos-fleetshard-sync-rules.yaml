@@ -8,7 +8,7 @@ spec:
   groups:
     - name: cos-fleetshard-sync
       rules:
-        - alert: CosFleetShardSyncOperatorTargetDown
+        - alert: CosFleetShardSyncTargetDown
           expr: up{container="cos-fleetshard-sync"} !=1 or absent(up{container="cos-fleetshard-sync"})
           for: 10m
           labels:
@@ -17,11 +17,11 @@ spec:
             summary: 'The cos-fleetshard-sync target is down'
             description: 'The cos-fleetshard-sync target has been unable to sync the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
             sop_url: 'https://TODO'
-        - alert: CosFleetShardSyncOperatorContainerFrequentlyRestarting
+        - alert: CosFleetShardSyncContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-sync"}[60m]) > 3
           labels:
             severity: warning
           annotations:
-            summary: 'cos-fleetshard-sync-operator restarting frequently'
-            description: 'cos-fleetshard-sync-operator container restarted frequently in the last 60 minutes'
+            summary: 'cos-fleetshard-sync is restarting frequently'
+            description: 'cos-fleetshard-sync container restarted frequently in the last 60 minutes'
             sop_url: 'https://TODO'

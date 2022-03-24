@@ -1,15 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: cos-fleetshard-connectors
+  name: cos-fleetshard-connector-log_sink
   labels:
     app: rhoc
 spec:
   selector:
     matchLabels:
-      camel.apache.org/integration: "mctr-*"
+      cos.bf2.org/connector.type.id: log_sink_0.1
   namespaceSelector:
     any: true
   podMetricsEndpoints:
     - path: /q/metrics
-      port: http
+      port: 8080

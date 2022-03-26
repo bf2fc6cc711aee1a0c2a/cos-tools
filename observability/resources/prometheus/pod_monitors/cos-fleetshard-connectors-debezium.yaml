@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cos-fleetshard-connectors-debezium
+  labels:
+    app: rhoc
+spec:
+  selector:
+    matchLabels:
+      cos.bf2.org/operator.type: "debezium-connector-operator"
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+    - path: /q/metrics
+      port: 8080

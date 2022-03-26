@@ -1,13 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: cos-fleetshard-connector-log_sink
+  name: cos-fleetshard-connectors-camel
   labels:
     app: rhoc
 spec:
   selector:
     matchLabels:
-      cos.bf2.org/connector.type.id: log_sink_0.1
+      cos.bf2.org/operator.type: "camel-connector-operator"
   namespaceSelector:
     any: true
   podMetricsEndpoints:

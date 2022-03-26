@@ -19,6 +19,7 @@
     },
     "prometheus": {
       "pod_monitors": [
+        "prometheus/pod_monitors/camel-k-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-sync-operator-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-camel-operator-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-debezium-operator-metrics.yaml",

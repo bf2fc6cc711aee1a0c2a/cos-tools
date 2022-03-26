@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: camel-k-operator
+  labels: 
+    app: rhoc
+spec:
+  selector:
+    matchLabels: 
+      app: "camel-k"
+      camel.apache.org/component: operator
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+    - port: metrics

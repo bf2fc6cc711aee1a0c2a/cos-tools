@@ -1,6 +1,10 @@
 {
   "id": "managed-connectors-staging",
   "config": {
+    "alertmanager": {
+      "pagerDutySecretName": "redhat-managed-connectors-pagerduty",
+      "deadmansSnitchSecretName": "redhat-managed-connectors-deadmanssnitch"
+    },
     "grafana": {
       "dashboards": [
         "grafana/overview.yaml"
@@ -15,13 +19,21 @@
     },
     "prometheus": {
       "pod_monitors": [
+        "prometheus/pod_monitors/camel-k-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-sync-operator-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-camel-operator-metrics.yaml",
-        "prometheus/pod_monitors/cos-fleetshard-debezium-operator-metrics.yaml"
+        "prometheus/pod_monitors/cos-fleetshard-debezium-operator-metrics.yaml",
+        "prometheus/pod_monitors/cos-fleetshard-connectors-camel.yaml",
+        "prometheus/pod_monitors/cos-fleetshard-connectors-debezium.yaml"
       ],
       "rules": [
-        "prometheus/prometheus-rules.yaml"
-      ]
+        "prometheus/prometheus-rules.yaml",
+        "prometheus/cos-fleetshard-sync-rules.yaml",
+        "prometheus/cos-fleetshard-operator-camel-rules.yaml",
+        "prometheus/cos-fleetshard-operator-debezium-rules.yaml"
+      ],
+      "federation": "prometheus/federation-config.yaml",
+      "overridePrometheusPvcSize": "50Gi"
     }
   }
 }

@@ -3,11 +3,11 @@ kind: PodMonitor
 metadata:
   name: cos-fleetshard-debezium-metrics
   labels:
-    app: cos-fleetshard-debezium
+    app: rhoc
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: "cos-fleetshard-debezium"
+      app.kubernetes.io/name: "cos-fleetshard-operator-debezium"
   namespaceSelector:
     any: true
   podMetricsEndpoints:

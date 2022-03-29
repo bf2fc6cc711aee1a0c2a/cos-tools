@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: rhoc
+  name: cos-fleetshard-operator-camel-rules
+spec:
+  groups:
+    - name: cos-fleetshard-operator-camel
+      rules:
+        - alert: CosFleetShardOperatorCamelTargetDown
+          expr: up{container="cos-fleetshard-operator-camel"} !=1 or absent(up{container="cos-fleetshard-operator-camel"})
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: 'The cos-fleetshard-operator-camel target is down'
+            description: 'The cos-fleetshard-operator-camel target has been unable to scrape the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
+            sop_url: 'https://TODO'
+        - alert: CosFleetShardOperatorCamelContainerFrequentlyRestarting
+          expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-operator-camel"}[60m]) > 3
+          labels:
+            severity: warning
+          annotations:
+            summary: 'cos-fleetshard-operator-camel is restarting frequently'
+            description: 'cos-fleetshard-operator-camel container restarted frequently in the last 60 minutes'
+            sop_url: 'https://TODO'

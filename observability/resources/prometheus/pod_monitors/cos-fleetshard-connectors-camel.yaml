@@ -1,15 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: cos-fleetshard-sync-metrics
+  name: cos-fleetshard-connectors-camel
   labels:
     app: rhoc
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: "cos-fleetshard-sync"
+      cos.bf2.org/operator.type: "camel-connector-operator"
   namespaceSelector:
     any: true
   podMetricsEndpoints:
     - path: /q/metrics
-      port: http
+      port: 8080

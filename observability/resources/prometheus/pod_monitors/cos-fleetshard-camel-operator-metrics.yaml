@@ -3,11 +3,11 @@ kind: PodMonitor
 metadata:
   name: cos-fleetshard-camel-metrics
   labels:
-    app: cos-fleetshard-camel
+    app: rhoc
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: "cos-fleetshard-camel"
+      app.kubernetes.io/name: "cos-fleetshard-operator-camel"
   namespaceSelector:
     any: true
   podMetricsEndpoints:

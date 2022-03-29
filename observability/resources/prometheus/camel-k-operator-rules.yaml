@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: rhoc
+  name: camel-k-operator-rules
+spec:
+  groups:
+    - name: camel-k-operator
+      rules:
+        - alert: CamelKOperatorTargetDown
+          expr: up{container="camel-k-operator"} !=1 or absent(up{container="camel-k-operator"})
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: 'The camel-k operator target is down'
+            description: 'The camel-k operator target has been unable to sync the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
+            sop_url: 'https://TODO'
+        - alert: CamelKOperatorContainerFrequentlyRestarting
+          expr: increase(kube_pod_container_status_restarts_total{container="camel-k-operator"}[60m]) > 3
+          labels:
+            severity: warning
+          annotations:
+            summary: 'the camel-k operator is restarting frequently'
+            description: 'the camel-k operator container restarted frequently in the last 60 minutes'
+            sop_url: 'https://TODO'

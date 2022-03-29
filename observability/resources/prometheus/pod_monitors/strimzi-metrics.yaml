@@ -1,15 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: camel-k-operator-metrics
-  labels: 
+  name: strimzi-operator-metrics
+  labels:
     app: rhoc
 spec:
   selector:
-    matchLabels: 
-      app: "camel-k"
-      camel.apache.org/component: operator
+    matchLabels:
+      strimzi.io/kind: cluster-operator
   namespaceSelector:
     any: true
   podMetricsEndpoints:
-    - port: metrics
+    - path: /metrics
+      port: http

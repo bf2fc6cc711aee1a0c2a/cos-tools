@@ -7,7 +7,8 @@
     },
     "grafana": {
       "dashboards": [
-        "grafana/overview.yaml"
+        "grafana/overview.yaml",
+        "grafana/strimzi-operators.yaml"
       ]
     },
     "promtail": {
@@ -20,6 +21,7 @@
     "prometheus": {
       "pod_monitors": [
         "prometheus/pod_monitors/camel-k-metrics.yaml",
+        "prometheus/pod_monitors/strimzi-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-sync-operator-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-camel-operator-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-debezium-operator-metrics.yaml",
@@ -28,6 +30,8 @@
       ],
       "rules": [
         "prometheus/prometheus-rules.yaml",
+        "prometheus/camel-k-operator-rules.yaml",
+        "prometheus/strimzi-operator-rules.yaml",
         "prometheus/cos-fleetshard-sync-rules.yaml",
         "prometheus/cos-fleetshard-operator-camel-rules.yaml",
         "prometheus/cos-fleetshard-operator-debezium-rules.yaml"

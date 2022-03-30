@@ -49,7 +49,7 @@ openapi/generate/admin: openapi-generator
 	rm pkg/api/admin/git_push.sh
 	rm pkg/api/admin/.travis.yml
 	rm pkg/api/admin/.openapi-generator-ignore
-	rm pkg/api/public/README.md
+	rm pkg/api/admin/README.md
 
 	rm -rf pkg/api/admin/docs
 	rm -rf pkg/api/admin/api

@@ -1,6 +1,9 @@
 MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 PROJECT_PATH := $(patsubst %/,%,$(dir $(MKFILE_PATH)))
 LOCAL_BIN_PATH := ${PROJECT_PATH}/bin
+CLI_VERSION ?= "dev"
+GO_LDFLAGS := -X github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build.Version=$(CLI_VERSION) $(GO_LDFLAGS)
+
 GO := go
 GOFMT := gofmt
 
@@ -17,7 +20,7 @@ vet:
 
 .PHONY: build
 build: fmt vet
-	go build -o bin/rhoc cmd/rhoc/main.go
+	go build $(BUILDFLAGS) -ldflags "${GO_LDFLAGS}" -o bin/rhoc cmd/rhoc/main.go
 
 .PHONY: run
 run: fmt vet 
@@ -27,7 +30,7 @@ run: fmt vet
 deps:
 	go mod tidy
 
-openapi/generate: openapi/generate/admin openapi/generate/public
+openapi/generate: openapi/generate/admin
 .PHONY: openapi/generate
 
 openapi/generate/admin: openapi-generator
@@ -101,3 +104,6 @@ ifeq (, $(shell which ${LOCAL_BIN_PATH}/openapi-generator 2> /dev/null))
 	ln -s openapi-generator-installation/node_modules/.bin/openapi-generator openapi-generator ;\
 	}
 endif
+
+
+.PHONY: openapi-generator

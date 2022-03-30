@@ -51,7 +51,7 @@ func (a *ConnectorClustersAdminApiService) DeleteConnector(ctx _context.Context,
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connectors/${connector_id}"
+	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connectors/{connector_id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"connector_id"+"}", _neturl.QueryEscape(parameterToString(connectorId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -160,7 +160,7 @@ func (a *ConnectorClustersAdminApiService) DeleteConnectorNamespace(ctx _context
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connector_namespaces/${namespace_id}"
+	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connector_namespaces/{namespace_id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"namespace_id"+"}", _neturl.QueryEscape(parameterToString(namespaceId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -398,7 +398,7 @@ func (a *ConnectorClustersAdminApiService) GetConnector(ctx _context.Context, co
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connectors/${connector_id}"
+	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connectors/{connector_id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"connector_id"+"}", _neturl.QueryEscape(parameterToString(connectorId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -759,7 +759,7 @@ func (a *ConnectorClustersAdminApiService) GetNamespaceConnectors(ctx _context.C
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connector_namespaces/${namespace_id}/connectors"
+	localVarPath := a.client.cfg.BasePath + "/api/connector_mgmt/v1/admin/kafka_connector_namespaces/{namespace_id}/connectors"
 	localVarPath = strings.Replace(localVarPath, "{"+"namespace_id"+"}", _neturl.QueryEscape(parameterToString(namespaceId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)

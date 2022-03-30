@@ -1,6 +1,5 @@
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
-before:
+project_name: rhoc
+
 builds:
   - id: rhoc
     dir: rhoc
@@ -15,21 +14,17 @@ builds:
     goarch:
       - amd64
       - arm64
+
 release:
-  github:
-    owner: bf2fc6cc711aee1a0c2a
-    name: cos-tool
-  ids:
-    - rhoc
   prerelease: auto
-  mode: keep-existing
+  draft: false
+  name_template: "{{.Version}}"
+
 checksum:
-  name_template: "checksums.txt"
+  name_template: "{{ .ProjectName }}-{{ .Version }}-checksums.txt"
+
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
+
 changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+  skip: true

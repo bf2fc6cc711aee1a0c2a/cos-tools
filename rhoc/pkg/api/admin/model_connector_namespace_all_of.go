@@ -12,8 +12,9 @@ package admin
 
 // ConnectorNamespaceAllOf struct for ConnectorNamespaceAllOf
 type ConnectorNamespaceAllOf struct {
-	Name       string                   `json:"name"`
-	ClusterId  string                   `json:"cluster_id"`
+	Name      string `json:"name"`
+	ClusterId string `json:"cluster_id"`
+	// Namespace expiration timestamp in RFC 3339 format
 	Expiration string                   `json:"expiration,omitempty"`
 	Tenant     ConnectorNamespaceTenant `json:"tenant"`
 	Status     ConnectorNamespaceStatus `json:"status"`

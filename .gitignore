@@ -15,3 +15,4 @@ kamel
 .kamel/
 
 dist/
+bin/

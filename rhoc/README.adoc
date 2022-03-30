@@ -1,0 +1,3 @@
+= rhoc-cli
+
+bin/rhoc login --mas-auth-url=$MAS_STAGE_URL --auth-url=$AUTHURL --api-gateway=$COS_BASE_PAT

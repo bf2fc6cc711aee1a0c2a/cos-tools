@@ -1,35 +1,52 @@
 package service
 
 import (
-	"context"
+	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
+	"net/http"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/public"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/auth"
-	"github.com/spf13/viper"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/redhat-developer/app-services-cli/pkg/shared/connection"
+	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
+
 	"golang.org/x/oauth2"
 )
 
-func NewClient(ctx context.Context) (*public.APIClient, error) {
-	var token string
-	var err error
+type Config struct {
+	F *factory.Factory
+}
 
-	token = viper.GetString("api-token")
-	if token == "" {
-		token, err = auth.Token()
-		if err != nil {
-			return nil, err
-		}
+func API(config *Config) (api.API, error) {
+	conn, err := config.F.Connection(connection.DefaultConfigRequireMasAuth)
+	if err != nil {
+		return nil, err
+	}
+
+	return conn.API(), nil
+}
+
+func NewAdminClient(config *Config) (*admin.APIClient, error) {
+	a, err := API(config)
+	if err != nil {
+		return nil, err
 	}
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{
-			AccessToken: token,
+			AccessToken: a.GetConfig().MasAccessToken,
 		},
 	)
 
-	client := public.NewAPIClient(&public.Configuration{
-		BasePath:   viper.GetString("api-url"),
-		HTTPClient: oauth2.NewClient(ctx, ts),
+	client := admin.NewAPIClient(&admin.Configuration{
+		Scheme:    a.GetConfig().ApiURL.Scheme,
+		Host:      a.GetConfig().ApiURL.Host,
+		UserAgent: a.GetConfig().UserAgent,
+		Debug:     config.F.Logger.DebugEnabled(),
+		HTTPClient: &http.Client{
+			Transport: &oauth2.Transport{
+				Base:   a.GetConfig().HTTPClient.Transport,
+				Source: oauth2.ReuseTokenSource(nil, ts),
+			},
+		},
 	})
 
 	return client, nil

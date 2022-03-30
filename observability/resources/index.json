@@ -8,6 +8,7 @@
     "grafana": {
       "dashboards": [
         "grafana/overview.yaml",
+        "grafana/camelk-operators.yaml",
         "grafana/strimzi-operators.yaml"
       ]
     },

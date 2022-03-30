@@ -9,11 +9,11 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
-      - darwin
+      #- windows
+      #- darwin
     goarch:
       - amd64
-      - arm64
+      #- arm64
 
 release:
   prerelease: auto
@@ -23,8 +23,8 @@ release:
 checksum:
   name_template: "{{ .ProjectName }}-{{ .Version }}-checksums.txt"
 
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+nightly:
+  name_template: "{{ incpatch .Version }}-devel"
 
 changelog:
   skip: true

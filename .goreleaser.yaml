@@ -16,6 +16,9 @@ builds:
       - amd64
       - arm64
 release:
+  github:
+    owner: bf2fc6cc711aee1a0c2a
+    name: cos-tool
   ids:
     - rhoc
   prerelease: auto

@@ -23,8 +23,8 @@ release:
 checksum:
   name_template: "{{ .ProjectName }}-{{ .Version }}-checksums.txt"
 
-nightly:
-  name_template: "{{ incpatch .Version }}-devel"
+snapshot:
+  name_template: "{{ incpatch .Version }}-snapshot"
 
 changelog:
   skip: true

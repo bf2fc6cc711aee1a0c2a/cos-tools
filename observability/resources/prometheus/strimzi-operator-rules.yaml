@@ -8,7 +8,7 @@ spec:
   groups:
     - name: strimzi-cluster-operator
       rules:
-        - alert: CamelKOperatorTargetDown
+        - alert: StrimziOperatorTargetDown
           expr: up{container="strimzi-cluster-operator"} !=1 or absent(up{container="strimzi-cluster-operator"})
           for: 10m
           labels:
@@ -24,4 +24,15 @@ spec:
           annotations:
             summary: 'the strimzi operator is restarting frequently'
             description: 'the strimzi operator container restarted frequently in the last 60 minutes'
+            sop_url: 'https://TODO'
+    - name: strimzi-cluster-resources
+      rules:
+        - alert: StrimziOperatorReconciliationsFailed
+          expr: sum(increase(strimzi_reconciliations_failed_total[60m])) > 5
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: 'The strimzi operator failed to reconcile resources for a longer period of time'
+            description: 'The strimzi operator failed to reconcile resources in the {{ $labels.namespace }} namespace for longer than 10 minutes'
             sop_url: 'https://TODO'

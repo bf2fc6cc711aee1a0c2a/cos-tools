@@ -2,4 +2,4 @@
 
 BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
 
-curl --insecure --oauth2-bearer "$(ocm token)" -S -s -D /dev/stderr "${BASE}/kafka_connector_namespaces/${1}" | jq
+curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s -D /dev/stderr "${BASE}/kafka_connector_namespaces/${1}" | jq

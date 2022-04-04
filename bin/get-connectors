@@ -4,7 +4,7 @@ BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
 CONNECTORS_BASE=${BASE}/kafka_connectors
 
 if [ $# -eq 0 ]; then
-    curl --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
+    curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
         | jq -r '
                 ([
                     "ID",
@@ -36,7 +36,7 @@ if [ $# -eq 0 ]; then
 else
     export CID=${1}
 
-    curl --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
+    curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
         | jq -r --arg CID ${1} '
                 ([
                     "ID",

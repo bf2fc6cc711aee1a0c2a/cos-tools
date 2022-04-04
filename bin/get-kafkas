@@ -3,6 +3,6 @@
 BASE=${KAS_BASE_PATH}/api/kafkas_mgmt/v1
 KAFKA_BASE=${BASE}/kafkas
 
-curl --insecure --oauth2-bearer "$(ocm token)" -S -s "${KAFKA_BASE}" \
+curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${KAFKA_BASE}" \
     | jq -r '(["ID","NAME","OWNER","HOST","STATUS"] | (., map(length*"-"))), (.items[]? | [.id, .name, .owner, .bootstrap_server_host, .status]) | @tsv' \
     | column -t -s $'\t' 

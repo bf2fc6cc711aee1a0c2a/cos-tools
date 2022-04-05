@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash 
+
 
 BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
 CLUSTER_ID="${1}"
@@ -8,10 +9,11 @@ typeset -A myarray
 
 while IFS=: read -r key value; do
     myarray["$key"]="$value"
-done < <(curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${CLUSTER_BASE}/addon-parameters" | jq -r 'map("\(.id):\(.value|tostring)")|.[]' )
+done < <(curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${CLUSTER_BASE}/addon_parameters" | jq -r 'map("\(.id):\(.value|tostring)")|.[]' )
 
 curl \
   -S -s -D /dev/stderr \
+  -L \
   --insecure \
   --header 'content-type: application/x-www-form-urlencoded' \
   --data grant_type=client_credentials \

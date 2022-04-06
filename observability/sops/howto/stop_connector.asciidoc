@@ -1,0 +1,64 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Stop a connector
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of stopping a connector.
+
+== Prerequisites
+
+1. You need the connector ID.
+2. You will need access to the relevant Fleet Shard OSD cluster and know the namespace in which the connector workload is running.
+3. You also will need access to the COS Fleet Manager instance that manages the OSD cluster.
+
+== Execute/Resolution
+1. Stop the desired connector by sending a patch call to the cos-fleet-manager, setting the desired_state to `stopped`:
++
+```
+./bin/update-connector $ID '{ "desired_state": "stopped" }'
+```
++
+The cos-fleetshard-sync should pick the changes and apply them. It should not take longer than few seconds. If the connector doesn't stop, proceed to delete the connector Custom Resource.
+
+1. Delete the connector custom resource (only needed if previous step didn't succeed).
++
+```
+# Get ManagedConnector for the connector ID
+oc get ManagedConnectors -n $NAMESPACE | grep $ID
+
+# Delete ManagedConnector
+oc delete ManagedConnector $MC_ID
+```
++
+Once the ManagedConnector is deleted, the cos-fleet-manager wull recreate it and the `PHASE` should be `stopped`
+
+== Validate
+
+Check that no pods exist that match the `mctr-$ID`
+
+```
+oc get pods -n $NAMESPACE | grep $ID
+```
+
+Check that the ManagedConnector `Status` or `Phase` is `stopped`
+
+```
+oc get ManagedConnectors -n $NAMESPACE | grep $ID
+```
+
+== Troubleshooting
+
+None

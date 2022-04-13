@@ -12,6 +12,7 @@ curl -L --insecure --oauth2-bearer $(get-sso-token "${CLUSTER_ID}") -S -s "${CLU
                 "CONNECTOR_ID",
                 "CONNECTOR_TYPE_ID",
                 "CONNECTOR_RV",
+                "NAMESPACE_ID",
                 "STATE",
                 "DESIRED_STATE"]
             | (., map(length*"-"))),
@@ -21,6 +22,7 @@ curl -L --insecure --oauth2-bearer $(get-sso-token "${CLUSTER_ID}") -S -s "${CLU
                 .spec.connector_id,
                 .spec.connector_type_id,
                 .spec.connector_resource_version,
+                .spec.namespace_id,
                 .status.phase,
                 .spec.desired_state
             ])

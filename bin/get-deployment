@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
+BASE=${COS_BASE_PATH}/api/connector_mgmt/v1/agent
 CLUSTER_ID="${1}"
 CLUSTER_BASE=${BASE}/kafka_connector_clusters/${CLUSTER_ID}
 

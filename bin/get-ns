@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+kubectl get ns -l "app.kubernetes.io/component=cos-namespace" -o json \
+    | jq -r '
+            ([
+                "NAME",
+                "CLUSTER_ID",
+                "ID",
+                "NAME",
+                "TENANT_KIND",
+                "TENANT_ID",
+                "EXPIRATION"]
+            | (., map(length*"-"))),
+            (.items[]? | [
+                .metadata.name,
+                .metadata.labels."cos.bf2.org/cluster.id",
+                .metadata.labels."cos.bf2.org/namespace.id",
+                .metadata.labels."app.kubernetes.io/name",
+                .metadata.annotations."cos.bf2.org/namespace.tenant.kind",
+                .metadata.annotations."cos.bf2.org/namespace.tenant.id",
+                .metadata.annotations."cos.bf2.org/namespace.expiration"
+            ])
+            | @tsv
+        ' \
+    | column -t -s $'\t'

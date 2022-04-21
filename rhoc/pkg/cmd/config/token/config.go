@@ -24,9 +24,9 @@ func NewConfigTokenCommand(f *factory.Factory) *cobra.Command {
 			}
 
 			if mas {
-				f.Logger.Info(a.GetConfig().MasAccessToken)
+				_, _ = f.IOStreams.Out.Write([]byte(a.GetConfig().MasAccessToken))
 			} else {
-				f.Logger.Info(a.GetConfig().AccessToken)
+				_, _ = f.IOStreams.Out.Write([]byte(a.GetConfig().AccessToken))
 			}
 
 			return nil

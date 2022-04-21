@@ -4,8 +4,13 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/commands"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/config"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/namespaces"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/completion"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/login"
@@ -16,8 +21,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"os"
-	"strings"
 )
 
 func NewRootCommand(f *factory.Factory) *cobra.Command {
@@ -46,7 +49,9 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 		whoami.NewWhoAmICmd(f),
 		completion.NewCompletionCommand(f),
 		config.NewConfigCommand(f),
-		namespaces.NewNamespacesCommand(f))
+		namespaces.NewNamespacesCommand(f),
+		connectors.NewConnectorsCommand(f),
+		deployments.NewDeploymentsCommand(f))
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		f.Logger.SetDebug(flagutil.DebugEnabled())

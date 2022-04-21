@@ -36,18 +36,17 @@ func NewAdminClient(config *Config) (*admin.APIClient, error) {
 		},
 	)
 
-	client := admin.NewAPIClient(&admin.Configuration{
-		Scheme:    a.GetConfig().ApiURL.Scheme,
-		Host:      a.GetConfig().ApiURL.Host,
-		UserAgent: a.GetConfig().UserAgent,
-		Debug:     config.F.Logger.DebugEnabled(),
-		HTTPClient: &http.Client{
-			Transport: &oauth2.Transport{
-				Base:   a.GetConfig().HTTPClient.Transport,
-				Source: oauth2.ReuseTokenSource(nil, ts),
-			},
+	c := admin.NewConfiguration()
+	c.Scheme = a.GetConfig().ApiURL.Scheme
+	c.Host = a.GetConfig().ApiURL.Host
+	c.UserAgent = a.GetConfig().UserAgent
+	c.Debug = config.F.Logger.DebugEnabled()
+	c.HTTPClient = &http.Client{
+		Transport: &oauth2.Transport{
+			Base:   a.GetConfig().HTTPClient.Transport,
+			Source: oauth2.ReuseTokenSource(nil, ts),
 		},
-	})
+	}
 
-	return client, nil
+	return admin.NewAPIClient(c), nil
 }

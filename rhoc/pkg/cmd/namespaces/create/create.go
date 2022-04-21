@@ -30,8 +30,7 @@ func NewCreateCommand(f *factory.Factory) *cobra.Command {
 		Short: "create",
 		Long:  "create",
 		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-
+		PreRunE: func(cmd *cobra.Command, args []string) error {
 			validator := connectorcmdutil.Validator{
 				Localizer: f.Localizer,
 			}
@@ -40,6 +39,9 @@ func NewCreateCommand(f *factory.Factory) *cobra.Command {
 				return err
 			}
 
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
 			return run(opts)
 		},
 	}
@@ -75,18 +77,21 @@ func run(opts *options) error {
 		},
 	}
 
-	result, httpRes, err := c.ConnectorNamespacesAdminApi.CreateConnectorNamespace(opts.f.Context, r)
+	e := c.ConnectorNamespacesAdminApi.CreateConnectorNamespace(opts.f.Context)
+	e = e.ConnectorNamespaceWithTenantRequest(r)
+
+	result, httpRes, err := e.Execute()
 	if httpRes != nil {
-		defer httpRes.Body.Close()
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
 	}
 	if err != nil {
 		return err
 	}
-
-	if err = dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, result); err != nil {
-		return err
+	if httpRes != nil && httpRes.StatusCode == 204 {
+		return nil
 	}
 
-	return nil
-
+	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, result)
 }

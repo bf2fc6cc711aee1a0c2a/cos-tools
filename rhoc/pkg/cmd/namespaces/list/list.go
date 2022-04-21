@@ -3,13 +3,13 @@ package list
 import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/request"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
 	"net/http"
+	"strconv"
 )
 
 // row is the details of a Kafka instance needed to print to a table
@@ -46,11 +46,14 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 		Short:   "list",
 		Long:    "list",
 		Args:    cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, flagutil.ValidOutputFormats...) {
 				return flagutil.InvalidValueError("output", opts.outputFormat, flagutil.ValidOutputFormats...)
 			}
 
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
 			return run(&opts)
 		},
 	}
@@ -58,10 +61,10 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	flags := flagutil.NewFlagSet(cmd, f.Localizer)
 
 	flags.AddOutput(&opts.outputFormat)
-	flags.IntVar(&opts.page, "page", build.DefaultPageNumber, "page")
-	flags.IntVar(&opts.limit, "limit", build.DefaultPageSize, "limit")
+	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "page")
+	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "limit")
 	flags.BoolVar(&opts.all, "all", false, "all")
-	flags.StringVar(&opts.clusterID, "cluster-id", "", "cluster-id")
+	flags.StringVarP(&opts.clusterID, "cluster-id", "c", "", "cluster-id")
 	flags.StringVar(&opts.orderBy, "order-by", "", "order-by")
 	flags.StringVar(&opts.search, "search", "", "search")
 
@@ -85,31 +88,42 @@ func run(opts *options) error {
 
 	for i := opts.page; i == opts.page || opts.all; i++ {
 
-		var result admin.ConnectorNamespaceList
+		var result *admin.ConnectorNamespaceList
 		var err error
 		var httpRes *http.Response
 
-		if opts.clusterID == "" {
-			o := admin.GetConnectorNamespacesOpts{
-				Page:    request.OptionalInt(i),
-				Size:    request.OptionalInt(opts.limit),
-				OrderBy: request.OptionalString(opts.orderBy),
-				Search:  request.OptionalString(opts.search),
+		if opts.clusterID != "" {
+			e := c.ConnectorClustersAdminApi.GetClusterNamespaces(opts.f.Context, opts.clusterID)
+			e = e.Page(strconv.Itoa(i))
+			e = e.Size(strconv.Itoa(opts.limit))
+
+			if opts.orderBy != "" {
+				e = e.OrderBy(opts.orderBy)
+			}
+			if opts.search != "" {
+				e = e.Search(opts.search)
 			}
 
-			result, httpRes, err = c.ConnectorNamespacesAdminApi.GetConnectorNamespaces(opts.f.Context, &o)
+			result, httpRes, err = e.Execute()
 		} else {
-			o := admin.GetClusterNamespacesOpts{
-				Page:    request.OptionalInt(i),
-				Size:    request.OptionalInt(opts.limit),
-				OrderBy: request.OptionalString(opts.orderBy),
-				Search:  request.OptionalString(opts.search),
+			e := c.ConnectorNamespacesAdminApi.GetConnectorNamespaces(opts.f.Context)
+			e = e.Page(strconv.Itoa(i))
+			e = e.Size(strconv.Itoa(opts.limit))
+
+			if opts.orderBy != "" {
+				e = e.OrderBy(opts.orderBy)
+			}
+			if opts.search != "" {
+				e = e.Search(opts.search)
 			}
 
-			result, httpRes, err = c.ConnectorClustersAdminApi.GetClusterNamespaces(opts.f.Context, opts.clusterID, &o)
+			result, httpRes, err = e.Execute()
 		}
+
 		if httpRes != nil {
-			defer httpRes.Body.Close()
+			defer func() {
+				_ = httpRes.Body.Close()
+			}()
 		}
 		if err != nil {
 			return err

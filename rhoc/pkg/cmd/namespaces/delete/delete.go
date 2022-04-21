@@ -1,8 +1,7 @@
 package delete
 
 import (
-	"fmt"
-	"github.com/AlecAivazis/survey/v2"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/commands"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
@@ -29,11 +28,14 @@ func NewDeletesCommand(f *factory.Factory) *cobra.Command {
 		Short:   "delete",
 		Long:    "delete",
 		Args:    cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, flagutil.ValidOutputFormats...) {
 				return flagutil.InvalidValueError("output", opts.outputFormat, flagutil.ValidOutputFormats...)
 			}
 
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
 			return run(&opts)
 		},
 	}
@@ -50,7 +52,7 @@ func NewDeletesCommand(f *factory.Factory) *cobra.Command {
 
 func run(opts *options) error {
 	if !opts.skipConfirm {
-		confirm, promptErr := promptConfirmDelete(opts)
+		confirm, promptErr := commands.PromptConfirm("Are you sure you want to delete the connector namespace with id '%s'?", opts.id)
 		if promptErr != nil {
 			return promptErr
 		}
@@ -67,30 +69,20 @@ func run(opts *options) error {
 		return err
 	}
 
-	response, httpRes, err := c.ConnectorClustersAdminApi.DeleteConnectorNamespace(opts.f.Context, opts.id)
+	e := c.ConnectorClustersAdminApi.DeleteConnectorNamespace(opts.f.Context, opts.id)
+
+	response, httpRes, err := e.Execute()
 	if httpRes != nil {
-		defer httpRes.Body.Close()
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
 	}
 	if err != nil {
 		return err
 	}
-
-	if err = dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, response); err != nil {
-		return err
+	if httpRes != nil && httpRes.StatusCode == 204 {
+		return nil
 	}
 
-	return nil
-}
-
-func promptConfirmDelete(opts *options) (bool, error) {
-	promptConfirm := survey.Confirm{
-		Message: fmt.Sprintf("Are you sure you want to delete the connector namespace with id '%s'?", opts.id),
-	}
-
-	var confirmDelete bool
-	if err := survey.AskOne(&promptConfirm, &confirmDelete); err != nil {
-		return false, err
-	}
-
-	return confirmDelete, nil
+	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, response)
 }

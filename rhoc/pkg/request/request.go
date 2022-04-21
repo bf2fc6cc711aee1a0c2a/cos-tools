@@ -17,3 +17,7 @@ func OptionalString(value string) optional.String {
 func OptionalInt(value int) optional.String {
 	return optional.NewString(strconv.Itoa(value))
 }
+
+func OptionalBool(value bool) optional.String {
+	return optional.NewString(strconv.FormatBool(value))
+}

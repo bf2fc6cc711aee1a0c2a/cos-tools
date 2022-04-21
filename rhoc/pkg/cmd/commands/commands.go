@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"github.com/AlecAivazis/survey/v2"
 	p "github.com/gertd/go-pluralize"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -70,4 +71,17 @@ func bindFlag(pl *p.Client, flag *pflag.Flag) error {
 	}
 
 	return nil
+}
+
+func PromptConfirm(format string, args ...interface{}) (bool, error) {
+	promptConfirm := survey.Confirm{
+		Message: fmt.Sprintf(format, args...),
+	}
+
+	var confirmDelete bool
+	if err := survey.AskOne(&promptConfirm, &confirmDelete); err != nil {
+		return false, err
+	}
+
+	return confirmDelete, nil
 }

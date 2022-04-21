@@ -1,6 +1,7 @@
 package token
 
 import (
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -15,15 +16,17 @@ func NewConfigTokenCommand(f *factory.Factory) *cobra.Command {
 		Long:  "token",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := f.Config.Load()
+			a, err := service.API(&service.Config{
+				F: f,
+			})
 			if err != nil {
 				return err
 			}
 
 			if mas {
-				f.Logger.Info(c.MasAccessToken)
+				f.Logger.Info(a.GetConfig().MasAccessToken)
 			} else {
-				f.Logger.Info(c.AccessToken)
+				f.Logger.Info(a.GetConfig().AccessToken)
 			}
 
 			return nil

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/clusters"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/commands"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/config"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors"
@@ -51,7 +52,8 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 		config.NewConfigCommand(f),
 		namespaces.NewNamespacesCommand(f),
 		connectors.NewConnectorsCommand(f),
-		deployments.NewDeploymentsCommand(f))
+		deployments.NewDeploymentsCommand(f),
+		clusters.NeClustersCommand(f))
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		f.Logger.SetDebug(flagutil.DebugEnabled())

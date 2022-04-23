@@ -3,15 +3,15 @@ package create
 import (
 	"errors"
 	"fmt"
+	"net/http"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/connector/connectorcmdutil"
-	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
-	"net/http"
 )
 
 const (
@@ -37,8 +37,8 @@ func NewCreateCommand(f *factory.Factory) *cobra.Command {
 		Use:  CommandName,
 		Args: cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
-				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
+			if err := cmdutil.ValidateOutputs(cmd); err != nil {
+				return err
 			}
 
 			validator := connectorcmdutil.Validator{

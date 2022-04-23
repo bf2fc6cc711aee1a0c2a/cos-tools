@@ -1,84 +1,70 @@
 package list
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
-	"time"
 )
 
-type deployment struct {
-	ID              string
-	ConnectorID     string
-	NamespaceID     string
-	ClusterID       string
-	ResourceVersion int64
-	CreatedAt       time.Time
-	ModifiedAt      time.Time
-	Status          string
-}
-
-type deploymentWide struct {
-	ID              string
-	ConnectorID     string
-	NamespaceID     string
-	ClusterID       string
-	ResourceVersion int64
-	OperatorID      string
-	CreatedAt       time.Time
-	ModifiedAt      time.Time
-	Status          string
-}
-
 func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewList, wide bool) {
-	r := make([]interface{}, 0, len(items.Items))
+	t := dumper.Table[admin.ConnectorDeploymentAdminView]{}
 
-	for i := range items.Items {
-		k := items.Items[i]
-
-		if wide {
-			r = append(r, deploymentWide{
-				ClusterID:       k.Spec.ClusterId,
-				ConnectorID:     k.Spec.ConnectorId,
-				NamespaceID:     k.Spec.NamespaceId,
-				ID:              k.Id,
-				ResourceVersion: k.Metadata.ResourceVersion,
-				OperatorID:      k.Spec.OperatorId,
-				CreatedAt:       k.Metadata.CreatedAt,
-				ModifiedAt:      k.Metadata.UpdatedAt,
-				Status:          string(*&k.Status.Phase),
-			})
-		} else {
-			r = append(r, deployment{
-				ClusterID:       k.Spec.ClusterId,
-				ConnectorID:     k.Spec.ConnectorId,
-				NamespaceID:     k.Spec.NamespaceId,
-				ID:              k.Id,
-				ResourceVersion: k.Metadata.ResourceVersion,
-				CreatedAt:       k.Metadata.CreatedAt,
-				ModifiedAt:      k.Metadata.UpdatedAt,
-				Status:          string(*&k.Status.Phase),
-			})
-		}
-	}
-
-	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{
-		"state": statusCustomizer,
+	t.Field("ID", func(in *admin.ConnectorDeploymentAdminView) string {
+		return in.Id
 	})
 
-	t.Dump(r, f.IOStreams.Out)
-}
+	t.Field("NamespaceID", func(in *admin.ConnectorDeploymentAdminView) string {
+		return in.Spec.NamespaceId
+	})
 
-func statusCustomizer(s string) tablewriter.Colors {
-	switch s {
-	case "ready":
-		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
-	case "failed":
-		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
-	case "stopped":
-		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+	t.Field("ClusterId", func(in *admin.ConnectorDeploymentAdminView) string {
+		return in.Spec.ClusterId
+	})
+
+	t.Field("ConnectorTypeId", func(in *admin.ConnectorDeploymentAdminView) string {
+		return in.Spec.ConnectorTypeId
+	})
+
+	if wide {
+		t.Field("CreatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
+			return in.Metadata.CreatedAt.Format(time.RFC3339)
+		})
+		t.Field("UpdatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
+			return in.Metadata.UpdatedAt.Format(time.RFC3339)
+		})
+
+		t.Field("ResourceVersion", func(in *admin.ConnectorDeploymentAdminView) string {
+			return strconv.FormatInt(in.Metadata.ResourceVersion, 10)
+		})
+
+		t.Field("ConnectorResourceVersion", func(in *admin.ConnectorDeploymentAdminView) string {
+			return strconv.FormatInt(in.Spec.ConnectorResourceVersion, 10)
+		})
 	}
 
-	return tablewriter.Colors{}
+	t.Field("DesiredState", func(in *admin.ConnectorDeploymentAdminView) string {
+		return string(in.Spec.DesiredState)
+	})
+
+	t.Rich("State", func(in *admin.ConnectorDeploymentAdminView) (string, tablewriter.Colors) {
+		s := string(in.Status.Phase)
+		c := tablewriter.Colors{}
+
+		switch s {
+		case "ready":
+			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+		case "failed":
+			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+		case "stopped":
+			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+		}
+
+		return s, c
+	})
+
+	t.Dump(items.Items, f.IOStreams.Out)
 }

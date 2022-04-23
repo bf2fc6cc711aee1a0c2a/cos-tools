@@ -2,10 +2,11 @@ package cmdutil
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
-	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	p "github.com/gertd/go-pluralize"
@@ -96,6 +97,19 @@ func ValidOutputs() []string {
 	validVals = append(validVals, "wide")
 
 	return validVals
+}
+
+func ValidateOutputs(cmd *cobra.Command) error {
+	formats, err := cmd.Flags().GetString("output")
+	if err != nil {
+		return err
+	}
+
+	if formats != "" && !flagutil.IsValidInput(formats, ValidOutputs()...) {
+		return flagutil.InvalidValueError("output", formats, ValidOutputs()...)
+	}
+
+	return nil
 }
 
 func AddOutput(cmd *cobra.Command, output *string) *FlagOptions {

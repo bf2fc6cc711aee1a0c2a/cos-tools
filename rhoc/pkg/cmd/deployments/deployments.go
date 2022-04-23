@@ -1,6 +1,7 @@
 package deployments
 
 import (
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments/describe"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments/list"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -17,7 +18,8 @@ func NewDeploymentsCommand(f *factory.Factory) *cobra.Command {
 
 	cmdutil.Bind(
 		cmd,
-		list.NewListCommand(f))
+		list.NewListCommand(f),
+		describe.NewDescribeCommand(f))
 
 	return cmd
 }

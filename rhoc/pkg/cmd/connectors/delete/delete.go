@@ -3,8 +3,8 @@ package delete
 import (
 	"strconv"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/commands"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -53,7 +53,7 @@ func NewDeletesCommand(f *factory.Factory) *cobra.Command {
 
 func run(opts *options) error {
 	if !opts.skipConfirm {
-		confirm, promptErr := commands.PromptConfirm("Are you sure you want to delete the connector with id '%s'?", opts.id)
+		confirm, promptErr := cmdutil.PromptConfirm("Are you sure you want to delete the connector with id '%s'?", opts.id)
 		if promptErr != nil {
 			return promptErr
 		}

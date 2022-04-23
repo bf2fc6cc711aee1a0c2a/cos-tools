@@ -2,28 +2,30 @@ package list
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
+	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
-	"net/http"
-	"strconv"
-	"time"
 )
 
-// row is the details of a Kafka instance needed to print to a table
-type itemRow struct {
-	ClusterID       string    `json:"cluster_id" header:"ClusterID"`
-	NamespaceID     string    `json:"namespace_id" header:"NamespaceID"`
-	ConnectorID     string    `json:"connector_id" header:"ConnectorID"`
-	ID              string    `json:"id" header:"ID"`
-	ResourceVersion int64     `json:"resource_version" header:"ResourceVersion"`
-	CreatedAt       time.Time `json:"created_at,omitempty" header:"CreatedAt"`
-	ModifiedAt      time.Time `json:"modified_at,omitempty" header:"ModifiedAt"`
-	Status          string    `json:"status" header:"Status"`
+type deployment struct {
+	ID              string
+	ConnectorID     string
+	NamespaceID     string
+	ClusterID       string
+	ResourceVersion int64
+	CreatedAt       time.Time
+	ModifiedAt      time.Time
+	Status          string
 }
 
 type options struct {
@@ -71,13 +73,13 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	flags := flagutil.NewFlagSet(cmd, f.Localizer)
 
 	flags.AddOutput(&opts.outputFormat)
-	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "page")
-	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "limit")
-	flags.BoolVar(&opts.all, "all", false, "all")
+	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "Page index")
+	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "Number of items in each page")
+	flags.BoolVar(&opts.all, "all", false, "Grab all pages")
 	flags.StringVarP(&opts.namespaceID, "namespace-id", "n", "", "namespace-id")
 	flags.StringVarP(&opts.clusterID, "cluster-id", "c", "", "cluster-id")
-	flags.StringVar(&opts.orderBy, "order-by", "", "order-by")
-	//flags.StringVar(&opts.search, "search", "", "search")
+	flags.StringVar(&opts.orderBy, "order-by", "", "Specifies the order by criteria")
+	//flags.StringVar(&opts.search, "search", "", "Search criteria")
 
 	return cmd
 }
@@ -157,9 +159,7 @@ func run(opts *options) error {
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
-		rows := responseToRows(items)
-		dump.Table(opts.f.IOStreams.Out, rows)
-		opts.f.Logger.Info("")
+		dumpAsTable(opts.f, items)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}
@@ -167,13 +167,13 @@ func run(opts *options) error {
 	return nil
 }
 
-func responseToRows(items admin.ConnectorDeploymentAdminViewList) []itemRow {
-	rows := make([]itemRow, len(items.Items))
+func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewList) {
+	r := make([]interface{}, 0, len(items.Items))
 
 	for i := range items.Items {
 		k := items.Items[i]
 
-		row := itemRow{
+		r = append(r, deployment{
 			ClusterID:       k.Spec.ClusterId,
 			ConnectorID:     k.Spec.ConnectorId,
 			NamespaceID:     k.Spec.NamespaceId,
@@ -182,10 +182,25 @@ func responseToRows(items admin.ConnectorDeploymentAdminViewList) []itemRow {
 			CreatedAt:       k.Metadata.CreatedAt,
 			ModifiedAt:      k.Metadata.UpdatedAt,
 			Status:          string(*&k.Status.Phase),
-		}
-
-		rows[i] = row
+		})
 	}
 
-	return rows
+	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{
+		"state": statusCustomizer,
+	})
+
+	t.Dump(r, f.IOStreams.Out)
+}
+
+func statusCustomizer(s string) tablewriter.Colors {
+	switch s {
+	case "ready":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+	case "failed":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+	case "stopped":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+	}
+
+	return tablewriter.Colors{}
 }

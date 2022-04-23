@@ -26,7 +26,7 @@ type cluster struct {
 	Owner      string
 	CreatedAt  time.Time
 	ModifiedAt time.Time
-	Status     string
+	State      string
 }
 
 type options struct {
@@ -145,12 +145,12 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList) {
 			Owner:      k.Owner,
 			CreatedAt:  k.CreatedAt,
 			ModifiedAt: k.ModifiedAt,
-			Status:     string(k.Status.State),
+			State:      string(k.Status.State),
 		})
 	}
 
 	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{
-		"status": statusCustomizer,
+		"state": statusCustomizer,
 	})
 
 	t.Dump(r, f.IOStreams.Out)

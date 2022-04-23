@@ -104,3 +104,80 @@ func (t *Table) tag(field reflect.StructField, name string) string {
 
 	return strings.Split(tag, ",")[0]
 }
+
+type Tbl[K any] struct {
+	fields []TblEntry[K]
+}
+
+type TblEntry[K any] struct {
+	Name   string
+	Getter func(in *K) (string, tablewriter.Colors)
+}
+
+func (t *Tbl[K]) Field(name string, getter func(in *K) string) {
+	var e []TblEntry[K]
+	e = t.fields
+
+	entry := TblEntry[K]{
+		Name: name,
+		Getter: func(in *K) (string, tablewriter.Colors) {
+			return getter(in), tablewriter.Colors{}
+		},
+	}
+
+	e = append(e, entry)
+	t.fields = e
+}
+
+func (t *Tbl[K]) Rich(name string, getter func(in *K) (string, tablewriter.Colors)) {
+	var e []TblEntry[K]
+	e = t.fields
+
+	entry := TblEntry[K]{
+		Name:   name,
+		Getter: getter,
+	}
+
+	e = append(e, entry)
+	t.fields = e
+}
+
+func (t *Tbl[K]) Dump(items []K, out io.Writer) {
+	if len(items) == 0 {
+		return
+	}
+
+	var e []TblEntry[K]
+	e = t.fields
+
+	h := make([]string, 0, len(e))
+	for i := range t.fields {
+		h = append(h, stringy.New(t.fields[i].Name).SnakeCase().ToUpper())
+	}
+
+	table := tablewriter.NewWriter(out)
+	table.SetHeader(h)
+	table.SetBorder(false)
+	table.SetAutoFormatHeaders(false)
+	table.SetRowLine(false)
+	table.SetColumnSeparator(tablewriter.SPACE)
+	table.SetCenterSeparator(tablewriter.SPACE)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+
+	for _, i := range items {
+		row := make([]string, 0, len(e))
+		col := make([]tablewriter.Colors, 0, len(e))
+
+		for _, f := range t.fields {
+			v, c := f.Getter(&i)
+
+			row = append(row, v)
+			col = append(col, c)
+		}
+
+		table.Rich(row, col)
+	}
+
+	table.Render()
+}

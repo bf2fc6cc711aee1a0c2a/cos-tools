@@ -12,6 +12,11 @@ import (
 	"net/http"
 )
 
+const (
+	CommandName  = "delete"
+	CommandAlias = "rm"
+)
+
 type options struct {
 	outputFormat string
 	id           string
@@ -26,10 +31,8 @@ func NewDeletesCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:     "delete",
-		Aliases: []string{"rm"},
-		Short:   "delete",
-		Long:    "delete",
+		Use:     CommandName,
+		Aliases: []string{CommandAlias},
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {

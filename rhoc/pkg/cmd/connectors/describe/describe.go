@@ -12,6 +12,11 @@ import (
 	"net/http"
 )
 
+const (
+	CommandName  = "describe"
+	CommandAlias = "get"
+)
+
 type options struct {
 	id           string
 	outputFormat string
@@ -25,11 +30,8 @@ func NewDescribeCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:     "describe",
-		Aliases: []string{"get"},
-		Short:   "describe",
-		Long:    "describe",
-		Example: "describe",
+		Use:     CommandName,
+		Aliases: []string{CommandAlias},
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {

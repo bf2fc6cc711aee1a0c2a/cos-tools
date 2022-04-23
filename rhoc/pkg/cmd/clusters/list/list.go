@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"

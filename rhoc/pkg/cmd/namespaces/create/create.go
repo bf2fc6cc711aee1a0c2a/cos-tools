@@ -14,6 +14,10 @@ import (
 	"net/http"
 )
 
+const (
+	CommandName = "create"
+)
+
 type options struct {
 	f *factory.Factory
 
@@ -30,10 +34,8 @@ func NewCreateCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:   "create",
-		Short: "create",
-		Long:  "create",
-		Args:  cobra.NoArgs,
+		Use:  CommandName,
+		Args: cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
 				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)

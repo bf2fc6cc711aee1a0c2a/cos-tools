@@ -34,11 +34,14 @@ func NewDeletesCommand(f *factory.Factory) *cobra.Command {
 		Short:   "delete",
 		Long:    "delete",
 		Args:    cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
 				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
 			}
 
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
 			return run(&opts)
 		},
 	}

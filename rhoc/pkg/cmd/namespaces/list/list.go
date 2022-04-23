@@ -1,26 +1,31 @@
 package list
 
 import (
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
+	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
-	"net/http"
-	"strconv"
 )
 
 // row is the details of a Kafka instance needed to print to a table
-type itemRow struct {
-	ClusterID  string `json:"cluster_id" header:"ClusterID"`
-	ID         string `json:"id" header:"ID"`
-	Name       string `json:"name" header:"Name"`
-	TenatKind  string `json:"tenant_kind" header:"TenantKind"`
-	TenatID    string `json:"tenant_id" header:"TenantID"`
-	Status     string `json:"status" header:"Status"`
-	Expiration string `json:"expiration" header:"Expiration"`
+type namespace struct {
+	ID         string
+	ClusterID  string
+	Name       string
+	Owner      string
+	TenatKind  string
+	TenatID    string
+	State      string
+	Expiration string
 }
 
 type options struct {
@@ -61,12 +66,12 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	flags := flagutil.NewFlagSet(cmd, f.Localizer)
 
 	flags.AddOutput(&opts.outputFormat)
-	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "page")
-	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "limit")
-	flags.BoolVar(&opts.all, "all", false, "all")
+	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "Page index")
+	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "Number of items in each page")
+	flags.BoolVar(&opts.all, "all", false, "Grab all pages")
 	flags.StringVarP(&opts.clusterID, "cluster-id", "c", "", "cluster-id")
-	flags.StringVar(&opts.orderBy, "order-by", "", "order-by")
-	flags.StringVar(&opts.search, "search", "", "search")
+	flags.StringVar(&opts.orderBy, "order-by", "", "Specifies the order by criteria")
+	flags.StringVar(&opts.search, "search", "", "Search criteria")
 
 	return cmd
 }
@@ -144,9 +149,7 @@ func run(opts *options) error {
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
-		rows := responseToRows(items)
-		dump.Table(opts.f.IOStreams.Out, rows)
-		opts.f.Logger.Info("")
+		dumpAsTable(opts.f, items)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}
@@ -154,24 +157,56 @@ func run(opts *options) error {
 	return nil
 }
 
-func responseToRows(items admin.ConnectorNamespaceList) []itemRow {
-	rows := make([]itemRow, len(items.Items))
+func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList) {
+	r := make([]interface{}, 0, len(items.Items))
 
 	for i := range items.Items {
 		k := items.Items[i]
 
-		row := itemRow{
+		r = append(r, namespace{
 			ClusterID:  k.ClusterId,
 			ID:         k.Id,
 			Name:       k.Name,
+			Owner:      k.Owner,
 			TenatKind:  string(k.Tenant.Kind),
 			TenatID:    k.Tenant.Id,
-			Status:     string(*&k.Status.State),
+			State:      string(*&k.Status.State),
 			Expiration: k.Expiration,
-		}
-
-		rows[i] = row
+		})
 	}
 
-	return rows
+	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{
+		"state":      statusCustomizer,
+		"expiration": expirationCustomizer,
+	})
+
+	t.Dump(r, f.IOStreams.Out)
+}
+
+func statusCustomizer(s string) tablewriter.Colors {
+	switch s {
+	case "ready":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+	case "disconnected":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+	}
+
+	return tablewriter.Colors{}
+}
+
+func expirationCustomizer(s string) tablewriter.Colors {
+	if s == "" {
+		return tablewriter.Colors{}
+	}
+
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		return tablewriter.Colors{}
+	}
+
+	if time.Now().After(t) {
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
+	}
+
+	return tablewriter.Colors{}
 }

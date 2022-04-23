@@ -55,6 +55,7 @@ func (t *Table) Dump(items []interface{}, out io.Writer) {
 	table.SetColumnSeparator(tablewriter.SPACE)
 	table.SetCenterSeparator(tablewriter.SPACE)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
 
 	for _, i := range items {
 		structVal := reflect.ValueOf(i)
@@ -71,6 +72,10 @@ func (t *Table) Dump(items []interface{}, out io.Writer) {
 			switch v := fieldVal.(type) {
 			case time.Time:
 				data = v.Format(time.RFC3339)
+			case int64:
+				data = strconv.FormatInt(v, 10)
+			case int:
+				data = strconv.Itoa(v)
 			default:
 				data = fmt.Sprintf("%v", fieldVal)
 			}

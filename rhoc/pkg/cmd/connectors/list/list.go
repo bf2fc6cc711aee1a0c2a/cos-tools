@@ -8,25 +8,27 @@ import (
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
+	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
 )
 
-type itemRow struct {
-	NamespaceId     string    `json:"namespace_id" header:"NamespaceId"`
-	ID              string    `json:"id" header:"ID"`
-	Name            string    `json:"name" header:"Name"`
-	Owner           string    `json:"owner" header:"Owner"`
-	CreatedAt       time.Time `json:"created_at,omitempty" header:"CreatedAt"`
-	ModifiedAt      time.Time `json:"modified_at,omitempty" header:"ModifiedAt"`
-	ConnectorTypeId string    `json:"connector_type_id" header:"ConnectorTypeId"`
-	Revision        string    `json:"revision,omitempty" header:"Revision"`
-	DesiredState    string    `json:"desired_state" header:"ID"`
-	State           string    `json:"state,omitempty" header:"State"`
-	Error           string    `json:"error,omitempty" header:"Error"`
+type conenctor struct {
+	ID              string
+	NamespaceID     string
+	Name            string
+	Owner           string
+	CreatedAt       time.Time
+	ModifiedAt      time.Time
+	ConnectorTypeId string
+	Revision        int64
+	DesiredState    string
+	State           string
+	Error           string
 }
 
 type options struct {
@@ -74,13 +76,13 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	flags := flagutil.NewFlagSet(cmd, f.Localizer)
 
 	flags.AddOutput(&opts.outputFormat)
-	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "page")
-	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "limit")
-	flags.BoolVar(&opts.all, "all", false, "all")
+	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "Page index")
+	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "Number of items in each page")
+	flags.BoolVar(&opts.all, "all", false, "Grab all pages")
 	flags.StringVarP(&opts.namespaceID, "namespace-id", "n", "", "namespace-id")
 	flags.StringVarP(&opts.clusterID, "cluster-id", "c", "", "cluster-id")
-	flags.StringVar(&opts.orderBy, "order-by", "", "order-by")
-	flags.StringVar(&opts.search, "search", "", "search")
+	flags.StringVar(&opts.orderBy, "order-by", "", "Specifies the order by criteria")
+	flags.StringVar(&opts.search, "search", "", "Search criteria")
 
 	return cmd
 }
@@ -159,9 +161,7 @@ func run(opts *options) error {
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
-		rows := responseToRows(items)
-		dump.Table(opts.f.IOStreams.Out, rows)
-		opts.f.Logger.Info("")
+		dumpAsTable(opts.f, items)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}
@@ -169,28 +169,43 @@ func run(opts *options) error {
 	return nil
 }
 
-func responseToRows(items admin.ConnectorAdminViewList) []itemRow {
-	rows := make([]itemRow, len(items.Items))
+func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList) {
+	r := make([]interface{}, 0, len(items.Items))
 
 	for i := range items.Items {
 		k := items.Items[i]
 
-		row := itemRow{
-			NamespaceId:     k.NamespaceId,
+		r = append(r, conenctor{
+			NamespaceID:     k.NamespaceId,
 			ID:              k.Id,
 			Name:            k.Name,
 			Owner:           k.Owner,
 			CreatedAt:       k.CreatedAt,
 			ModifiedAt:      k.ModifiedAt,
 			ConnectorTypeId: k.ConnectorTypeId,
-			Revision:        strconv.FormatInt(k.ResourceVersion, 10),
+			Revision:        k.ResourceVersion,
 			DesiredState:    string(k.DesiredState),
 			State:           string(k.Status.State),
 			Error:           k.Status.Error,
-		}
-
-		rows[i] = row
+		})
 	}
 
-	return rows
+	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{
+		"state": statusCustomizer,
+	})
+
+	t.Dump(r, f.IOStreams.Out)
+}
+
+func statusCustomizer(s string) tablewriter.Colors {
+	switch s {
+	case "ready":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+	case "failed":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+	case "stopped":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+	}
+
+	return tablewriter.Colors{}
 }

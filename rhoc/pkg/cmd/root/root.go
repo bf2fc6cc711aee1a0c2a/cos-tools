@@ -12,7 +12,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/namespaces"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/commands"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/completion"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/login"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/logout"
@@ -30,8 +30,6 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 		SilenceErrors: false,
 		Use:           "rhoc",
 		Short:         "rhoc",
-		Long:          "",
-		Example:       "",
 	}
 
 	fs := cmd.PersistentFlags()
@@ -43,7 +41,7 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 
-	commands.Bind(
+	cmdutil.Bind(
 		cmd,
 		login.NewLoginCmd(f),
 		logout.NewLogoutCommand(f),

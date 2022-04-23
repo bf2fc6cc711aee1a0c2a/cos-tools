@@ -9,88 +9,73 @@ import (
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 )
 
-type namespace struct {
-	ID         string
-	ClusterID  string
-	Owner      string
-	TenatKind  string
-	TenatID    string
-	State      string
-	Expiration string
-}
-type namespaceWide struct {
-	ID         string
-	Name       string
-	ClusterID  string
-	Owner      string
-	TenantKind string
-	TenantID   string
-	State      string
-	Expiration string
-}
-
 func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bool) {
-	r := make([]interface{}, 0, len(items.Items))
+	t := dumper.Tbl[admin.ConnectorNamespace]{}
 
-	for i := range items.Items {
-		k := items.Items[i]
-
-		if wide {
-			r = append(r, namespaceWide{
-				ClusterID:  k.ClusterId,
-				ID:         k.Id,
-				Name:       k.Name,
-				Owner:      k.Owner,
-				TenantKind: string(k.Tenant.Kind),
-				TenantID:   k.Tenant.Id,
-				State:      string(*&k.Status.State),
-				Expiration: k.Expiration,
-			})
-		} else {
-			r = append(r, namespace{
-				ClusterID:  k.ClusterId,
-				ID:         k.Id,
-				Owner:      k.Owner,
-				TenatKind:  string(k.Tenant.Kind),
-				TenatID:    k.Tenant.Id,
-				State:      string(*&k.Status.State),
-				Expiration: k.Expiration,
-			})
-		}
-	}
-
-	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{
-		"state":      statusCustomizer,
-		"expiration": expirationCustomizer,
+	t.Field("ID", func(in *admin.ConnectorNamespace) string {
+		return in.Id
 	})
 
-	t.Dump(r, f.IOStreams.Out)
-}
-
-func statusCustomizer(s string) tablewriter.Colors {
-	switch s {
-	case "ready":
-		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
-	case "disconnected":
-		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+	if wide {
+		t.Field("Name", func(in *admin.ConnectorNamespace) string {
+			return in.Name
+		})
 	}
 
-	return tablewriter.Colors{}
-}
+	t.Field("ClusterID", func(in *admin.ConnectorNamespace) string {
+		return in.ClusterId
+	})
 
-func expirationCustomizer(s string) tablewriter.Colors {
-	if s == "" {
-		return tablewriter.Colors{}
+	t.Field("Owner", func(in *admin.ConnectorNamespace) string {
+		return in.Owner
+	})
+
+	t.Field("TenantKind", func(in *admin.ConnectorNamespace) string {
+		return string(in.Tenant.Kind)
+	})
+
+	t.Field("TenantID", func(in *admin.ConnectorNamespace) string {
+		return in.Tenant.Id
+	})
+
+	if wide {
+		t.Field("CreatedAt", func(in *admin.ConnectorNamespace) string {
+			return in.CreatedAt.Format(time.RFC3339)
+		})
+
+		t.Field("ModifiedAt", func(in *admin.ConnectorNamespace) string {
+			return in.ModifiedAt.Format(time.RFC3339)
+		})
 	}
 
-	t, err := time.Parse(time.RFC3339, s)
-	if err != nil {
-		return tablewriter.Colors{}
-	}
+	t.Rich("State", func(in *admin.ConnectorNamespace) (string, tablewriter.Colors) {
+		s := string(in.Status.State)
+		c := tablewriter.Colors{}
 
-	if time.Now().After(t) {
-		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
-	}
+		switch s {
+		case "ready":
+			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+		case "disconnected":
+			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+		}
 
-	return tablewriter.Colors{}
+		return s, c
+	})
+
+	t.Rich("Expiration", func(in *admin.ConnectorNamespace) (string, tablewriter.Colors) {
+		s := in.Expiration
+		c := tablewriter.Colors{}
+
+		if s != "" {
+
+			t, err := time.Parse(time.RFC3339, s)
+			if err == nil && time.Now().After(t) {
+				c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
+			}
+		}
+
+		return s, c
+	})
+
+	t.Dump(items.Items, f.IOStreams.Out)
 }

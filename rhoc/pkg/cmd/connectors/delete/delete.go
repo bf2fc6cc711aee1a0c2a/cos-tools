@@ -35,21 +35,18 @@ func NewDeletesCommand(f *factory.Factory) *cobra.Command {
 		Long:    "delete",
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, flagutil.ValidOutputFormats...) {
-				return flagutil.InvalidValueError("output", opts.outputFormat, flagutil.ValidOutputFormats...)
+			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
+				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
 			}
 
 			return run(&opts)
 		},
 	}
 
-	flags := flagutil.NewFlagSet(cmd, f.Localizer)
-	flags.AddOutput(&opts.outputFormat)
-	flags.AddYes(&opts.skipConfirm)
-	flags.StringVar(&opts.id, "id", "", "id")
-	flags.BoolVarP(&opts.force, "force", "f", false, "force")
-
-	cmd.MarkFlagRequired("id")
+	cmdutil.AddOutput(cmd, &opts.outputFormat)
+	cmdutil.AddYes(cmd, &opts.skipConfirm)
+	cmdutil.AddForce(cmd, &opts.force)
+	cmdutil.AddID(cmd, &opts.id).Required()
 
 	return cmd
 }

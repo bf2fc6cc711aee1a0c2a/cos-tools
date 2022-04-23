@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -31,8 +32,8 @@ func NewDescribeCommand(f *factory.Factory) *cobra.Command {
 		Example: "describe",
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, flagutil.ValidOutputFormats...) {
-				return flagutil.InvalidValueError("output", opts.outputFormat, flagutil.ValidOutputFormats...)
+			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
+				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
 			}
 
 			return nil
@@ -42,11 +43,8 @@ func NewDescribeCommand(f *factory.Factory) *cobra.Command {
 		},
 	}
 
-	flags := flagutil.NewFlagSet(cmd, f.Localizer)
-	flags.AddOutput(&opts.outputFormat)
-	flags.StringVar(&opts.id, "id", "", "id")
-
-	cmd.MarkFlagRequired("id")
+	cmdutil.AddOutput(cmd, &opts.outputFormat)
+	cmdutil.AddID(cmd, &opts.id).Required()
 
 	return cmd
 }

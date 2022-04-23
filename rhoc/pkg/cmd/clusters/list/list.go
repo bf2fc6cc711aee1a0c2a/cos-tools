@@ -6,21 +6,27 @@ import (
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
+	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
 )
 
-type itemRow struct {
-	ID         string    `json:"id,omitempty" header:"ID"`
-	Owner      string    `json:"owner,omitempty" header:"Owner"`
-	CreatedAt  time.Time `json:"created_at,omitempty" header:"CreatedAt"`
-	ModifiedAt time.Time `json:"modified_at,omitempty" header:"ModifiedAt"`
-	Name       string    `json:"name,omitempty"  header:"Name"`
-	Status     string    `json:"status" header:"Status"`
-	Error      string    `json:"error" header:"Error"`
+const (
+	CommandName  = "list"
+	CommandAlias = "ls"
+)
+
+type cluster struct {
+	ID         string
+	Name       string
+	Owner      string
+	CreatedAt  time.Time
+	ModifiedAt time.Time
+	Status     string
 }
 
 type options struct {
@@ -38,12 +44,9 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	opts := options{
 		f: f,
 	}
-
 	cmd := &cobra.Command{
-		Use:     "list",
-		Aliases: []string{"ls"},
-		Short:   "list",
-		Long:    "list",
+		Use:     CommandName,
+		Aliases: []string{CommandAlias},
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, flagutil.ValidOutputFormats...) {
@@ -60,11 +63,11 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	flags := flagutil.NewFlagSet(cmd, f.Localizer)
 
 	flags.AddOutput(&opts.outputFormat)
-	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "page")
-	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "limit")
-	flags.BoolVar(&opts.all, "all", false, "all")
-	flags.StringVar(&opts.orderBy, "order-by", "", "order-by")
-	flags.StringVar(&opts.search, "search", "", "search")
+	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "Page index")
+	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "Number of items in each page")
+	flags.BoolVar(&opts.all, "all", false, "Grab all pages")
+	flags.StringVar(&opts.orderBy, "order-by", "", "Specifies the order by criteria")
+	flags.StringVar(&opts.search, "search", "", "Search criteria")
 
 	return cmd
 }
@@ -122,9 +125,7 @@ func run(opts *options) error {
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
-		rows := responseToRows(items)
-		dump.Table(opts.f.IOStreams.Out, rows)
-		opts.f.Logger.Info("")
+		dumpAsTable(opts.f, items)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}
@@ -132,24 +133,36 @@ func run(opts *options) error {
 	return nil
 }
 
-func responseToRows(items admin.ConnectorClusterList) []itemRow {
-	rows := make([]itemRow, len(items.Items))
+func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList) {
+	r := make([]interface{}, 0, len(items.Items))
 
 	for i := range items.Items {
 		k := items.Items[i]
 
-		row := itemRow{
+		r = append(r, cluster{
 			ID:         k.Id,
-			Owner:      k.Owner,
 			Name:       k.Name,
+			Owner:      k.Owner,
 			CreatedAt:  k.CreatedAt,
 			ModifiedAt: k.ModifiedAt,
 			Status:     string(k.Status.State),
-			Error:      k.Status.Error,
-		}
-
-		rows[i] = row
+		})
 	}
 
-	return rows
+	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{
+		"status": statusCustomizer,
+	})
+
+	t.Dump(r, f.IOStreams.Out)
+}
+
+func statusCustomizer(s string) tablewriter.Colors {
+	switch s {
+	case "ready":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+	case "disconnected":
+		return tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+	}
+
+	return tablewriter.Colors{}
 }

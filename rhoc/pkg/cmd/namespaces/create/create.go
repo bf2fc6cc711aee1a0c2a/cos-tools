@@ -1,6 +1,8 @@
 package create
 
 import (
+	"errors"
+	"fmt"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/connector/connectorcmdutil"
@@ -8,6 +10,7 @@ import (
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
+	"net/http"
 )
 
 type options struct {
@@ -87,6 +90,12 @@ func run(opts *options) error {
 		}()
 	}
 	if err != nil {
+		if httpRes != nil && httpRes.StatusCode == http.StatusInternalServerError {
+			e, _ := service.ReadError(httpRes)
+			if e.Reason != "" {
+				err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
+			}
+		}
 		return err
 	}
 	if httpRes != nil && httpRes.StatusCode == 204 {

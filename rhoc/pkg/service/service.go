@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
 	"net/http"
 
@@ -49,4 +50,11 @@ func NewAdminClient(config *Config) (*admin.APIClient, error) {
 	}
 
 	return admin.NewAPIClient(c), nil
+}
+
+func ReadError(response *http.Response) (admin.Error, error) {
+	serviceError := admin.Error{}
+	err := json.NewDecoder(response.Body).Decode(&serviceError)
+
+	return serviceError, err
 }

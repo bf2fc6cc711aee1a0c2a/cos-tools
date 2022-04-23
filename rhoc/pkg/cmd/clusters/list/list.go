@@ -1,10 +1,13 @@
 package list
 
 import (
+	"errors"
+	"fmt"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
@@ -21,6 +24,13 @@ const (
 )
 
 type cluster struct {
+	ID         string
+	Owner      string
+	CreatedAt  time.Time
+	ModifiedAt time.Time
+	State      string
+}
+type clusterWide struct {
 	ID         string
 	Name       string
 	Owner      string
@@ -49,8 +59,8 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 		Aliases: []string{CommandAlias},
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, flagutil.ValidOutputFormats...) {
-				return flagutil.InvalidValueError("output", opts.outputFormat, flagutil.ValidOutputFormats...)
+			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
+				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
 			}
 
 			return nil
@@ -60,14 +70,12 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 		},
 	}
 
-	flags := flagutil.NewFlagSet(cmd, f.Localizer)
-
-	flags.AddOutput(&opts.outputFormat)
-	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "Page index")
-	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "Number of items in each page")
-	flags.BoolVar(&opts.all, "all", false, "Grab all pages")
-	flags.StringVar(&opts.orderBy, "order-by", "", "Specifies the order by criteria")
-	flags.StringVar(&opts.search, "search", "", "Search criteria")
+	cmdutil.AddOutput(cmd, &opts.outputFormat)
+	cmdutil.AddPage(cmd, &opts.page)
+	cmdutil.AddLimit(cmd, &opts.limit)
+	cmdutil.AddAllPages(cmd, &opts.all)
+	cmdutil.AddOrderBy(cmd, &opts.orderBy)
+	cmdutil.AddSearch(cmd, &opts.search)
 
 	return cmd
 }
@@ -102,6 +110,12 @@ func run(opts *options) error {
 		result, httpRes, err := e.Execute()
 
 		if httpRes != nil {
+			if httpRes != nil && httpRes.StatusCode == http.StatusInternalServerError {
+				e, _ := service.ReadError(httpRes)
+				if e.Reason != "" {
+					err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
+				}
+			}
 			defer func() {
 				_ = httpRes.Body.Close()
 			}()
@@ -124,8 +138,11 @@ func run(opts *options) error {
 	}
 
 	switch opts.outputFormat {
+
 	case dump.EmptyFormat:
-		dumpAsTable(opts.f, items)
+		dumpAsTable(opts.f, items, false)
+	case "wide":
+		dumpAsTable(opts.f, items, true)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}
@@ -133,20 +150,30 @@ func run(opts *options) error {
 	return nil
 }
 
-func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList) {
+func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool) {
 	r := make([]interface{}, 0, len(items.Items))
 
 	for i := range items.Items {
 		k := items.Items[i]
 
-		r = append(r, cluster{
-			ID:         k.Id,
-			Name:       k.Name,
-			Owner:      k.Owner,
-			CreatedAt:  k.CreatedAt,
-			ModifiedAt: k.ModifiedAt,
-			State:      string(k.Status.State),
-		})
+		if wide {
+			r = append(r, clusterWide{
+				ID:         k.Id,
+				Name:       k.Name,
+				Owner:      k.Owner,
+				CreatedAt:  k.CreatedAt,
+				ModifiedAt: k.ModifiedAt,
+				State:      string(k.Status.State),
+			})
+		} else {
+			r = append(r, cluster{
+				ID:         k.Id,
+				Owner:      k.Owner,
+				CreatedAt:  k.CreatedAt,
+				ModifiedAt: k.ModifiedAt,
+				State:      string(k.Status.State),
+			})
+		}
 	}
 
 	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{

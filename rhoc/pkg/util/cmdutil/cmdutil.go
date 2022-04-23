@@ -2,6 +2,9 @@ package cmdutil
 
 import (
 	"fmt"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
+	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
+	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -85,4 +88,95 @@ func PromptConfirm(format string, args ...interface{}) (bool, error) {
 	}
 
 	return confirmDelete, nil
+}
+
+func ValidOutputs() []string {
+	validVals := make([]string, 0, len(flagutil.ValidOutputFormats)+1)
+	validVals = append(validVals, flagutil.ValidOutputFormats...)
+	validVals = append(validVals, "wide")
+
+	return validVals
+}
+
+func AddOutput(cmd *cobra.Command, output *string) {
+	validVals := ValidOutputs()
+	flagName := "output"
+
+	cmd.Flags().StringVarP(
+		output,
+		flagName,
+		"o",
+		dump.EmptyFormat,
+		"Specify the output format. Choose from: "+strings.Join(validVals, ", "),
+	)
+
+	_ = cmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return validVals, cobra.ShellCompDirectiveNoSpace
+	})
+}
+
+func AddPage(cmd *cobra.Command, output *int) {
+	cmd.Flags().IntVarP(
+		output,
+		"page",
+		"p",
+		build.DefaultPageNumber,
+		"Page index",
+	)
+}
+
+func AddLimit(cmd *cobra.Command, output *int) {
+	cmd.Flags().IntVarP(
+		output,
+		"limit",
+		"l",
+		build.DefaultPageSize,
+		"Number of items in each page",
+	)
+}
+
+func AddAllPages(cmd *cobra.Command, output *bool) {
+	cmd.Flags().BoolVar(
+		output,
+		"all",
+		false,
+		"Grab all pages",
+	)
+}
+
+func AddOrderBy(cmd *cobra.Command, output *string) {
+	cmd.Flags().StringVar(
+		output,
+		"order-by",
+		"",
+		"Specifies the order by criteria",
+	)
+}
+
+func AddSearch(cmd *cobra.Command, output *string) {
+	cmd.Flags().StringVar(
+		output,
+		"search",
+		"",
+		"Search criteria",
+	)
+}
+
+func AddClusterID(cmd *cobra.Command, output *string) {
+	cmd.Flags().StringVarP(
+		output,
+		"cluster-id",
+		"c",
+		"",
+		"Cluster ID",
+	)
+}
+func AddNamespaceID(cmd *cobra.Command, output *string) {
+	cmd.Flags().StringVarP(
+		output,
+		"namespace-id",
+		"n",
+		"",
+		"Namespace ID",
+	)
 }

@@ -2,11 +2,12 @@ package list
 
 import (
 	"errors"
+	"fmt"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
@@ -17,10 +18,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type conenctor struct {
+type connector struct {
 	ID              string
 	NamespaceID     string
+	Owner           string
+	CreatedAt       time.Time
+	ModifiedAt      time.Time
+	ConnectorTypeId string
+	Revision        int64
+	DesiredState    string
+	State           string
+}
+
+type connectorWide struct {
+	ID              string
 	Name            string
+	NamespaceID     string
 	Owner           string
 	CreatedAt       time.Time
 	ModifiedAt      time.Time
@@ -56,8 +69,8 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 		Long:    "list",
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, flagutil.ValidOutputFormats...) {
-				return flagutil.InvalidValueError("output", opts.outputFormat, flagutil.ValidOutputFormats...)
+			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
+				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
 			}
 			if opts.clusterID != "" && opts.namespaceID != "" {
 				return errors.New("set either cluster-id or namespace-id, not both")
@@ -73,16 +86,14 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 		},
 	}
 
-	flags := flagutil.NewFlagSet(cmd, f.Localizer)
-
-	flags.AddOutput(&opts.outputFormat)
-	flags.IntVarP(&opts.page, "page", "p", build.DefaultPageNumber, "Page index")
-	flags.IntVarP(&opts.limit, "limit", "l", build.DefaultPageSize, "Number of items in each page")
-	flags.BoolVar(&opts.all, "all", false, "Grab all pages")
-	flags.StringVarP(&opts.namespaceID, "namespace-id", "n", "", "namespace-id")
-	flags.StringVarP(&opts.clusterID, "cluster-id", "c", "", "cluster-id")
-	flags.StringVar(&opts.orderBy, "order-by", "", "Specifies the order by criteria")
-	flags.StringVar(&opts.search, "search", "", "Search criteria")
+	cmdutil.AddOutput(cmd, &opts.outputFormat)
+	cmdutil.AddPage(cmd, &opts.page)
+	cmdutil.AddLimit(cmd, &opts.limit)
+	cmdutil.AddAllPages(cmd, &opts.all)
+	cmdutil.AddOrderBy(cmd, &opts.orderBy)
+	cmdutil.AddSearch(cmd, &opts.search)
+	cmdutil.AddClusterID(cmd, &opts.clusterID)
+	cmdutil.AddNamespaceID(cmd, &opts.namespaceID)
 
 	return cmd
 }
@@ -143,6 +154,12 @@ func run(opts *options) error {
 			}()
 		}
 		if err != nil {
+			if httpRes != nil && httpRes.StatusCode == http.StatusInternalServerError {
+				e, _ := service.ReadError(httpRes)
+				if e.Reason != "" {
+					err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
+				}
+			}
 			return err
 		}
 		if result == nil || len(result.Items) == 0 {
@@ -161,7 +178,9 @@ func run(opts *options) error {
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
-		dumpAsTable(opts.f, items)
+		dumpAsTable(opts.f, items, false)
+	case "wide":
+		dumpAsTable(opts.f, items, true)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}
@@ -169,25 +188,39 @@ func run(opts *options) error {
 	return nil
 }
 
-func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList) {
+func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bool) {
 	r := make([]interface{}, 0, len(items.Items))
 
 	for i := range items.Items {
 		k := items.Items[i]
 
-		r = append(r, conenctor{
-			NamespaceID:     k.NamespaceId,
-			ID:              k.Id,
-			Name:            k.Name,
-			Owner:           k.Owner,
-			CreatedAt:       k.CreatedAt,
-			ModifiedAt:      k.ModifiedAt,
-			ConnectorTypeId: k.ConnectorTypeId,
-			Revision:        k.ResourceVersion,
-			DesiredState:    string(k.DesiredState),
-			State:           string(k.Status.State),
-			Error:           k.Status.Error,
-		})
+		if wide {
+			r = append(r, connectorWide{
+				NamespaceID:     k.NamespaceId,
+				ID:              k.Id,
+				Name:            k.Name,
+				Owner:           k.Owner,
+				CreatedAt:       k.CreatedAt,
+				ModifiedAt:      k.ModifiedAt,
+				ConnectorTypeId: k.ConnectorTypeId,
+				Revision:        k.ResourceVersion,
+				DesiredState:    string(k.DesiredState),
+				State:           string(k.Status.State),
+				Error:           k.Status.Error,
+			})
+		} else {
+			r = append(r, connector{
+				NamespaceID:     k.NamespaceId,
+				ID:              k.Id,
+				Owner:           k.Owner,
+				CreatedAt:       k.CreatedAt,
+				ModifiedAt:      k.ModifiedAt,
+				ConnectorTypeId: k.ConnectorTypeId,
+				Revision:        k.ResourceVersion,
+				DesiredState:    string(k.DesiredState),
+				State:           string(k.Status.State),
+			})
+		}
 	}
 
 	t := dumper.NewTable(map[string]func(s string) tablewriter.Colors{

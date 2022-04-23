@@ -44,6 +44,7 @@ func (t *Table) Dump(items []interface{}, out io.Writer) {
 		if i == 0 {
 			name = name + " (" + strconv.Itoa(len(items)) + ")"
 		}
+
 		h = append(h, name)
 	}
 

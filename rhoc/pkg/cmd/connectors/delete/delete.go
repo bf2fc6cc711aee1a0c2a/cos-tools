@@ -1,6 +1,9 @@
 package delete
 
 import (
+	"errors"
+	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
@@ -80,6 +83,12 @@ func run(opts *options) error {
 		}()
 	}
 	if err != nil {
+		if httpRes != nil && httpRes.StatusCode == http.StatusInternalServerError {
+			e, _ := service.ReadError(httpRes)
+			if e.Reason != "" {
+				err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
+			}
+		}
 		return err
 	}
 

@@ -3,15 +3,15 @@ package list
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
-	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
-	"net/http"
-	"strconv"
 )
 
 const (
@@ -42,8 +42,8 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 		Aliases: []string{CommandAlias},
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
-				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
+			if err := cmdutil.ValidateOutputs(cmd); err != nil {
+				return err
 			}
 			if opts.clusterID != "" && opts.namespaceID != "" {
 				return errors.New("set either cluster-id or namespace-id, not both")
@@ -153,9 +153,13 @@ func run(opts *options) error {
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
+		opts.f.Logger.Info("")
 		dumpAsTable(opts.f, items, false)
+		opts.f.Logger.Info("")
 	case "wide":
+		opts.f.Logger.Info("")
 		dumpAsTable(opts.f, items, true)
+		opts.f.Logger.Info("")
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}

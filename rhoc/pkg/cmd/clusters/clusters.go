@@ -1,6 +1,7 @@
 package clusters
 
 import (
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/clusters/describe"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/clusters/list"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -18,7 +19,8 @@ func NeClustersCommand(f *factory.Factory) *cobra.Command {
 
 	cmdutil.Bind(
 		cmd,
-		list.NewListCommand(f))
+		list.NewListCommand(f),
+		describe.NewDescribeCommand(f))
 
 	return cmd
 }

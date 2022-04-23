@@ -1,8 +1,9 @@
 package list
 
 import (
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"time"
+
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/olekukonko/tablewriter"
@@ -10,7 +11,7 @@ import (
 )
 
 func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bool) {
-	t := dumper.Tbl[admin.ConnectorNamespace]{}
+	t := dumper.Table[admin.ConnectorNamespace]{}
 
 	t.Field("ID", func(in *admin.ConnectorNamespace) string {
 		return in.Id

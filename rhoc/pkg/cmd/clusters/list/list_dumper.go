@@ -1,15 +1,16 @@
 package list
 
 import (
+	"time"
+
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
-	"time"
 )
 
 func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool) {
-	t := dumper.Tbl[admin.ConnectorCluster]{}
+	t := dumper.Table[admin.ConnectorCluster]{}
 
 	t.Field("ID", func(in *admin.ConnectorCluster) string {
 		return in.Id

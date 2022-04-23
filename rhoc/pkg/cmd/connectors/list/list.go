@@ -4,18 +4,23 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
+)
+
+const (
+	CommandName  = "list"
+	CommandAlias = "ls"
 )
 
 type connector struct {
@@ -63,10 +68,8 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:     "list",
-		Aliases: []string{"ls"},
-		Short:   "list",
-		Long:    "list",
+		Use:     CommandName,
+		Aliases: []string{CommandAlias},
 		Args:    cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {

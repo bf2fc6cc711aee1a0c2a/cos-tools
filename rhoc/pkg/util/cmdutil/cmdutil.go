@@ -98,85 +98,212 @@ func ValidOutputs() []string {
 	return validVals
 }
 
-func AddOutput(cmd *cobra.Command, output *string) {
+func AddOutput(cmd *cobra.Command, output *string) *FlagOptions {
 	validVals := ValidOutputs()
-	flagName := "output"
+	name := "output"
 
 	cmd.Flags().StringVarP(
 		output,
-		flagName,
+		name,
 		"o",
 		dump.EmptyFormat,
 		"Specify the output format. Choose from: "+strings.Join(validVals, ", "),
 	)
 
-	_ = cmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	_ = cmd.RegisterFlagCompletionFunc(name, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return validVals, cobra.ShellCompDirectiveNoSpace
 	})
+
+	return withFlagOptions(cmd, name)
 }
 
-func AddPage(cmd *cobra.Command, output *int) {
+func AddPage(cmd *cobra.Command, output *int) *FlagOptions {
+	name := "page"
+
 	cmd.Flags().IntVarP(
 		output,
-		"page",
+		name,
 		"p",
 		build.DefaultPageNumber,
 		"Page index",
 	)
+
+	return withFlagOptions(cmd, name)
 }
 
-func AddLimit(cmd *cobra.Command, output *int) {
+func AddLimit(cmd *cobra.Command, output *int) *FlagOptions {
+	name := "limit"
+
 	cmd.Flags().IntVarP(
 		output,
-		"limit",
+		name,
 		"l",
 		build.DefaultPageSize,
 		"Number of items in each page",
 	)
+
+	return withFlagOptions(cmd, name)
 }
 
-func AddAllPages(cmd *cobra.Command, output *bool) {
+func AddAllPages(cmd *cobra.Command, output *bool) *FlagOptions {
+	name := "all"
+
 	cmd.Flags().BoolVar(
 		output,
-		"all",
+		name,
 		false,
 		"Grab all pages",
 	)
+
+	return withFlagOptions(cmd, name)
 }
 
-func AddOrderBy(cmd *cobra.Command, output *string) {
+func AddOrderBy(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "order-by"
+
 	cmd.Flags().StringVar(
 		output,
-		"order-by",
+		name,
 		"",
 		"Specifies the order by criteria",
 	)
+
+	return withFlagOptions(cmd, name)
 }
 
-func AddSearch(cmd *cobra.Command, output *string) {
+func AddSearch(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "search"
+
 	cmd.Flags().StringVar(
 		output,
-		"search",
+		name,
 		"",
 		"Search criteria",
 	)
+
+	return withFlagOptions(cmd, name)
 }
 
-func AddClusterID(cmd *cobra.Command, output *string) {
+func AddClusterID(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "cluster-id"
+
 	cmd.Flags().StringVarP(
 		output,
-		"cluster-id",
+		name,
 		"c",
 		"",
 		"Cluster ID",
 	)
+
+	return withFlagOptions(cmd, name)
 }
-func AddNamespaceID(cmd *cobra.Command, output *string) {
+
+func AddNamespaceID(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "namespace-id"
+
 	cmd.Flags().StringVarP(
 		output,
-		"namespace-id",
+		name,
 		"n",
 		"",
 		"Namespace ID",
 	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddID(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "id"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"ID",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddTenantKind(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "tenant-kind"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"Tenant Kind",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddTenantID(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "tenant-id"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"Tenant ID",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddName(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "name"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"Name",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddForce(cmd *cobra.Command, output *bool) *FlagOptions {
+	name := "force"
+
+	cmd.Flags().BoolVarP(
+		output,
+		name,
+		"f",
+		false,
+		"Force",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddYes(cmd *cobra.Command, yes *bool) *FlagOptions {
+	name := "yes"
+
+	cmd.Flags().BoolVarP(
+		yes,
+		name,
+		"y",
+		false,
+		"Skip confirmation of this action",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func withFlagOptions(cmd *cobra.Command, flagName string) *FlagOptions {
+	options := FlagOptions{}
+
+	options.Required = func() *FlagOptions {
+		_ = cmd.MarkFlagRequired(flagName)
+		return &options
+	}
+
+	return &options
+}
+
+// FlagOptions defines additional flag options
+type FlagOptions struct {
+	Required func() *FlagOptions
 }

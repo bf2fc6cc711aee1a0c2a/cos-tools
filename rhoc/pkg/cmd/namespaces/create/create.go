@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/connector/connectorcmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
@@ -34,6 +35,10 @@ func NewCreateCommand(f *factory.Factory) *cobra.Command {
 		Long:  "create",
 		Args:  cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if opts.outputFormat != "" && !flagutil.IsValidInput(opts.outputFormat, cmdutil.ValidOutputs()...) {
+				return flagutil.InvalidValueError("output", opts.outputFormat, cmdutil.ValidOutputs()...)
+			}
+
 			validator := connectorcmdutil.Validator{
 				Localizer: f.Localizer,
 			}
@@ -49,16 +54,11 @@ func NewCreateCommand(f *factory.Factory) *cobra.Command {
 		},
 	}
 
-	flags := flagutil.NewFlagSet(cmd, f.Localizer)
-	flags.StringVar(&opts.name, "name", "", "name")
-	flags.StringVar(&opts.clusterID, "cluster-id", "", "cluster-id")
-	flags.StringVar(&opts.tenantKind, "tenant-kind", "", "tenant-kind")
-	flags.StringVar(&opts.tenantID, "tenant-id", "", "tenant-id")
-	flags.AddOutput(&opts.outputFormat)
-
-	cmd.MarkFlagRequired("cluster-id")
-	cmd.MarkFlagRequired("tenant-kind")
-	cmd.MarkFlagRequired("tenant-id")
+	cmdutil.AddOutput(cmd, &opts.outputFormat)
+	cmdutil.AddName(cmd, &opts.name)
+	cmdutil.AddClusterID(cmd, &opts.clusterID).Required()
+	cmdutil.AddTenantKind(cmd, &opts.tenantKind).Required()
+	cmdutil.AddTenantID(cmd, &opts.tenantID).Required()
 
 	return cmd
 }

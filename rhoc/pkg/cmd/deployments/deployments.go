@@ -1,8 +1,8 @@
 package deployments
 
 import (
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/commands"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments/list"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/commands"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
 )

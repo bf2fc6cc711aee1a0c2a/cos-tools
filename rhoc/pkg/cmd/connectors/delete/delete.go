@@ -1,13 +1,14 @@
 package delete
 
 import (
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/commands"
+	"strconv"
+
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/commands"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
-	"strconv"
 )
 
 type options struct {

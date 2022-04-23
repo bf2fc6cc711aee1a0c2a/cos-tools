@@ -1,13 +1,11 @@
 package delete
 
 import (
-	"errors"
-	"fmt"
-	"net/http"
 	"strconv"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -75,28 +73,22 @@ func run(opts *options) error {
 		return err
 	}
 
-	e := c.ConnectorClustersAdminApi.DeleteConnector(opts.f.Context, opts.id)
+	e := c.Clusters().DeleteConnector(opts.f.Context, opts.id)
 	e = e.Force(strconv.FormatBool(opts.force))
 
-	response, httpRes, err := e.Execute()
+	result, httpRes, err := e.Execute()
 	if httpRes != nil {
 		defer func() {
 			_ = httpRes.Body.Close()
 		}()
 	}
 	if err != nil {
-		if httpRes != nil && httpRes.StatusCode == http.StatusInternalServerError {
-			e, _ := service.ReadError(httpRes)
-			if e.Reason != "" {
-				err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
-			}
-		}
-		return err
+		return response.Error(err, httpRes)
 	}
 
 	if httpRes != nil && httpRes.StatusCode == 204 {
 		return nil
 	}
 
-	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, response)
+	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, result)
 }

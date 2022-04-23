@@ -1,13 +1,10 @@
 package create
 
 import (
-	"errors"
-	"fmt"
-	"net/http"
-
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/connector/connectorcmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -82,7 +79,7 @@ func run(opts *options) error {
 		},
 	}
 
-	e := c.ConnectorNamespacesAdminApi.CreateConnectorNamespace(opts.f.Context)
+	e := c.Namespaces().CreateConnectorNamespace(opts.f.Context)
 	e = e.ConnectorNamespaceWithTenantRequest(r)
 
 	result, httpRes, err := e.Execute()
@@ -92,13 +89,7 @@ func run(opts *options) error {
 		}()
 	}
 	if err != nil {
-		if httpRes != nil && httpRes.StatusCode == http.StatusInternalServerError {
-			e, _ := service.ReadError(httpRes)
-			if e.Reason != "" {
-				err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
-			}
-		}
-		return err
+		return response.Error(err, httpRes)
 	}
 	if httpRes != nil && httpRes.StatusCode == 204 {
 		return nil

@@ -32,8 +32,8 @@ type namespaceWide struct {
 	Name       string
 	ClusterID  string
 	Owner      string
-	TenatKind  string
-	TenatID    string
+	TenantKind string
+	TenantID   string
 	State      string
 	Expiration string
 }
@@ -185,8 +185,8 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 				ID:         k.Id,
 				Name:       k.Name,
 				Owner:      k.Owner,
-				TenatKind:  string(k.Tenant.Kind),
-				TenatID:    k.Tenant.Id,
+				TenantKind: string(k.Tenant.Kind),
+				TenantID:   k.Tenant.Id,
 				State:      string(*&k.Status.State),
 				Expiration: k.Expiration,
 			})

@@ -2,8 +2,9 @@ package service
 
 import (
 	"encoding/json"
-	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
 	"net/http"
+
+	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection"
@@ -16,6 +17,23 @@ type Config struct {
 	F *factory.Factory
 }
 
+type AdminAPI interface {
+	Clusters() *admin.ConnectorClustersAdminApiService
+	Namespaces() *admin.ConnectorNamespacesAdminApiService
+}
+
+type defaultAdminAPI struct {
+	c *admin.APIClient
+}
+
+func (api *defaultAdminAPI) Clusters() *admin.ConnectorClustersAdminApiService {
+	return api.c.ConnectorClustersAdminApi
+}
+
+func (api *defaultAdminAPI) Namespaces() *admin.ConnectorNamespacesAdminApiService {
+	return api.c.ConnectorNamespacesAdminApi
+}
+
 func API(config *Config) (api.API, error) {
 	conn, err := config.F.Connection(connection.DefaultConfigRequireMasAuth)
 	if err != nil {
@@ -25,7 +43,7 @@ func API(config *Config) (api.API, error) {
 	return conn.API(), nil
 }
 
-func NewAdminClient(config *Config) (*admin.APIClient, error) {
+func NewAdminClient(config *Config) (AdminAPI, error) {
 	a, err := API(config)
 	if err != nil {
 		return nil, err
@@ -49,7 +67,11 @@ func NewAdminClient(config *Config) (*admin.APIClient, error) {
 		},
 	}
 
-	return admin.NewAPIClient(c), nil
+	adminAPI := defaultAdminAPI{
+		c: admin.NewAPIClient(c),
+	}
+
+	return &adminAPI, nil
 }
 
 func ReadError(response *http.Response) (admin.Error, error) {

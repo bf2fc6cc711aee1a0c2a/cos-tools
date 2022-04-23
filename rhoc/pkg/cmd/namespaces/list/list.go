@@ -1,14 +1,13 @@
 package list
 
 import (
-	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -85,7 +84,7 @@ func run(opts *options) error {
 		var httpRes *http.Response
 
 		if opts.clusterID != "" {
-			e := c.ConnectorClustersAdminApi.GetClusterNamespaces(opts.f.Context, opts.clusterID)
+			e := c.Clusters().GetClusterNamespaces(opts.f.Context, opts.clusterID)
 			e = e.Page(strconv.Itoa(i))
 			e = e.Size(strconv.Itoa(opts.limit))
 
@@ -98,7 +97,7 @@ func run(opts *options) error {
 
 			result, httpRes, err = e.Execute()
 		} else {
-			e := c.ConnectorNamespacesAdminApi.GetConnectorNamespaces(opts.f.Context)
+			e := c.Namespaces().GetConnectorNamespaces(opts.f.Context)
 			e = e.Page(strconv.Itoa(i))
 			e = e.Size(strconv.Itoa(opts.limit))
 
@@ -118,13 +117,7 @@ func run(opts *options) error {
 			}()
 		}
 		if err != nil {
-			if httpRes != nil && httpRes.StatusCode == http.StatusInternalServerError {
-				e, _ := service.ReadError(httpRes)
-				if e.Reason != "" {
-					err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
-				}
-			}
-			return err
+			return response.Error(err, httpRes)
 		}
 		if len(result.Items) == 0 {
 			break

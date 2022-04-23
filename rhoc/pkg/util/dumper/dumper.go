@@ -5,6 +5,7 @@ import (
 
 	"github.com/gobeam/stringy"
 	"github.com/olekukonko/tablewriter"
+	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 )
 
 type entry[K any] struct {
@@ -73,4 +74,12 @@ func (t *Table[K]) Dump(items []K, out io.Writer) {
 	}
 
 	table.Render()
+}
+
+type Formatted[K any] struct {
+	format string
+}
+
+func (f *Formatted[K]) Dump(data K, out io.Writer) error {
+	return dump.Formatted(out, f.format, data)
 }

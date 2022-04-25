@@ -1,0 +1,66 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Strimzi Operator Reconciliations Failed
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of resolving the alert `StrimziOperatorReconciliationsFailed`.
+
+// Include the following step in every alert SOP, changing required parts
+The source of the alert is the `strimzi_reconciliations_failed_total` metric. It fires when the increase in the time series in the range vector is greater than 5 in the last hour: `sum(increase(strimzi_reconciliations_failed_total[1h])) > 5`
+
+When this alert triggers it means that in the past hour, strimzi connectors have failed to reconcile more than 5 times.
+
+A reason for connectors to fail reconciling is, that the Kafka cluster is unreachable.
+
+== Prerequisites
+
+// Include the following steps in every alert SOP
+* Access to the OSD cluster via either Kafka_SRE IDP or Backplane.
+* Permission to run managed scripts on the cluster.
+* The ID of the affected OSD. This is provided by the alert via a label. It should look something like this: `cluster_id = rhoc-stage`.
+
+== Execute/Resolution
+
+// Include this as the first step in every alert SOP
+. Log in to the OSD cluster that generated the alert. You can identify the cluster by looking at the field `Source` in the alert.
+
+. The *redhat-openshift-connectors-observability / Strimzi Operators* Grafana dashboard can help you to troubleshoot the issue.
+
+. Identify the reason why the Operator can't reconcile the connector CR.
+
+.. If the cause is that the Kafka cluster isn't available because it expired, proceed to https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/howto/stop_connector.asciidoc[stop the connector].
+
+.. Consider also https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/howto/delete_connector.asciidoc[deleting the connector] in stage environment.
+
+. If the alert is not resolved move to the Troubleshooting section below.
+
+== Validate
+
+What steps are required to verify that the procedure has been followed correctly and the required changes have been implemented correctly, with the desired outcome.
+
+. Check the alert is no longer firing.
+. Check the dashboard are shows a regression of Failed Reconciliations per Hour.
+
+== Troubleshooting
+
+* Check the logs of the connector and follow up on any errors you notice.
+* Check the logs of the Strimzi operator looking for any specific entry related to the connector ID.
+* Check if the Kafka cluster expired and doesn't exist anymore.
+
+// Include the following step in every alert SOP
+* If the above hasn't worked contact engineering:
+** Use the Managed Connectors Service Gchat channel during business hours.
+** Use the #rhoc-support slack channel during business hours.

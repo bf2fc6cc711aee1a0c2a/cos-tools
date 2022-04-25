@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+CLUSTERS=$(get-api kafka_connector_clusters | jq '.items')
+NAMESPACES=$(get-api kafka_connector_namespaces | jq '.items')
+
+echo "$CLUSTERS $NAMESPACES" | jq -s '
+        INDEX(.[0][]; .id) as $c
+        | .[1][]
+        | . + { cluster_name: $c[.cluster_id].name }
+        ' \
+    | jq -sr '([
+                "CLUSTER_ID",
+                "ID",
+                "NAME",
+                "CLUSTER_NAME",
+                "OWNER",
+                "TENANT_KIND",
+                "TENANT_ID",
+                "STATUS"
+            ] | (., map(length*"-"))),
+            (.[]? | [
+                .cluster_id,
+                .id,
+                .name,
+                .cluster_name,
+                .owner,
+                .tenant.kind,
+                .tenant.id,
+                .status.state
+            ])
+            | @tsv' \
+    | column -t -s $'\t'

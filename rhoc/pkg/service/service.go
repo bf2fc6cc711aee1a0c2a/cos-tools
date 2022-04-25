@@ -1,36 +1,82 @@
 package service
 
 import (
-	"context"
+	"encoding/json"
+	"net/http"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/public"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/auth"
-	"github.com/spf13/viper"
+	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
+
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/redhat-developer/app-services-cli/pkg/shared/connection"
+	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
+
 	"golang.org/x/oauth2"
 )
 
-func NewClient(ctx context.Context) (*public.APIClient, error) {
-	var token string
-	var err error
+type Config struct {
+	F *factory.Factory
+}
 
-	token = viper.GetString("api-token")
-	if token == "" {
-		token, err = auth.Token()
-		if err != nil {
-			return nil, err
-		}
+type AdminAPI interface {
+	Clusters() *admin.ConnectorClustersAdminApiService
+	Namespaces() *admin.ConnectorNamespacesAdminApiService
+}
+
+type defaultAdminAPI struct {
+	c *admin.APIClient
+}
+
+func (api *defaultAdminAPI) Clusters() *admin.ConnectorClustersAdminApiService {
+	return api.c.ConnectorClustersAdminApi
+}
+
+func (api *defaultAdminAPI) Namespaces() *admin.ConnectorNamespacesAdminApiService {
+	return api.c.ConnectorNamespacesAdminApi
+}
+
+func API(config *Config) (api.API, error) {
+	conn, err := config.F.Connection(connection.DefaultConfigRequireMasAuth)
+	if err != nil {
+		return nil, err
+	}
+
+	return conn.API(), nil
+}
+
+func NewAdminClient(config *Config) (AdminAPI, error) {
+	a, err := API(config)
+	if err != nil {
+		return nil, err
 	}
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{
-			AccessToken: token,
+			AccessToken: a.GetConfig().MasAccessToken,
 		},
 	)
 
-	client := public.NewAPIClient(&public.Configuration{
-		BasePath:   viper.GetString("api-url"),
-		HTTPClient: oauth2.NewClient(ctx, ts),
-	})
+	c := admin.NewConfiguration()
+	c.Scheme = a.GetConfig().ApiURL.Scheme
+	c.Host = a.GetConfig().ApiURL.Host
+	c.UserAgent = a.GetConfig().UserAgent
+	c.Debug = config.F.Logger.DebugEnabled()
+	c.HTTPClient = &http.Client{
+		Transport: &oauth2.Transport{
+			Base:   a.GetConfig().HTTPClient.Transport,
+			Source: oauth2.ReuseTokenSource(nil, ts),
+		},
+	}
 
-	return client, nil
+	adminAPI := defaultAdminAPI{
+		c: admin.NewAPIClient(c),
+	}
+
+	return &adminAPI, nil
+}
+
+func ReadError(response *http.Response) (admin.Error, error) {
+	serviceError := admin.Error{}
+	err := json.NewDecoder(response.Body).Decode(&serviceError)
+
+	return serviceError, err
 }

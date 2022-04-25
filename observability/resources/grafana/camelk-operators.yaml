@@ -88,9 +88,9 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(increase(camel_k_reconciliation_duration_seconds_bucket{le=\"5\"}[60m])) by (kind)",
+              "expr": "rate(camel_k_reconciliation_duration_seconds_count[5m])",
               "interval": "",
-              "legendFormat": "{{kind}}",
+              "legendFormat": "{{kind}}-{{result}}",
               "refId": "A"
             }
           ],
@@ -123,6 +123,101 @@ spec:
             },
             {
               "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 34,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(camel_k_integration_first_readiness_seconds_bucket{le=\"60\"}[5m]))",
+              "interval": "",
+              "legendFormat": "{{job}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Integration time to readiness",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1239,7 +1334,7 @@ spec:
           }
         }
       ],
-      "refresh": "5s",
+      "refresh": "30s",
       "schemaVersion": 26,
       "style": "dark",
       "tags": [
@@ -1283,5 +1378,5 @@ spec:
       "timezone": "",
       "title": "CamelK Operator",
       "uid": "CgCw8jKZz",
-      "version": 5
+      "version": 7
     }

@@ -35,4 +35,4 @@ spec:
           annotations:
             summary: 'The strimzi operator failed to reconcile resources for a longer period of time'
             description: 'The strimzi operator failed to reconcile resources in the {{ $labels.namespace }} namespace for longer than 10 minutes'
-            sop_url: 'https://TODO'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tree/main/observability/sops/alerts/strimzi_operator_reconciliations_failed.asciidoc'

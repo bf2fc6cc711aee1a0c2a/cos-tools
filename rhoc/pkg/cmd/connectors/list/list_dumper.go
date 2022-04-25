@@ -70,5 +70,5 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 		return s, c
 	})
 
-	t.Dump(items.Items, f.IOStreams.Out)
+	t.Dump(f.IOStreams.Out, items.Items)
 }

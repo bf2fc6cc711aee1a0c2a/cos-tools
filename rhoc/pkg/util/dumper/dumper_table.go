@@ -5,7 +5,6 @@ import (
 
 	"github.com/gobeam/stringy"
 	"github.com/olekukonko/tablewriter"
-	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 )
 
 type entry[K any] struct {
@@ -39,7 +38,7 @@ func (t *Table[K]) Rich(name string, getter func(in *K) (string, tablewriter.Col
 	t.entries = append(t.entries, entry)
 }
 
-func (t *Table[K]) Dump(items []K, out io.Writer) {
+func (t *Table[K]) Dump(out io.Writer, items []K) {
 	if len(items) == 0 {
 		return
 	}
@@ -74,12 +73,4 @@ func (t *Table[K]) Dump(items []K, out io.Writer) {
 	}
 
 	table.Render()
-}
-
-type Formatted[K any] struct {
-	format string
-}
-
-func (f *Formatted[K]) Dump(data K, out io.Writer) error {
-	return dump.Formatted(out, f.format, data)
 }

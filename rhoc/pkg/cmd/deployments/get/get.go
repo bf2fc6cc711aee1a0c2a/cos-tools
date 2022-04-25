@@ -1,24 +1,27 @@
-package describe
+package get
 
 import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
+	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
 )
 
 const (
-	CommandName = "describe"
+	CommandName = "get"
 )
 
 type options struct {
 	id           string
+	clusterID    string
 	outputFormat string
 
 	f *factory.Factory
 }
 
-func NewDescribeCommand(f *factory.Factory) *cobra.Command {
+func NewGetCommand(f *factory.Factory) *cobra.Command {
 	opts := options{
 		f: f,
 	}
@@ -40,19 +43,28 @@ func NewDescribeCommand(f *factory.Factory) *cobra.Command {
 
 	cmdutil.AddOutput(cmd, &opts.outputFormat)
 	cmdutil.AddID(cmd, &opts.id).Required()
+	cmdutil.AddClusterID(cmd, &opts.clusterID).Required()
 
 	return cmd
 }
 
 func run(opts *options) error {
-	_, err := service.NewAdminClient(&service.Config{
+	c, err := service.NewAdminClient(&service.Config{
 		F: opts.f,
 	})
 	if err != nil {
 		return err
 	}
 
-	// TODO
+	result, httpRes, err := c.Clusters().GetConnectorDeployment(opts.f.Context, opts.clusterID, opts.id).Execute()
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return response.Error(err, httpRes)
+	}
 
-	return nil
+	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, result)
 }

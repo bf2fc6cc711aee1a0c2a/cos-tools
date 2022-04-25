@@ -3,15 +3,12 @@ package describe
 import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
-	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
 )
 
 const (
-	CommandName  = "describe"
-	CommandAlias = "get"
+	CommandName = "describe"
 )
 
 type options struct {
@@ -27,9 +24,8 @@ func NewDescribeCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:     CommandName,
-		Aliases: []string{CommandAlias},
-		Args:    cobra.NoArgs,
+		Use:  CommandName,
+		Args: cobra.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.ValidateOutputs(cmd); err != nil {
 				return err
@@ -49,22 +45,14 @@ func NewDescribeCommand(f *factory.Factory) *cobra.Command {
 }
 
 func run(opts *options) error {
-	c, err := service.NewAdminClient(&service.Config{
+	_, err := service.NewAdminClient(&service.Config{
 		F: opts.f,
 	})
 	if err != nil {
 		return err
 	}
 
-	result, httpRes, err := c.Clusters().GetConnector(opts.f.Context, opts.id).Execute()
-	if httpRes != nil {
-		defer func() {
-			_ = httpRes.Body.Close()
-		}()
-	}
-	if err != nil {
-		return response.Error(err, httpRes)
-	}
+	// TODO
 
-	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, result)
+	return nil
 }

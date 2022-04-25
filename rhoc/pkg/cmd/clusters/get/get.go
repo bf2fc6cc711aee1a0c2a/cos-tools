@@ -1,4 +1,4 @@
-package describe
+package get
 
 import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	CommandName = "describe"
+	CommandName = "get"
 )
 
 type options struct {
@@ -18,7 +18,7 @@ type options struct {
 	f *factory.Factory
 }
 
-func NewDescribeCommand(f *factory.Factory) *cobra.Command {
+func NewGetCommand(f *factory.Factory) *cobra.Command {
 	opts := options{
 		f: f,
 	}

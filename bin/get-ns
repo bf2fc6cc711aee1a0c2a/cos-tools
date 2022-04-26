@@ -9,6 +9,7 @@ kubectl get ns -l "app.kubernetes.io/component=cos-namespace" -o json \
                 "NAME",
                 "TENANT_KIND",
                 "TENANT_ID",
+                "STATE",
                 "EXPIRATION"]
             | (., map(length*"-"))),
             (.items[]? | [
@@ -16,8 +17,9 @@ kubectl get ns -l "app.kubernetes.io/component=cos-namespace" -o json \
                 .metadata.labels."cos.bf2.org/cluster.id",
                 .metadata.labels."cos.bf2.org/namespace.id",
                 .metadata.labels."app.kubernetes.io/name",
-                .metadata.annotations."cos.bf2.org/namespace.tenant.kind",
-                .metadata.annotations."cos.bf2.org/namespace.tenant.id",
+                .metadata.labels."cos.bf2.org/namespace.tenant.kind",
+                .metadata.labels."cos.bf2.org/namespace.tenant.id",
+                .metadata.annotations."cos.bf2.org/namespace.state",
                 .metadata.annotations."cos.bf2.org/namespace.expiration"
             ])
             | @tsv

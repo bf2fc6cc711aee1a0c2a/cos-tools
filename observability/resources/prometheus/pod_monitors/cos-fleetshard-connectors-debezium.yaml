@@ -11,5 +11,5 @@ spec:
   namespaceSelector:
     any: true
   podMetricsEndpoints:
-    - path: /q/metrics
-      port: 8080
+    - path: /metrics
+      port: tcp-prometheus

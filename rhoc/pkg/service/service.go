@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
@@ -20,18 +21,12 @@ type Config struct {
 type AdminAPI interface {
 	Clusters() *admin.ConnectorClustersAdminApiService
 	Namespaces() *admin.ConnectorNamespacesAdminApiService
-}
 
-type defaultAdminAPI struct {
-	c *admin.APIClient
-}
-
-func (api *defaultAdminAPI) Clusters() *admin.ConnectorClustersAdminApiService {
-	return api.c.ConnectorClustersAdminApi
-}
-
-func (api *defaultAdminAPI) Namespaces() *admin.ConnectorNamespacesAdminApiService {
-	return api.c.ConnectorNamespacesAdminApi
+	GET(path string) (interface{}, *http.Response, error)
+	DELETE(path string) (interface{}, *http.Response, error)
+	POST(path string, body io.Reader) (interface{}, *http.Response, error)
+	PUT(path string, body io.Reader) (interface{}, *http.Response, error)
+	PATCH(path string, body io.Reader) (interface{}, *http.Response, error)
 }
 
 func API(config *Config) (api.API, error) {
@@ -68,7 +63,10 @@ func NewAdminClient(config *Config) (AdminAPI, error) {
 	}
 
 	adminAPI := defaultAdminAPI{
-		c: admin.NewAPIClient(c),
+		f:     config.F,
+		a:     a,
+		c:     c,
+		admin: admin.NewAPIClient(c),
 	}
 
 	return &adminAPI, nil

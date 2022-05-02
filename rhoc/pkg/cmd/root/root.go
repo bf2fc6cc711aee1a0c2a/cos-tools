@@ -12,6 +12,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/namespaces"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/request"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/completion"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/login"
@@ -47,6 +48,7 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 		logout.NewLogoutCommand(f),
 		whoami.NewWhoAmICmd(f),
 		completion.NewCompletionCommand(f),
+		request.NewRequestCommand(f),
 		config.NewConfigCommand(f),
 		namespaces.NewNamespacesCommand(f),
 		connectors.NewConnectorsCommand(f),

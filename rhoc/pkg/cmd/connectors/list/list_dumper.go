@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
+	"k8s.io/apimachinery/pkg/util/duration"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/olekukonko/tablewriter"
@@ -47,6 +48,17 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 
 		t.Field("ResourceVersion", func(in *admin.ConnectorAdminView) string {
 			return strconv.FormatInt(in.ResourceVersion, 10)
+		})
+	}
+
+	if !wide {
+		t.Field("Age", func(in *admin.ConnectorAdminView) string {
+			age := duration.HumanDuration(time.Since(in.CreatedAt))
+			if in.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
 		})
 	}
 

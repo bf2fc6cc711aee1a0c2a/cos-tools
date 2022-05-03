@@ -13,6 +13,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.8.1
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a
+	k8s.io/apimachinery v0.22.4
 )
 
 require (

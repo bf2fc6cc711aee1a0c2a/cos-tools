@@ -7,6 +7,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
+	"k8s.io/apimachinery/pkg/util/duration"
 )
 
 func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool) {
@@ -33,6 +34,17 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool
 
 		t.Field("ModifiedAt", func(in *admin.ConnectorCluster) string {
 			return in.ModifiedAt.Format(time.RFC3339)
+		})
+	}
+
+	if !wide {
+		t.Field("Age", func(in *admin.ConnectorCluster) string {
+			age := duration.HumanDuration(time.Since(in.CreatedAt))
+			if in.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
 		})
 	}
 

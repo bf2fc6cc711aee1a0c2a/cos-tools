@@ -7,6 +7,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/request"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -19,13 +20,10 @@ const (
 )
 
 type options struct {
+	request.ListOptions
+
 	outputFormat string
-	page         int
-	limit        int
-	all          bool
 	clusterID    string
-	orderBy      string
-	search       string
 
 	f *factory.Factory
 }
@@ -52,11 +50,11 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	cmdutil.AddOutput(cmd, &opts.outputFormat)
-	cmdutil.AddPage(cmd, &opts.page)
-	cmdutil.AddLimit(cmd, &opts.limit)
-	cmdutil.AddAllPages(cmd, &opts.all)
-	cmdutil.AddOrderBy(cmd, &opts.orderBy)
-	cmdutil.AddSearch(cmd, &opts.search)
+	cmdutil.AddPage(cmd, &opts.Page)
+	cmdutil.AddLimit(cmd, &opts.Limit)
+	cmdutil.AddAllPages(cmd, &opts.AllPages)
+	cmdutil.AddOrderBy(cmd, &opts.OrderBy)
+	cmdutil.AddSearch(cmd, &opts.Search)
 	cmdutil.AddClusterID(cmd, &opts.clusterID)
 
 	return cmd
@@ -77,8 +75,7 @@ func run(opts *options) error {
 		Size:  0,
 	}
 
-	for i := opts.page; i == opts.page || opts.all; i++ {
-
+	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
 		var result *admin.ConnectorNamespaceList
 		var err error
 		var httpRes *http.Response
@@ -86,26 +83,26 @@ func run(opts *options) error {
 		if opts.clusterID != "" {
 			e := c.Clusters().GetClusterNamespaces(opts.f.Context, opts.clusterID)
 			e = e.Page(strconv.Itoa(i))
-			e = e.Size(strconv.Itoa(opts.limit))
+			e = e.Size(strconv.Itoa(opts.Limit))
 
-			if opts.orderBy != "" {
-				e = e.OrderBy(opts.orderBy)
+			if opts.OrderBy != "" {
+				e = e.OrderBy(opts.OrderBy)
 			}
-			if opts.search != "" {
-				e = e.Search(opts.search)
+			if opts.Search != "" {
+				e = e.Search(opts.Search)
 			}
 
 			result, httpRes, err = e.Execute()
 		} else {
 			e := c.Namespaces().GetConnectorNamespaces(opts.f.Context)
 			e = e.Page(strconv.Itoa(i))
-			e = e.Size(strconv.Itoa(opts.limit))
+			e = e.Size(strconv.Itoa(opts.Limit))
 
-			if opts.orderBy != "" {
-				e = e.OrderBy(opts.orderBy)
+			if opts.OrderBy != "" {
+				e = e.OrderBy(opts.OrderBy)
 			}
-			if opts.search != "" {
-				e = e.Search(opts.search)
+			if opts.Search != "" {
+				e = e.Search(opts.Search)
 			}
 
 			result, httpRes, err = e.Execute()

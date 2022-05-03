@@ -1,7 +1,6 @@
 package service
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
 
@@ -70,11 +69,4 @@ func NewAdminClient(config *Config) (AdminAPI, error) {
 	}
 
 	return &adminAPI, nil
-}
-
-func ReadError(response *http.Response) (admin.Error, error) {
-	serviceError := admin.Error{}
-	err := json.NewDecoder(response.Body).Decode(&serviceError)
-
-	return serviceError, err
 }

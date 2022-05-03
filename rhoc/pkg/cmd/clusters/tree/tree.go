@@ -9,6 +9,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/request"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -26,12 +27,8 @@ const (
 )
 
 type options struct {
-	page    int
-	limit   int
-	all     bool
-	id      string
-	orderBy string
-	search  string
+	request.ListOptions
+	id string
 
 	f *factory.Factory
 }
@@ -52,11 +49,11 @@ func NewTreeCommand(f *factory.Factory) *cobra.Command {
 		},
 	}
 
-	cmdutil.AddPage(cmd, &opts.page)
-	cmdutil.AddLimit(cmd, &opts.limit)
-	cmdutil.AddAllPages(cmd, &opts.all)
-	cmdutil.AddOrderBy(cmd, &opts.orderBy)
-	cmdutil.AddSearch(cmd, &opts.search)
+	cmdutil.AddPage(cmd, &opts.Page)
+	cmdutil.AddLimit(cmd, &opts.Limit)
+	cmdutil.AddAllPages(cmd, &opts.AllPages)
+	cmdutil.AddOrderBy(cmd, &opts.OrderBy)
+	cmdutil.AddSearch(cmd, &opts.Search)
 	cmdutil.AddID(cmd, &opts.id)
 
 	return cmd
@@ -76,7 +73,7 @@ func run(opts *options) error {
 	}
 
 	table := tablewriter.NewWriter(opts.f.IOStreams.Out)
-	table.SetHeader([]string{"ID", "STATUS", "REASON", "AGE"})
+	table.SetHeader([]string{"ID", "OWNER", "STATUS", "REASON", "AGE"})
 	table.SetBorder(false)
 	table.SetAutoFormatHeaders(false)
 	table.SetRowLine(false)
@@ -85,7 +82,7 @@ func run(opts *options) error {
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 
-	table.Append([]string{opts.id, "", ""})
+	table.Append([]string{opts.id, "", "", ""})
 
 	for i, ns := range namespaces {
 		age := duration.HumanDuration(time.Since(ns.CreatedAt))
@@ -96,6 +93,7 @@ func run(opts *options) error {
 		if i == len(namespaces)-1 {
 			table.Append([]string{
 				fmt.Sprintf("%s%s (%d)", lastElemPrefix, ns.Id, ns.Status.ConnectorsDeployed),
+				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,
 				age,
@@ -103,6 +101,7 @@ func run(opts *options) error {
 		} else {
 			table.Append([]string{
 				fmt.Sprintf("%s%s (%d)", firstElemPrefix, ns.Id, ns.Status.ConnectorsDeployed),
+				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,
 				age,
@@ -116,7 +115,7 @@ func run(opts *options) error {
 
 		for i, ct := range connectors {
 			data := []string{}
-			style := []tablewriter.Colors{{}, {}, {}}
+			style := []tablewriter.Colors{{}, {}, {}, {}}
 
 			age := duration.HumanDuration(time.Since(ct.CreatedAt))
 			if ct.CreatedAt.IsZero() {
@@ -126,6 +125,7 @@ func run(opts *options) error {
 			if i == len(connectors)-1 {
 				data = []string{
 					fmt.Sprintf("%s%s%s%s", pipe, indent, lastElemPrefix, ct.Id),
+					ct.Owner,
 					string(ct.Status.State),
 					ns.Status.Error,
 					age,
@@ -133,6 +133,7 @@ func run(opts *options) error {
 			} else {
 				data = []string{
 					fmt.Sprintf("%s%s%s%s", pipe, indent, firstElemPrefix, ct.Id),
+					ct.Owner,
 					string(ct.Status.State),
 					ns.Status.Error,
 					age,
@@ -141,11 +142,11 @@ func run(opts *options) error {
 
 			switch string(ct.Status.State) {
 			case "ready":
-				style[1] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+				style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
 			case "failed":
-				style[1] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+				style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
 			case "stopped":
-				style[1] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+				style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
 			}
 
 			table.Rich(data, style)
@@ -160,20 +161,20 @@ func run(opts *options) error {
 func listNamespaces(c service.AdminAPI, opts *options, clusterId string) ([]admin.ConnectorNamespace, error) {
 	items := make([]admin.ConnectorNamespace, 0)
 
-	for i := opts.page; i == opts.page || opts.all; i++ {
+	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
 		var result *admin.ConnectorNamespaceList
 		var err error
 		var httpRes *http.Response
 
 		e := c.Clusters().GetClusterNamespaces(opts.f.Context, clusterId)
 		e = e.Page(strconv.Itoa(i))
-		e = e.Size(strconv.Itoa(opts.limit))
+		e = e.Size(strconv.Itoa(opts.Limit))
 
-		if opts.orderBy != "" {
-			e = e.OrderBy(opts.orderBy)
+		if opts.OrderBy != "" {
+			e = e.OrderBy(opts.OrderBy)
 		}
-		if opts.search != "" {
-			e = e.Search(opts.search)
+		if opts.Search != "" {
+			e = e.Search(opts.Search)
 		}
 
 		result, httpRes, err = e.Execute()
@@ -199,20 +200,20 @@ func listNamespaces(c service.AdminAPI, opts *options, clusterId string) ([]admi
 func listConnectors(c service.AdminAPI, opts *options, namespaceId string) ([]admin.ConnectorAdminView, error) {
 	items := make([]admin.ConnectorAdminView, 0)
 
-	for i := opts.page; i == opts.page || opts.all; i++ {
+	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
 		var result *admin.ConnectorAdminViewList
 		var err error
 		var httpRes *http.Response
 
 		e := c.Clusters().GetNamespaceConnectors(opts.f.Context, namespaceId)
 		e = e.Page(strconv.Itoa(i))
-		e = e.Size(strconv.Itoa(opts.limit))
+		e = e.Size(strconv.Itoa(opts.Limit))
 
-		if opts.orderBy != "" {
-			e = e.OrderBy(opts.orderBy)
+		if opts.OrderBy != "" {
+			e = e.OrderBy(opts.OrderBy)
 		}
-		if opts.search != "" {
-			e = e.Search(opts.search)
+		if opts.Search != "" {
+			e = e.Search(opts.Search)
 		}
 
 		result, httpRes, err = e.Execute()

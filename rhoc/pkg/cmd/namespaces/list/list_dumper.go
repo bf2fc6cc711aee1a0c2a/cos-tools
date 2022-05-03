@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
+	"k8s.io/apimachinery/pkg/util/duration"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/olekukonko/tablewriter"
@@ -49,6 +50,17 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 
 		t.Field("ModifiedAt", func(in *admin.ConnectorNamespace) string {
 			return in.ModifiedAt.Format(time.RFC3339)
+		})
+	}
+
+	if !wide {
+		t.Field("Age", func(in *admin.ConnectorNamespace) string {
+			age := duration.HumanDuration(time.Since(in.CreatedAt))
+			if in.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
 		})
 	}
 

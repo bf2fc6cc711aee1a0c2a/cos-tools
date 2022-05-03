@@ -8,6 +8,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
+	"k8s.io/apimachinery/pkg/util/duration"
 )
 
 func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewList, wide bool) {
@@ -43,6 +44,17 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 
 		t.Field("ConnectorResourceVersion", func(in *admin.ConnectorDeploymentAdminView) string {
 			return strconv.FormatInt(in.Spec.ConnectorResourceVersion, 10)
+		})
+	}
+
+	if !wide {
+		t.Field("Age", func(in *admin.ConnectorDeploymentAdminView) string {
+			age := duration.HumanDuration(time.Since(in.Metadata.CreatedAt))
+			if in.Metadata.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
 		})
 	}
 

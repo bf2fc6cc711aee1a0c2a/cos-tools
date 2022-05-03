@@ -13,6 +13,6 @@ package admin
 // ConnectorDeploymentAdminViewAllOf struct for ConnectorDeploymentAdminViewAllOf
 type ConnectorDeploymentAdminViewAllOf struct {
 	Metadata ConnectorDeploymentAdminViewAllOfMetadata `json:"metadata,omitempty"`
-	Spec     ConnectorDeploymentSpec                   `json:"spec,omitempty"`
+	Spec     ConnectorDeploymentAdminSpec              `json:"spec,omitempty"`
 	Status   ConnectorDeploymentStatus                 `json:"status,omitempty"`
 }

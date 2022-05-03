@@ -160,7 +160,7 @@ func AddLimit(cmd *cobra.Command, output *int) *FlagOptions {
 }
 
 func AddAllPages(cmd *cobra.Command, output *bool) *FlagOptions {
-	name := "all"
+	name := "all-pages"
 
 	cmd.Flags().BoolVar(
 		output,

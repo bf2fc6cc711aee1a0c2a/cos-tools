@@ -1,6 +1,7 @@
 package list
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
@@ -31,9 +32,11 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 		return in.Owner
 	})
 
-	t.Field("TenantKind", func(in *admin.ConnectorNamespace) string {
-		return string(in.Tenant.Kind)
-	})
+	if wide {
+		t.Field("TenantKind", func(in *admin.ConnectorNamespace) string {
+			return string(in.Tenant.Kind)
+		})
+	}
 
 	t.Field("TenantID", func(in *admin.ConnectorNamespace) string {
 		return in.Tenant.Id
@@ -60,23 +63,35 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
 		}
 
-		return s, c
-	})
-
-	t.Rich("Expiration", func(in *admin.ConnectorNamespace) (string, tablewriter.Colors) {
-		s := in.Expiration
-		c := tablewriter.Colors{}
-
-		if s != "" {
-
-			t, err := time.Parse(time.RFC3339, s)
+		if wide && in.Expiration != "" {
+			t, err := time.Parse(time.RFC3339, in.Expiration)
 			if err == nil && time.Now().After(t) {
-				c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
+				s = s + " (*)"
 			}
 		}
 
 		return s, c
 	})
+
+	t.Field("Connectors", func(in *admin.ConnectorNamespace) string {
+		return fmt.Sprint(in.Status.ConnectorsDeployed)
+	})
+
+	if wide {
+		t.Rich("Expiration", func(in *admin.ConnectorNamespace) (string, tablewriter.Colors) {
+			s := in.Expiration
+			c := tablewriter.Colors{}
+
+			if s != "" {
+				t, err := time.Parse(time.RFC3339, s)
+				if err == nil && time.Now().After(t) {
+					c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
+				}
+			}
+
+			return s, c
+		})
+	}
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

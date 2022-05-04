@@ -1,7 +1,6 @@
 package service
 
 import (
-	"io"
 	"net/http"
 
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
@@ -17,17 +16,6 @@ type Config struct {
 	F *factory.Factory
 }
 
-type AdminAPI interface {
-	Clusters() *admin.ConnectorClustersAdminApiService
-	Namespaces() *admin.ConnectorNamespacesAdminApiService
-
-	GET(path string) (interface{}, *http.Response, error)
-	DELETE(path string) (interface{}, *http.Response, error)
-	POST(path string, body io.Reader) (interface{}, *http.Response, error)
-	PUT(path string, body io.Reader) (interface{}, *http.Response, error)
-	PATCH(path string, body io.Reader) (interface{}, *http.Response, error)
-}
-
 func API(config *Config) (api.API, error) {
 	conn, err := config.F.Connection(connection.DefaultConfigRequireMasAuth)
 	if err != nil {
@@ -37,7 +25,7 @@ func API(config *Config) (api.API, error) {
 	return conn.API(), nil
 }
 
-func NewAdminClient(config *Config) (AdminAPI, error) {
+func NewAdminClient(config *Config) (*AdminAPI, error) {
 	a, err := API(config)
 	if err != nil {
 		return nil, err
@@ -61,7 +49,7 @@ func NewAdminClient(config *Config) (AdminAPI, error) {
 		},
 	}
 
-	adminAPI := defaultAdminAPI{
+	adminAPI := AdminAPI{
 		f:     config.F,
 		a:     a,
 		c:     c,

@@ -31,12 +31,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 	})
 
 	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
-			return in.Metadata.CreatedAt.Format(time.RFC3339)
-		})
-		t.Field("UpdatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
-			return in.Metadata.UpdatedAt.Format(time.RFC3339)
-		})
 
 		t.Field("ResourceVersion", func(in *admin.ConnectorDeploymentAdminView) string {
 			return strconv.FormatInt(in.Metadata.ResourceVersion, 10)
@@ -44,17 +38,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 
 		t.Field("ConnectorResourceVersion", func(in *admin.ConnectorDeploymentAdminView) string {
 			return strconv.FormatInt(in.Spec.ConnectorResourceVersion, 10)
-		})
-	}
-
-	if !wide {
-		t.Field("Age", func(in *admin.ConnectorDeploymentAdminView) string {
-			age := duration.HumanDuration(time.Since(in.Metadata.CreatedAt))
-			if in.Metadata.CreatedAt.IsZero() {
-				age = ""
-			}
-
-			return age
 		})
 	}
 
@@ -77,6 +60,24 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 
 		return s, c
 	})
+
+	if wide {
+		t.Field("CreatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
+			return in.Metadata.CreatedAt.Format(time.RFC3339)
+		})
+		t.Field("UpdatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
+			return in.Metadata.UpdatedAt.Format(time.RFC3339)
+		})
+	} else {
+		t.Field("Age", func(in *admin.ConnectorDeploymentAdminView) string {
+			age := duration.HumanDuration(time.Since(in.Metadata.CreatedAt))
+			if in.Metadata.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
+		})
+	}
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

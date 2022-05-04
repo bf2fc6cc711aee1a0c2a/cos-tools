@@ -27,27 +27,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool
 		return in.Owner
 	})
 
-	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorCluster) string {
-			return in.CreatedAt.Format(time.RFC3339)
-		})
-
-		t.Field("ModifiedAt", func(in *admin.ConnectorCluster) string {
-			return in.ModifiedAt.Format(time.RFC3339)
-		})
-	}
-
-	if !wide {
-		t.Field("Age", func(in *admin.ConnectorCluster) string {
-			age := duration.HumanDuration(time.Since(in.CreatedAt))
-			if in.CreatedAt.IsZero() {
-				age = ""
-			}
-
-			return age
-		})
-	}
-
 	t.Rich("State", func(in *admin.ConnectorCluster) (string, tablewriter.Colors) {
 		s := string(in.Status.State)
 		c := tablewriter.Colors{}
@@ -61,6 +40,25 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool
 
 		return s, c
 	})
+
+	if wide {
+		t.Field("CreatedAt", func(in *admin.ConnectorCluster) string {
+			return in.CreatedAt.Format(time.RFC3339)
+		})
+
+		t.Field("ModifiedAt", func(in *admin.ConnectorCluster) string {
+			return in.ModifiedAt.Format(time.RFC3339)
+		})
+	} else {
+		t.Field("Age", func(in *admin.ConnectorCluster) string {
+			age := duration.HumanDuration(time.Since(in.CreatedAt))
+			if in.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
+		})
+	}
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

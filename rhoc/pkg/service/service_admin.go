@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -13,42 +14,46 @@ import (
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 )
 
-type defaultAdminAPI struct {
+type AdminAPI struct {
 	f     *factory.Factory
 	a     api.API
 	c     *admin.Configuration
 	admin *admin.APIClient
 }
 
-func (api *defaultAdminAPI) Clusters() *admin.ConnectorClustersAdminApiService {
+func (api *AdminAPI) Context() context.Context {
+	return api.f.Context
+}
+
+func (api *AdminAPI) Clusters() *admin.ConnectorClustersAdminApiService {
 	return api.admin.ConnectorClustersAdminApi
 }
 
-func (api *defaultAdminAPI) Namespaces() *admin.ConnectorNamespacesAdminApiService {
+func (api *AdminAPI) Namespaces() *admin.ConnectorNamespacesAdminApiService {
 	return api.admin.ConnectorNamespacesAdminApi
 }
 
-func (api *defaultAdminAPI) GET(relativePath string) (interface{}, *http.Response, error) {
+func (api *AdminAPI) GET(relativePath string) (interface{}, *http.Response, error) {
 	return api.do(relativePath, http.MethodGet, "", nil)
 }
 
-func (api *defaultAdminAPI) DELETE(relativePath string) (interface{}, *http.Response, error) {
+func (api *AdminAPI) DELETE(relativePath string) (interface{}, *http.Response, error) {
 	return api.do(relativePath, http.MethodDelete, "", nil)
 }
 
-func (api *defaultAdminAPI) POST(relativePath string, body io.Reader) (interface{}, *http.Response, error) {
+func (api *AdminAPI) POST(relativePath string, body io.Reader) (interface{}, *http.Response, error) {
 	return api.do(relativePath, http.MethodPost, "application/json", body)
 }
 
-func (api *defaultAdminAPI) PUT(relativePath string, body io.Reader) (interface{}, *http.Response, error) {
+func (api *AdminAPI) PUT(relativePath string, body io.Reader) (interface{}, *http.Response, error) {
 	return api.do(relativePath, http.MethodPut, "application/json", body)
 }
 
-func (api *defaultAdminAPI) PATCH(relativePath string, body io.Reader) (interface{}, *http.Response, error) {
+func (api *AdminAPI) PATCH(relativePath string, body io.Reader) (interface{}, *http.Response, error) {
 	return api.do(relativePath, http.MethodPatch, "application/merge-patch+json", body)
 }
 
-func (api *defaultAdminAPI) do(relativePath string, method, contentType string, body io.Reader) (interface{}, *http.Response, error) {
+func (api *AdminAPI) do(relativePath string, method, contentType string, body io.Reader) (interface{}, *http.Response, error) {
 	if !strings.HasPrefix(relativePath, "/api/connector_mgmt/v1/admin/") {
 		relativePath = path.Join("/api/connector_mgmt/v1/admin/", relativePath)
 	}

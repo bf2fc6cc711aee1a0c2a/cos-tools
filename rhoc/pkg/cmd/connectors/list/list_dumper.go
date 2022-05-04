@@ -38,27 +38,8 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 	})
 
 	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorAdminView) string {
-			return in.CreatedAt.Format(time.RFC3339)
-		})
-
-		t.Field("ModifiedAt", func(in *admin.ConnectorAdminView) string {
-			return in.ModifiedAt.Format(time.RFC3339)
-		})
-
 		t.Field("ResourceVersion", func(in *admin.ConnectorAdminView) string {
 			return strconv.FormatInt(in.ResourceVersion, 10)
-		})
-	}
-
-	if !wide {
-		t.Field("Age", func(in *admin.ConnectorAdminView) string {
-			age := duration.HumanDuration(time.Since(in.CreatedAt))
-			if in.CreatedAt.IsZero() {
-				age = ""
-			}
-
-			return age
 		})
 	}
 
@@ -81,6 +62,25 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 
 		return s, c
 	})
+
+	if wide {
+		t.Field("CreatedAt", func(in *admin.ConnectorAdminView) string {
+			return in.CreatedAt.Format(time.RFC3339)
+		})
+
+		t.Field("ModifiedAt", func(in *admin.ConnectorAdminView) string {
+			return in.ModifiedAt.Format(time.RFC3339)
+		})
+	} else {
+		t.Field("Age", func(in *admin.ConnectorAdminView) string {
+			age := duration.HumanDuration(time.Since(in.CreatedAt))
+			if in.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
+		})
+	}
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

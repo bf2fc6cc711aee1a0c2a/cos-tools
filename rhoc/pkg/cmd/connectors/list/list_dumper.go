@@ -38,7 +38,7 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 	})
 
 	if wide {
-		t.Field("ResourceVersion", func(in *admin.ConnectorAdminView) string {
+		t.Field("Version", func(in *admin.ConnectorAdminView) string {
 			return strconv.FormatInt(in.ResourceVersion, 10)
 		})
 	}

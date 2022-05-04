@@ -32,11 +32,11 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 
 	if wide {
 
-		t.Field("ResourceVersion", func(in *admin.ConnectorDeploymentAdminView) string {
+		t.Field("Version", func(in *admin.ConnectorDeploymentAdminView) string {
 			return strconv.FormatInt(in.Metadata.ResourceVersion, 10)
 		})
 
-		t.Field("ConnectorResourceVersion", func(in *admin.ConnectorDeploymentAdminView) string {
+		t.Field("ConnectorVersion", func(in *admin.ConnectorDeploymentAdminView) string {
 			return strconv.FormatInt(in.Spec.ConnectorResourceVersion, 10)
 		})
 	}

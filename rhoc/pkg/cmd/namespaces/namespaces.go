@@ -14,8 +14,6 @@ func NewNamespacesCommand(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "namespaces",
 		Aliases: []string{"ns"},
-		Short:   "namespaces",
-		Long:    "namespaces",
 		Args:    cobra.MinimumNArgs(1),
 	}
 

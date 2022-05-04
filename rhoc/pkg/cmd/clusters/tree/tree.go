@@ -92,7 +92,7 @@ func run(opts *options) error {
 
 		if i == len(namespaces.Items)-1 {
 			table.Append([]string{
-				fmt.Sprintf("%s%s (%d)", lastElemPrefix, ns.Id, ns.Status.ConnectorsDeployed),
+				fmt.Sprintf("%s%s", lastElemPrefix, ns.Id),
 				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,
@@ -100,7 +100,7 @@ func run(opts *options) error {
 			})
 		} else {
 			table.Append([]string{
-				fmt.Sprintf("%s%s (%d)", firstElemPrefix, ns.Id, ns.Status.ConnectorsDeployed),
+				fmt.Sprintf("%s%s", firstElemPrefix, ns.Id),
 				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,

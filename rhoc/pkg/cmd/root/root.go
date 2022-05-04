@@ -13,13 +13,15 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/namespaces"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/request"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/version"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/whoami"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/completion"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/login"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/logout"
-	"github.com/redhat-developer/app-services-cli/pkg/cmd/whoami"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -46,10 +48,11 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 		cmd,
 		login.NewLoginCmd(f),
 		logout.NewLogoutCommand(f),
-		whoami.NewWhoAmICmd(f),
+		whoami.NewWhoAmICommand(f),
 		completion.NewCompletionCommand(f),
 		request.NewRequestCommand(f),
 		config.NewConfigCommand(f),
+		version.NewVersionCommand(f),
 		namespaces.NewNamespacesCommand(f),
 		connectors.NewConnectorsCommand(f),
 		deployments.NewDeploymentsCommand(f),

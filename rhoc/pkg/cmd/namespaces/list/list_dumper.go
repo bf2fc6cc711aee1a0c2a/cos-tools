@@ -43,27 +43,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 		return in.Tenant.Id
 	})
 
-	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorNamespace) string {
-			return in.CreatedAt.Format(time.RFC3339)
-		})
-
-		t.Field("ModifiedAt", func(in *admin.ConnectorNamespace) string {
-			return in.ModifiedAt.Format(time.RFC3339)
-		})
-	}
-
-	if !wide {
-		t.Field("Age", func(in *admin.ConnectorNamespace) string {
-			age := duration.HumanDuration(time.Since(in.CreatedAt))
-			if in.CreatedAt.IsZero() {
-				age = ""
-			}
-
-			return age
-		})
-	}
-
 	t.Rich("State", func(in *admin.ConnectorNamespace) (string, tablewriter.Colors) {
 		s := string(in.Status.State)
 		c := tablewriter.Colors{}
@@ -102,6 +81,25 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 			}
 
 			return s, c
+		})
+	}
+
+	if wide {
+		t.Field("CreatedAt", func(in *admin.ConnectorNamespace) string {
+			return in.CreatedAt.Format(time.RFC3339)
+		})
+
+		t.Field("ModifiedAt", func(in *admin.ConnectorNamespace) string {
+			return in.ModifiedAt.Format(time.RFC3339)
+		})
+	} else {
+		t.Field("Age", func(in *admin.ConnectorNamespace) string {
+			age := duration.HumanDuration(time.Since(in.CreatedAt))
+			if in.CreatedAt.IsZero() {
+				age = ""
+			}
+
+			return age
 		})
 	}
 

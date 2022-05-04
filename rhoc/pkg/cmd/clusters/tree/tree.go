@@ -67,7 +67,7 @@ func run(opts *options) error {
 		return err
 	}
 
-	namespaces, err := listNamespaces(c, opts, opts.id)
+	namespaces, err := service.ListNamespacesForCluster(c, opts.ListOptions, opts.id)
 	if err != nil {
 		return err
 	}
@@ -84,13 +84,13 @@ func run(opts *options) error {
 
 	table.Append([]string{opts.id, "", "", ""})
 
-	for i, ns := range namespaces {
+	for i, ns := range namespaces.Items {
 		age := duration.HumanDuration(time.Since(ns.CreatedAt))
 		if ns.CreatedAt.IsZero() {
 			age = ""
 		}
 
-		if i == len(namespaces)-1 {
+		if i == len(namespaces.Items)-1 {
 			table.Append([]string{
 				fmt.Sprintf("%s%s (%d)", lastElemPrefix, ns.Id, ns.Status.ConnectorsDeployed),
 				ns.Owner,
@@ -108,12 +108,12 @@ func run(opts *options) error {
 			})
 		}
 
-		connectors, err := listConnectors(c, opts, ns.Id)
+		connectors, err := service.ListConnectorsForNamespace(c, opts.ListOptions, ns.Id)
 		if err != nil {
 			return err
 		}
 
-		for i, ct := range connectors {
+		for i, ct := range connectors.Items {
 			data := []string{}
 			style := []tablewriter.Colors{{}, {}, {}, {}}
 
@@ -122,7 +122,7 @@ func run(opts *options) error {
 				age = ""
 			}
 
-			if i == len(connectors)-1 {
+			if i == len(connectors.Items)-1 {
 				data = []string{
 					fmt.Sprintf("%s%s%s%s", pipe, indent, lastElemPrefix, ct.Id),
 					ct.Owner,
@@ -158,7 +158,7 @@ func run(opts *options) error {
 	return nil
 }
 
-func listNamespaces(c service.AdminAPI, opts *options, clusterId string) ([]admin.ConnectorNamespace, error) {
+func listNamespaces(c *service.AdminAPI, opts *options, clusterId string) ([]admin.ConnectorNamespace, error) {
 	items := make([]admin.ConnectorNamespace, 0)
 
 	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
@@ -197,7 +197,7 @@ func listNamespaces(c service.AdminAPI, opts *options, clusterId string) ([]admi
 	return items, nil
 }
 
-func listConnectors(c service.AdminAPI, opts *options, namespaceId string) ([]admin.ConnectorAdminView, error) {
+func listConnectors(c *service.AdminAPI, opts *options, namespaceId string) ([]admin.ConnectorAdminView, error) {
 	items := make([]admin.ConnectorAdminView, 0)
 
 	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {

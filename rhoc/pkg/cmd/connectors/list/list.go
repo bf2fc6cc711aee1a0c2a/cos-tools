@@ -2,14 +2,11 @@ package list
 
 import (
 	"errors"
-	"net/http"
-	"strconv"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/request"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -77,63 +74,17 @@ func run(opts *options) error {
 		return err
 	}
 
-	items := admin.ConnectorAdminViewList{
-		Kind:  "ConnectorAdminViewList",
-		Items: make([]admin.ConnectorAdminView, 0),
-		Total: 0,
-		Size:  0,
+	var items admin.ConnectorAdminViewList
+
+	switch {
+	case opts.clusterID != "":
+		items, err = service.ListConnectorsForCluster(c, opts.ListOptions, opts.clusterID)
+	case opts.namespaceID != "":
+		items, err = service.ListConnectorsForNamespace(c, opts.ListOptions, opts.namespaceID)
 	}
 
-	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
-		var result *admin.ConnectorAdminViewList
-		var err error
-		var httpRes *http.Response
-
-		if opts.clusterID != "" {
-			e := c.Clusters().GetClusterConnectors(opts.f.Context, opts.clusterID)
-			e = e.Page(strconv.Itoa(i))
-			e = e.Size(strconv.Itoa(opts.Limit))
-
-			if opts.OrderBy != "" {
-				e = e.OrderBy(opts.OrderBy)
-			}
-			if opts.Search != "" {
-				e = e.Search(opts.Search)
-			}
-
-			result, httpRes, err = e.Execute()
-		}
-
-		if opts.namespaceID != "" {
-			e := c.Clusters().GetNamespaceConnectors(opts.f.Context, opts.namespaceID)
-			e = e.Page(strconv.Itoa(i))
-			e = e.Size(strconv.Itoa(opts.Limit))
-
-			if opts.OrderBy != "" {
-				e = e.OrderBy(opts.OrderBy)
-			}
-			if opts.Search != "" {
-				e = e.Search(opts.Search)
-			}
-
-			result, httpRes, err = e.Execute()
-		}
-
-		if httpRes != nil {
-			defer func() {
-				_ = httpRes.Body.Close()
-			}()
-		}
-		if err != nil {
-			return response.Error(err, httpRes)
-		}
-		if result == nil || len(result.Items) == 0 {
-			break
-		}
-
-		items.Items = append(items.Items, result.Items...)
-		items.Size = int32(len(items.Items))
-		items.Total = result.Total
+	if err != nil {
+		return err
 	}
 
 	if len(items.Items) == 0 && opts.outputFormat == "" {

@@ -12,75 +12,95 @@ import (
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 )
 
-func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bool) {
-	t := dumper.Table[admin.ConnectorAdminView]{}
-
-	t.Field("ID", func(in *admin.ConnectorAdminView) string {
-		return in.Id
-	})
-
-	if wide {
-		t.Field("Name", func(in *admin.ConnectorAdminView) string {
-			return in.Name
-		})
+func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bool, csv bool) {
+	t := dumper.Table[admin.ConnectorAdminView]{
+		Config: dumper.TableConfig{
+			CSV:  csv,
+			Wide: wide,
+		},
 	}
 
-	t.Field("NamespaceID", func(in *admin.ConnectorAdminView) string {
-		return in.NamespaceId
+	t.Column("ID", false, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Id,
+		}
 	})
 
-	t.Field("Owner", func(in *admin.ConnectorAdminView) string {
-		return in.Owner
+	t.Column("Name", true, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Name,
+		}
 	})
 
-	t.Field("ConnectorTypeId", func(in *admin.ConnectorAdminView) string {
-		return in.ConnectorTypeId
+	t.Column("NamespaceId", false, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.NamespaceId,
+		}
 	})
 
-	if wide {
-		t.Field("Version", func(in *admin.ConnectorAdminView) string {
-			return strconv.FormatInt(in.ResourceVersion, 10)
-		})
-	}
-
-	t.Field("DesiredState", func(in *admin.ConnectorAdminView) string {
-		return string(in.DesiredState)
+	t.Column("Owner", false, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Owner,
+		}
 	})
 
-	t.Rich("State", func(in *admin.ConnectorAdminView) (string, tablewriter.Colors) {
-		s := string(in.Status.State)
-		c := tablewriter.Colors{}
+	t.Column("ConnectorTypeId", false, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.ConnectorTypeId,
+		}
+	})
 
-		switch s {
-		case "ready":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
-		case "failed":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
-		case "stopped":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+	t.Column("Version", true, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: strconv.FormatInt(in.ResourceVersion, 10),
+		}
+	})
+
+	t.Column("DesiredState", false, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: string(in.DesiredState),
+		}
+	})
+
+	t.Column("State", false, func(in *admin.ConnectorAdminView) dumper.Row {
+		r := dumper.Row{
+			Value: string(in.Status.State),
 		}
 
-		return s, c
+		switch r.Value {
+		case "ready":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+		case "failed":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+		case "stopped":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+		}
+
+		return r
 	})
 
-	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorAdminView) string {
-			return in.CreatedAt.Format(time.RFC3339)
-		})
+	t.Column("Age", false, func(in *admin.ConnectorAdminView) dumper.Row {
+		age := duration.HumanDuration(time.Since(in.CreatedAt))
+		if in.CreatedAt.IsZero() {
+			age = ""
+		}
 
-		t.Field("ModifiedAt", func(in *admin.ConnectorAdminView) string {
-			return in.ModifiedAt.Format(time.RFC3339)
-		})
-	} else {
-		t.Field("Age", func(in *admin.ConnectorAdminView) string {
-			age := duration.HumanDuration(time.Since(in.CreatedAt))
-			if in.CreatedAt.IsZero() {
-				age = ""
-			}
+		return dumper.Row{
+			Value: age,
+		}
+	})
 
-			return age
-		})
-	}
+	t.Column("CreatedAt", true, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.CreatedAt.Format(time.RFC3339),
+		}
+	})
+
+	t.Column("ModifiedAt", true, func(in *admin.ConnectorAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.ModifiedAt.Format(time.RFC3339),
+		}
+	})
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

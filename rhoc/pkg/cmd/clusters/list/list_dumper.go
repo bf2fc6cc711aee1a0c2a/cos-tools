@@ -10,55 +10,69 @@ import (
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool) {
-	t := dumper.Table[admin.ConnectorCluster]{}
-
-	t.Field("ID", func(in *admin.ConnectorCluster) string {
-		return in.Id
-	})
-
-	if wide {
-		t.Field("Name", func(in *admin.ConnectorCluster) string {
-			return in.Name
-		})
+func dumpAsTable(f *factory.Factory, items admin.ConnectorClusterList, wide bool, csv bool) {
+	t := dumper.Table[admin.ConnectorCluster]{
+		Config: dumper.TableConfig{
+			CSV:  csv,
+			Wide: wide,
+		},
 	}
 
-	t.Field("Owner", func(in *admin.ConnectorCluster) string {
-		return in.Owner
+	t.Column("ID", false, func(in *admin.ConnectorCluster) dumper.Row {
+		return dumper.Row{
+			Value: in.Id,
+		}
 	})
 
-	t.Rich("State", func(in *admin.ConnectorCluster) (string, tablewriter.Colors) {
-		s := string(in.Status.State)
-		c := tablewriter.Colors{}
+	t.Column("Name", true, func(in *admin.ConnectorCluster) dumper.Row {
+		return dumper.Row{
+			Value: in.Name,
+		}
+	})
 
-		switch s {
-		case "ready":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
-		case "disconnected":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+	t.Column("Owner", false, func(in *admin.ConnectorCluster) dumper.Row {
+		return dumper.Row{
+			Value: in.Owner,
+		}
+	})
+
+	t.Column("State", false, func(in *admin.ConnectorCluster) dumper.Row {
+		r := dumper.Row{
+			Value: string(in.Status.State),
 		}
 
-		return s, c
+		switch r.Value {
+		case "ready":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+		case "disconnected":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+		}
+
+		return r
 	})
 
-	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorCluster) string {
-			return in.CreatedAt.Format(time.RFC3339)
-		})
+	t.Column("Age", false, func(in *admin.ConnectorCluster) dumper.Row {
+		age := duration.HumanDuration(time.Since(in.CreatedAt))
+		if in.CreatedAt.IsZero() {
+			age = ""
+		}
 
-		t.Field("ModifiedAt", func(in *admin.ConnectorCluster) string {
-			return in.ModifiedAt.Format(time.RFC3339)
-		})
-	} else {
-		t.Field("Age", func(in *admin.ConnectorCluster) string {
-			age := duration.HumanDuration(time.Since(in.CreatedAt))
-			if in.CreatedAt.IsZero() {
-				age = ""
-			}
+		return dumper.Row{
+			Value: age,
+		}
+	})
 
-			return age
-		})
-	}
+	t.Column("CreatedAt", true, func(in *admin.ConnectorCluster) dumper.Row {
+		return dumper.Row{
+			Value: in.CreatedAt.Format(time.RFC3339),
+		}
+	})
+
+	t.Column("ModifiedAt", true, func(in *admin.ConnectorCluster) dumper.Row {
+		return dumper.Row{
+			Value: in.ModifiedAt.Format(time.RFC3339),
+		}
+	})
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

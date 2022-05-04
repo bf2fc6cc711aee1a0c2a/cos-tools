@@ -1,6 +1,7 @@
 package dumper
 
 import (
+	"encoding/csv"
 	"io"
 	"strconv"
 
@@ -8,76 +9,106 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-type entry[K any] struct {
+type Row struct {
+	Value  string
+	Colors tablewriter.Colors
+}
+type column[K any] struct {
 	name   string
-	getter func(in *K) (string, tablewriter.Colors)
+	wide   bool
+	getter func(in *K) Row
 }
 
-type entryType[T any] []entry[T]
+type columnType[T any] []column[T]
 
+type TableConfig struct {
+	CSV  bool
+	Wide bool
+}
 type Table[K any] struct {
-	entries entryType[K]
+	Config  TableConfig
+	entries columnType[K]
 }
 
-func (t *Table[K]) Field(name string, getter func(in *K) string) {
-	entry := entry[K]{
-		name: name,
-		getter: func(in *K) (string, tablewriter.Colors) {
-			return getter(in), tablewriter.Colors{}
-		},
-	}
-
-	t.entries = append(t.entries, entry)
-}
-
-func (t *Table[K]) Rich(name string, getter func(in *K) (string, tablewriter.Colors)) {
-	entry := entry[K]{
+func (t *Table[K]) Column(name string, wide bool, getter func(in *K) Row) {
+	entry := column[K]{
 		name:   name,
+		wide:   wide,
 		getter: getter,
 	}
 
 	t.entries = append(t.entries, entry)
 }
 
-func (t *Table[K]) Dump(out io.Writer, items []K) {
+func (t *Table[K]) Dump(out io.Writer, items []K) error {
 	if len(items) == 0 {
-		return
+		return nil
 	}
 
 	headers := make([]string, 0, len(t.entries))
 	for i := range t.entries {
-		header := stringy.New(t.entries[i].name).SnakeCase().ToUpper()
-		if i == 0 {
-			header = header + " (" + strconv.Itoa(len(t.entries)) + ")"
+		if !t.Config.Wide && t.entries[i].wide {
+			continue
 		}
 
+		header := stringy.New(t.entries[i].name).SnakeCase().ToUpper()
 		headers = append(headers, header)
 
 	}
 
-	table := tablewriter.NewWriter(out)
-	table.SetHeader(headers)
-	table.SetBorder(false)
-	table.SetAutoFormatHeaders(false)
-	table.SetRowLine(false)
-	table.SetColumnSeparator(tablewriter.SPACE)
-	table.SetCenterSeparator(tablewriter.SPACE)
-	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	if t.Config.CSV {
+		w := csv.NewWriter(out)
 
-	for _, i := range items {
-		row := make([]string, 0, len(t.entries))
-		col := make([]tablewriter.Colors, 0, len(t.entries))
+		w.Write(headers)
 
-		for _, f := range t.entries {
-			v, c := f.getter(&i)
+		for _, i := range items {
+			row := make([]string, 0, len(t.entries))
 
-			row = append(row, v)
-			col = append(col, c)
+			for _, f := range t.entries {
+				r := f.getter(&i)
+
+				row = append(row, r.Value)
+			}
+
+			w.Write(row)
 		}
 
-		table.Rich(row, col)
+		w.Flush()
+
+		return w.Error()
+	} else {
+		headers[0] = headers[0] + " (" + strconv.Itoa(len(t.entries)) + ")"
+
+		table := tablewriter.NewWriter(out)
+		table.SetHeader(headers)
+		table.SetBorder(false)
+		table.SetAutoFormatHeaders(false)
+		table.SetRowLine(false)
+		table.SetColumnSeparator(tablewriter.SPACE)
+		table.SetCenterSeparator(tablewriter.SPACE)
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+		table.SetAlignment(tablewriter.ALIGN_LEFT)
+
+		for _, item := range items {
+			row := make([]string, 0, len(t.entries))
+			col := make([]tablewriter.Colors, 0, len(t.entries))
+
+			for i, f := range t.entries {
+				if !t.Config.Wide && t.entries[i].wide {
+					continue
+				}
+
+				r := f.getter(&item)
+
+				row = append(row, r.Value)
+				col = append(col, r.Colors)
+			}
+
+			table.Rich(row, col)
+		}
+
+		table.Render()
 	}
 
-	table.Render()
+	return nil
 }

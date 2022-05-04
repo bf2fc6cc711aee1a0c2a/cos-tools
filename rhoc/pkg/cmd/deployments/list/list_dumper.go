@@ -11,73 +11,95 @@ import (
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewList, wide bool) {
-	t := dumper.Table[admin.ConnectorDeploymentAdminView]{}
-
-	t.Field("ID", func(in *admin.ConnectorDeploymentAdminView) string {
-		return in.Id
-	})
-
-	t.Field("NamespaceID", func(in *admin.ConnectorDeploymentAdminView) string {
-		return in.Spec.NamespaceId
-	})
-
-	t.Field("ClusterId", func(in *admin.ConnectorDeploymentAdminView) string {
-		return in.Spec.ClusterId
-	})
-
-	t.Field("ConnectorTypeId", func(in *admin.ConnectorDeploymentAdminView) string {
-		return in.Spec.ConnectorTypeId
-	})
-
-	if wide {
-
-		t.Field("Version", func(in *admin.ConnectorDeploymentAdminView) string {
-			return strconv.FormatInt(in.Metadata.ResourceVersion, 10)
-		})
-
-		t.Field("ConnectorVersion", func(in *admin.ConnectorDeploymentAdminView) string {
-			return strconv.FormatInt(in.Spec.ConnectorResourceVersion, 10)
-		})
+func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewList, wide bool, csv bool) {
+	t := dumper.Table[admin.ConnectorDeploymentAdminView]{
+		Config: dumper.TableConfig{
+			CSV:  csv,
+			Wide: wide,
+		},
 	}
 
-	t.Field("DesiredState", func(in *admin.ConnectorDeploymentAdminView) string {
-		return string(in.Spec.DesiredState)
+	t.Column("ID", false, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Id,
+		}
 	})
 
-	t.Rich("State", func(in *admin.ConnectorDeploymentAdminView) (string, tablewriter.Colors) {
-		s := string(in.Status.Phase)
-		c := tablewriter.Colors{}
+	t.Column("NamespaceID", false, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Spec.NamespaceId,
+		}
+	})
 
-		switch s {
-		case "ready":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
-		case "failed":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
-		case "stopped":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+	t.Column("ClusterId", false, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Spec.ClusterId,
+		}
+	})
+
+	t.Column("ConnectorTypeId", false, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Spec.ConnectorTypeId,
+		}
+	})
+
+	t.Column("Version", true, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: strconv.FormatInt(in.Metadata.ResourceVersion, 10),
+		}
+	})
+
+	t.Column("ConnectorVersion", true, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: strconv.FormatInt(in.Spec.ConnectorResourceVersion, 10),
+		}
+	})
+
+	t.Column("DesiredState", false, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: string(in.Spec.DesiredState),
+		}
+	})
+
+	t.Column("State", false, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		r := dumper.Row{
+			Value: string(in.Status.Phase),
 		}
 
-		return s, c
+		switch r.Value {
+		case "ready":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+		case "failed":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+		case "stopped":
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+		}
+
+		return r
 	})
 
-	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
-			return in.Metadata.CreatedAt.Format(time.RFC3339)
-		})
-		t.Field("UpdatedAt", func(in *admin.ConnectorDeploymentAdminView) string {
-			return in.Metadata.UpdatedAt.Format(time.RFC3339)
-		})
-	} else {
-		t.Field("Age", func(in *admin.ConnectorDeploymentAdminView) string {
-			age := duration.HumanDuration(time.Since(in.Metadata.CreatedAt))
-			if in.Metadata.CreatedAt.IsZero() {
-				age = ""
-			}
+	t.Column("Age", false, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		age := duration.HumanDuration(time.Since(in.Metadata.CreatedAt))
+		if in.Metadata.CreatedAt.IsZero() {
+			age = ""
+		}
 
-			return age
-		})
-	}
+		return dumper.Row{
+			Value: age,
+		}
+	})
+
+	t.Column("CreatedAt", true, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Metadata.CreatedAt.Format(time.RFC3339),
+		}
+	})
+
+	t.Column("ModifiedAt", true, func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+		return dumper.Row{
+			Value: in.Metadata.UpdatedAt.Format(time.RFC3339),
+		}
+	})
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

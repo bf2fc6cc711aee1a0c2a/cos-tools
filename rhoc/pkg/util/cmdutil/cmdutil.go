@@ -15,6 +15,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	OutputFormatWide = "wide"
+	OutputFormatCSV  = "csv"
+)
+
 func Add(root *cobra.Command, sub *cobra.Command) {
 	if err := bindPFlags(sub); err != nil {
 		panic(err)
@@ -94,7 +99,8 @@ func PromptConfirm(format string, args ...interface{}) (bool, error) {
 func ValidOutputs() []string {
 	validVals := make([]string, 0, len(flagutil.ValidOutputFormats)+1)
 	validVals = append(validVals, flagutil.ValidOutputFormats...)
-	validVals = append(validVals, "wide")
+	validVals = append(validVals, OutputFormatWide)
+	validVals = append(validVals, OutputFormatCSV)
 
 	return validVals
 }

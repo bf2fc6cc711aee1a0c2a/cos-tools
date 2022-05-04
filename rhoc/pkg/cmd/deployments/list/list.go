@@ -95,12 +95,14 @@ func run(opts *options) error {
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
 		opts.f.Logger.Info("")
-		dumpAsTable(opts.f, items, false)
+		dumpAsTable(opts.f, items, false, false)
 		opts.f.Logger.Info("")
-	case "wide":
+	case cmdutil.OutputFormatWide:
 		opts.f.Logger.Info("")
-		dumpAsTable(opts.f, items, true)
+		dumpAsTable(opts.f, items, true, false)
 		opts.f.Logger.Info("")
+	case cmdutil.OutputFormatCSV:
+		dumpAsTable(opts.f, items, true, true)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}

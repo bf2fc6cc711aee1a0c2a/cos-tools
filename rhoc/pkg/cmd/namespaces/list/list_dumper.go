@@ -12,96 +12,115 @@ import (
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 )
 
-func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bool) {
-	t := dumper.Table[admin.ConnectorNamespace]{}
-
-	t.Field("ID", func(in *admin.ConnectorNamespace) string {
-		return in.Id
-	})
-
-	if wide {
-		t.Field("Name", func(in *admin.ConnectorNamespace) string {
-			return in.Name
-		})
+func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bool, csv bool) {
+	t := dumper.Table[admin.ConnectorNamespace]{
+		Config: dumper.TableConfig{
+			CSV:  csv,
+			Wide: wide,
+		},
 	}
 
-	t.Field("ClusterID", func(in *admin.ConnectorNamespace) string {
-		return in.ClusterId
+	t.Column("ID", false, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: in.Id,
+		}
 	})
 
-	t.Field("Owner", func(in *admin.ConnectorNamespace) string {
-		return in.Owner
+	t.Column("Name", true, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: in.Name,
+		}
 	})
 
-	if wide {
-		t.Field("TenantKind", func(in *admin.ConnectorNamespace) string {
-			return string(in.Tenant.Kind)
-		})
-	}
-
-	t.Field("TenantID", func(in *admin.ConnectorNamespace) string {
-		return in.Tenant.Id
+	t.Column("ClusterID", false, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: in.ClusterId,
+		}
 	})
 
-	t.Rich("State", func(in *admin.ConnectorNamespace) (string, tablewriter.Colors) {
-		s := string(in.Status.State)
-		c := tablewriter.Colors{}
+	t.Column("Owner", false, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: in.Owner,
+		}
+	})
 
-		switch s {
+	t.Column("TenantKind", true, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: string(in.Tenant.Kind),
+		}
+	})
+
+	t.Column("TenantID", false, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: in.Tenant.Id,
+		}
+	})
+
+	t.Column("State", false, func(in *admin.ConnectorNamespace) dumper.Row {
+		r := dumper.Row{
+			Value: string(in.Status.State),
+		}
+
+		switch r.Value {
 		case "ready":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
 		case "disconnected":
-			c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+			r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
 		}
 
 		if wide && in.Expiration != "" {
 			t, err := time.Parse(time.RFC3339, in.Expiration)
 			if err == nil && time.Now().After(t) {
-				s = s + " (*)"
+				r.Value = r.Value + " (*)"
 			}
 		}
 
-		return s, c
+		return r
 	})
 
-	t.Field("Connectors", func(in *admin.ConnectorNamespace) string {
-		return fmt.Sprint(in.Status.ConnectorsDeployed)
+	t.Column("Connectors", false, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: fmt.Sprint(in.Status.ConnectorsDeployed),
+		}
 	})
 
-	if wide {
-		t.Rich("Expiration", func(in *admin.ConnectorNamespace) (string, tablewriter.Colors) {
-			s := in.Expiration
-			c := tablewriter.Colors{}
+	t.Column("Expiration", true, func(in *admin.ConnectorNamespace) dumper.Row {
+		r := dumper.Row{
+			Value: in.Expiration,
+		}
 
-			if s != "" {
-				t, err := time.Parse(time.RFC3339, s)
-				if err == nil && time.Now().After(t) {
-					c = tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
-				}
+		if r.Value != "" {
+			t, err := time.Parse(time.RFC3339, r.Value)
+			if err == nil && time.Now().After(t) {
+				r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
 			}
+		}
 
-			return s, c
-		})
-	}
+		return r
+	})
 
-	if wide {
-		t.Field("CreatedAt", func(in *admin.ConnectorNamespace) string {
-			return in.CreatedAt.Format(time.RFC3339)
-		})
+	t.Column("Age", false, func(in *admin.ConnectorNamespace) dumper.Row {
+		age := duration.HumanDuration(time.Since(in.CreatedAt))
+		if in.CreatedAt.IsZero() {
+			age = ""
+		}
 
-		t.Field("ModifiedAt", func(in *admin.ConnectorNamespace) string {
-			return in.ModifiedAt.Format(time.RFC3339)
-		})
-	} else {
-		t.Field("Age", func(in *admin.ConnectorNamespace) string {
-			age := duration.HumanDuration(time.Since(in.CreatedAt))
-			if in.CreatedAt.IsZero() {
-				age = ""
-			}
+		return dumper.Row{
+			Value: age,
+		}
+	})
 
-			return age
-		})
-	}
+	t.Column("CreatedAt", true, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: in.CreatedAt.Format(time.RFC3339),
+		}
+	})
+
+	t.Column("ModifiedAt", true, func(in *admin.ConnectorNamespace) dumper.Row {
+		return dumper.Row{
+			Value: in.ModifiedAt.Format(time.RFC3339),
+		}
+	})
 
 	t.Dump(f.IOStreams.Out, items.Items)
 }

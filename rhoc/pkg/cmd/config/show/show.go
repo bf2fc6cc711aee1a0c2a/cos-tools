@@ -22,11 +22,11 @@ func NewConfigShowCommand(f *factory.Factory) *cobra.Command {
 			}
 
 			t := dumper.Table[keyVal]{}
-			t.Field("Key", func(in *keyVal) string {
-				return in.key
+			t.Column("Key", false, func(in *keyVal) dumper.Row {
+				return dumper.Row{Value: in.key}
 			})
-			t.Field("Val", func(in *keyVal) string {
-				return in.val
+			t.Column("Val", false, func(in *keyVal) dumper.Row {
+				return dumper.Row{Value: in.val}
 			})
 
 			t.Dump(f.IOStreams.Out, []keyVal{

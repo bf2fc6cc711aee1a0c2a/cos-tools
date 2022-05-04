@@ -10,12 +10,10 @@ import (
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, csv bool) {
-	t := dumper.Table[admin.ConnectorCluster]{
-		Config: dumper.TableConfig{
-			CSV:  csv,
-			Wide: wide,
-		},
+func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, style dumper.TableStyle) {
+	config := dumper.TableConfig[admin.ConnectorCluster]{
+		Style: style,
+		Wide:  wide,
 		Columns: []dumper.Column[admin.ConnectorCluster]{
 			{
 				Name: "ID",
@@ -97,5 +95,5 @@ func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, csv
 		},
 	}
 
-	t.Dump(out, items.Items)
+	dumper.DumpWithConfig(config, out, items.Items)
 }

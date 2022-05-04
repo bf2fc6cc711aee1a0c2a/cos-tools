@@ -21,7 +21,7 @@ func NewConfigShowCommand(f *factory.Factory) *cobra.Command {
 				return err
 			}
 
-			t := dumper.Table[keyVal]{
+			config := dumper.TableConfig[keyVal]{
 				Columns: []dumper.Column[keyVal]{
 					{
 						Name: "Key",
@@ -40,7 +40,7 @@ func NewConfigShowCommand(f *factory.Factory) *cobra.Command {
 				},
 			}
 
-			t.Dump(f.IOStreams.Out, []keyVal{
+			dumper.DumpWithConfig(config, f.IOStreams.Out, []keyVal{
 				{key: "API URL", val: c.APIUrl},
 				{key: "Auth URL", val: c.AuthURL},
 				{key: "Mas Auth URL", val: c.MasAuthURL},

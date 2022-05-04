@@ -4,6 +4,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/request"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -85,14 +86,14 @@ func run(opts *options) error {
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
 		opts.f.Logger.Info("")
-		dumpAsTable(opts.f, items, false, false)
+		dumpAsTable(opts.f.IOStreams.Out, items, false, dumper.TableStyleDefault)
 		opts.f.Logger.Info("")
 	case cmdutil.OutputFormatWide:
 		opts.f.Logger.Info("")
-		dumpAsTable(opts.f, items, true, false)
+		dumpAsTable(opts.f.IOStreams.Out, items, true, dumper.TableStyleDefault)
 		opts.f.Logger.Info("")
 	case cmdutil.OutputFormatCSV:
-		dumpAsTable(opts.f, items, true, true)
+		dumpAsTable(opts.f.IOStreams.Out, items, true, dumper.TableStyleCSV)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}

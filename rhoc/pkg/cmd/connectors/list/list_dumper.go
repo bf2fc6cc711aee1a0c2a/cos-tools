@@ -1,23 +1,20 @@
 package list
 
 import (
+	"io"
 	"strconv"
 	"time"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
-	"k8s.io/apimachinery/pkg/util/duration"
-
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/olekukonko/tablewriter"
-	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
+	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bool, csv bool) {
-	t := dumper.Table[admin.ConnectorAdminView]{
-		Config: dumper.TableConfig{
-			CSV:  csv,
-			Wide: wide,
-		},
+func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, style dumper.TableStyle) {
+	config := dumper.TableConfig[admin.ConnectorAdminView]{
+		Style: style,
+		Wide:  wide,
 		Columns: []dumper.Column[admin.ConnectorAdminView]{
 			{
 				Name: "ID",
@@ -137,5 +134,5 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 		},
 	}
 
-	t.Dump(f.IOStreams.Out, items.Items)
+	dumper.DumpWithConfig(config, out, items.Items)
 }

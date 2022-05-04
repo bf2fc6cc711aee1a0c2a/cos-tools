@@ -2,6 +2,7 @@ package dumper
 
 import (
 	"io"
+	"strconv"
 
 	"github.com/gobeam/stringy"
 	"github.com/olekukonko/tablewriter"
@@ -43,13 +44,19 @@ func (t *Table[K]) Dump(out io.Writer, items []K) {
 		return
 	}
 
-	h := make([]string, 0, len(t.entries))
+	headers := make([]string, 0, len(t.entries))
 	for i := range t.entries {
-		h = append(h, stringy.New(t.entries[i].name).SnakeCase().ToUpper())
+		header := stringy.New(t.entries[i].name).SnakeCase().ToUpper()
+		if i == 0 {
+			header = header + " (" + strconv.Itoa(len(t.entries)) + ")"
+		}
+
+		headers = append(headers, header)
+
 	}
 
 	table := tablewriter.NewWriter(out)
-	table.SetHeader(h)
+	table.SetHeader(headers)
 	table.SetBorder(false)
 	table.SetAutoFormatHeaders(false)
 	table.SetRowLine(false)

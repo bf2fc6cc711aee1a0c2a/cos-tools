@@ -13,13 +13,13 @@ type Row struct {
 	Value  string
 	Colors tablewriter.Colors
 }
-type column[K any] struct {
-	name   string
-	wide   bool
-	getter func(in *K) Row
+type Column[K any] struct {
+	Name   string
+	Wide   bool
+	Getter func(in *K) Row
 }
 
-type columnType[T any] []column[T]
+type columnType[T any] []Column[T]
 
 type TableConfig struct {
 	CSV  bool
@@ -27,17 +27,7 @@ type TableConfig struct {
 }
 type Table[K any] struct {
 	Config  TableConfig
-	entries columnType[K]
-}
-
-func (t *Table[K]) Column(name string, wide bool, getter func(in *K) Row) {
-	entry := column[K]{
-		name:   name,
-		wide:   wide,
-		getter: getter,
-	}
-
-	t.entries = append(t.entries, entry)
+	Columns columnType[K]
 }
 
 func (t *Table[K]) Dump(out io.Writer, items []K) error {
@@ -45,13 +35,13 @@ func (t *Table[K]) Dump(out io.Writer, items []K) error {
 		return nil
 	}
 
-	headers := make([]string, 0, len(t.entries))
-	for i := range t.entries {
-		if !t.Config.Wide && t.entries[i].wide {
+	headers := make([]string, 0, len(t.Columns))
+	for i := range t.Columns {
+		if !t.Config.Wide && t.Columns[i].Wide {
 			continue
 		}
 
-		header := stringy.New(t.entries[i].name).SnakeCase().ToUpper()
+		header := stringy.New(t.Columns[i].Name).SnakeCase().ToUpper()
 		headers = append(headers, header)
 
 	}
@@ -62,10 +52,10 @@ func (t *Table[K]) Dump(out io.Writer, items []K) error {
 		w.Write(headers)
 
 		for _, i := range items {
-			row := make([]string, 0, len(t.entries))
+			row := make([]string, 0, len(t.Columns))
 
-			for _, f := range t.entries {
-				r := f.getter(&i)
+			for _, f := range t.Columns {
+				r := f.Getter(&i)
 
 				row = append(row, r.Value)
 			}
@@ -77,7 +67,7 @@ func (t *Table[K]) Dump(out io.Writer, items []K) error {
 
 		return w.Error()
 	} else {
-		headers[0] = headers[0] + " (" + strconv.Itoa(len(t.entries)) + ")"
+		headers[0] = headers[0] + " (" + strconv.Itoa(len(items)) + ")"
 
 		table := tablewriter.NewWriter(out)
 		table.SetHeader(headers)
@@ -90,15 +80,15 @@ func (t *Table[K]) Dump(out io.Writer, items []K) error {
 		table.SetAlignment(tablewriter.ALIGN_LEFT)
 
 		for _, item := range items {
-			row := make([]string, 0, len(t.entries))
-			col := make([]tablewriter.Colors, 0, len(t.entries))
+			row := make([]string, 0, len(t.Columns))
+			col := make([]tablewriter.Colors, 0, len(t.Columns))
 
-			for i, f := range t.entries {
-				if !t.Config.Wide && t.entries[i].wide {
+			for i, f := range t.Columns {
+				if !t.Config.Wide && t.Columns[i].Wide {
 					continue
 				}
 
-				r := f.getter(&item)
+				r := f.Getter(&item)
 
 				row = append(row, r.Value)
 				col = append(col, r.Colors)

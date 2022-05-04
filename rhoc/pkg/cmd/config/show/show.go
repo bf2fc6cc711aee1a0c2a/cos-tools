@@ -21,13 +21,24 @@ func NewConfigShowCommand(f *factory.Factory) *cobra.Command {
 				return err
 			}
 
-			t := dumper.Table[keyVal]{}
-			t.Column("Key", false, func(in *keyVal) dumper.Row {
-				return dumper.Row{Value: in.key}
-			})
-			t.Column("Val", false, func(in *keyVal) dumper.Row {
-				return dumper.Row{Value: in.val}
-			})
+			t := dumper.Table[keyVal]{
+				Columns: []dumper.Column[keyVal]{
+					{
+						Name: "Key",
+						Wide: false,
+						Getter: func(in *keyVal) dumper.Row {
+							return dumper.Row{Value: in.key}
+						},
+					},
+					{
+						Name: "Val",
+						Wide: false,
+						Getter: func(in *keyVal) dumper.Row {
+							return dumper.Row{Value: in.val}
+						},
+					},
+				},
+			}
 
 			t.Dump(f.IOStreams.Out, []keyVal{
 				{key: "API URL", val: c.APIUrl},

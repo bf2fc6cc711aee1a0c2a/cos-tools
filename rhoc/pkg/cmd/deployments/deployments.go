@@ -10,10 +10,9 @@ import (
 
 func NewDeploymentsCommand(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deployments",
-		Short: "deployments",
-		Long:  "deployments",
-		Args:  cobra.MinimumNArgs(1),
+		Use:     "deployments",
+		Aliases: []string{"cd"},
+		Args:    cobra.MinimumNArgs(1),
 	}
 
 	cmdutil.Bind(

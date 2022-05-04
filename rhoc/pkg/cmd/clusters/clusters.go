@@ -12,8 +12,6 @@ import (
 func NeClustersCommand(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "clusters",
-		Short:   "clusters",
-		Long:    "clusters",
 		Aliases: []string{"cc"},
 		Args:    cobra.MinimumNArgs(1),
 	}

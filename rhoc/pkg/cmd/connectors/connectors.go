@@ -12,9 +12,7 @@ import (
 func NewConnectorsCommand(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "connectors",
-		Aliases: []string{"mctr"},
-		Short:   "connectors",
-		Long:    "connectors",
+		Aliases: []string{"ctr"},
 		Args:    cobra.MinimumNArgs(1),
 	}
 

@@ -14,10 +14,9 @@ type itemRow struct {
 
 func NewConfigCommand(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "config",
-		Short: "config",
-		Long:  "config",
-		Args:  cobra.NoArgs,
+		Use:     "config",
+		Aliases: []string{"cfg"},
+		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return nil
 		},

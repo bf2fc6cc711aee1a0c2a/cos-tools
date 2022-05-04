@@ -1,7 +1,6 @@
 package service
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
@@ -37,14 +36,11 @@ func ListClusters(c *AdminAPI, opts request.ListOptions) (admin.ConnectorCluster
 			}()
 		}
 		if err != nil {
-			empty := admin.ConnectorClusterList{
-				Kind:  "ConnectorClusterList",
-				Items: make([]admin.ConnectorCluster, 0),
-				Total: 0,
-				Size:  0,
-			}
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
 
-			return empty, response.Error(err, httpRes)
+			return items, response.Error(err, httpRes)
 		}
 		if len(result.Items) == 0 {
 			break
@@ -86,14 +82,11 @@ func ListNamespacesForCluster(c *AdminAPI, opts request.ListOptions, clusterID s
 			}()
 		}
 		if err != nil {
-			empty := admin.ConnectorNamespaceList{
-				Kind:  "ConnectorClusterList",
-				Items: make([]admin.ConnectorNamespace, 0),
-				Total: 0,
-				Size:  0,
-			}
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
 
-			return empty, response.Error(err, httpRes)
+			return items, response.Error(err, httpRes)
 		}
 		if len(result.Items) == 0 {
 			break
@@ -135,14 +128,11 @@ func ListNamespaces(c *AdminAPI, opts request.ListOptions) (admin.ConnectorNames
 			}()
 		}
 		if err != nil {
-			empty := admin.ConnectorNamespaceList{
-				Kind:  "ConnectorClusterList",
-				Items: make([]admin.ConnectorNamespace, 0),
-				Total: 0,
-				Size:  0,
-			}
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
 
-			return empty, response.Error(err, httpRes)
+			return items, response.Error(err, httpRes)
 		}
 		if len(result.Items) == 0 {
 			break
@@ -165,10 +155,6 @@ func ListConnectorsForCluster(c *AdminAPI, opts request.ListOptions, clusterID s
 	}
 
 	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
-		var result *admin.ConnectorAdminViewList
-		var err error
-		var httpRes *http.Response
-
 		e := c.Clusters().GetClusterConnectors(c.Context(), clusterID)
 		e = e.Page(strconv.Itoa(i))
 		e = e.Size(strconv.Itoa(opts.Limit))
@@ -180,7 +166,7 @@ func ListConnectorsForCluster(c *AdminAPI, opts request.ListOptions, clusterID s
 			e = e.Search(opts.Search)
 		}
 
-		result, httpRes, err = e.Execute()
+		result, httpRes, err := e.Execute()
 
 		if httpRes != nil {
 			defer func() {
@@ -188,14 +174,11 @@ func ListConnectorsForCluster(c *AdminAPI, opts request.ListOptions, clusterID s
 			}()
 		}
 		if err != nil {
-			empty := admin.ConnectorAdminViewList{
-				Kind:  "ConnectorAdminViewList",
-				Items: make([]admin.ConnectorAdminView, 0),
-				Total: 0,
-				Size:  0,
-			}
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
 
-			return empty, response.Error(err, httpRes)
+			return items, response.Error(err, httpRes)
 		}
 		if result == nil || len(result.Items) == 0 {
 			break
@@ -218,10 +201,6 @@ func ListConnectorsForNamespace(c *AdminAPI, opts request.ListOptions, namespace
 	}
 
 	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
-		var result *admin.ConnectorAdminViewList
-		var err error
-		var httpRes *http.Response
-
 		e := c.Clusters().GetNamespaceConnectors(c.Context(), namespaceID)
 		e = e.Page(strconv.Itoa(i))
 		e = e.Size(strconv.Itoa(opts.Limit))
@@ -233,7 +212,7 @@ func ListConnectorsForNamespace(c *AdminAPI, opts request.ListOptions, namespace
 			e = e.Search(opts.Search)
 		}
 
-		result, httpRes, err = e.Execute()
+		result, httpRes, err := e.Execute()
 
 		if httpRes != nil {
 			defer func() {
@@ -241,14 +220,11 @@ func ListConnectorsForNamespace(c *AdminAPI, opts request.ListOptions, namespace
 			}()
 		}
 		if err != nil {
-			empty := admin.ConnectorAdminViewList{
-				Kind:  "ConnectorAdminViewList",
-				Items: make([]admin.ConnectorAdminView, 0),
-				Total: 0,
-				Size:  0,
-			}
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
 
-			return empty, response.Error(err, httpRes)
+			return items, response.Error(err, httpRes)
 		}
 		if result == nil || len(result.Items) == 0 {
 			break
@@ -271,10 +247,6 @@ func ListDeploymentsForCluster(c *AdminAPI, opts request.ListOptions, clusterID 
 	}
 
 	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
-		var result *admin.ConnectorDeploymentAdminViewList
-		var err error
-		var httpRes *http.Response
-
 		e := c.Clusters().GetClusterDeployments(c.Context(), clusterID)
 		e = e.Page(strconv.Itoa(i))
 		e = e.Size(strconv.Itoa(opts.Limit))
@@ -283,7 +255,7 @@ func ListDeploymentsForCluster(c *AdminAPI, opts request.ListOptions, clusterID 
 			e = e.OrderBy(opts.OrderBy)
 		}
 
-		result, httpRes, err = e.Execute()
+		result, httpRes, err := e.Execute()
 
 		if httpRes != nil {
 			defer func() {
@@ -291,14 +263,11 @@ func ListDeploymentsForCluster(c *AdminAPI, opts request.ListOptions, clusterID 
 			}()
 		}
 		if err != nil {
-			empty := admin.ConnectorDeploymentAdminViewList{
-				Kind:  "ConnectorDeploymentAdminViewList",
-				Items: make([]admin.ConnectorDeploymentAdminView, 0),
-				Total: 0,
-				Size:  0,
-			}
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
 
-			return empty, response.Error(err, httpRes)
+			return items, response.Error(err, httpRes)
 		}
 		if len(result.Items) == 0 {
 			break
@@ -321,10 +290,6 @@ func ListDeploymentsForNamespace(c *AdminAPI, opts request.ListOptions, namespac
 	}
 
 	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
-		var result *admin.ConnectorDeploymentAdminViewList
-		var err error
-		var httpRes *http.Response
-
 		e := c.Clusters().GetNamespaceDeployments(c.Context(), namespaceId)
 		e = e.Page(strconv.Itoa(i))
 		e = e.Size(strconv.Itoa(opts.Limit))
@@ -333,7 +298,7 @@ func ListDeploymentsForNamespace(c *AdminAPI, opts request.ListOptions, namespac
 			e = e.OrderBy(opts.OrderBy)
 		}
 
-		result, httpRes, err = e.Execute()
+		result, httpRes, err := e.Execute()
 
 		if httpRes != nil {
 			defer func() {
@@ -341,14 +306,11 @@ func ListDeploymentsForNamespace(c *AdminAPI, opts request.ListOptions, namespac
 			}()
 		}
 		if err != nil {
-			empty := admin.ConnectorDeploymentAdminViewList{
-				Kind:  "ConnectorDeploymentAdminViewList",
-				Items: make([]admin.ConnectorDeploymentAdminView, 0),
-				Total: 0,
-				Size:  0,
-			}
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
 
-			return empty, response.Error(err, httpRes)
+			return items, response.Error(err, httpRes)
 		}
 		if len(result.Items) == 0 {
 			break

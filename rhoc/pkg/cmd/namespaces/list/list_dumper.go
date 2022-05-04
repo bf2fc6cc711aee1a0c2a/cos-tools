@@ -76,15 +76,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 				},
 			},
 			{
-				Name: "Version",
-				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
-					return dumper.Row{
-						Value: strconv.FormatInt(in.ResourceVersion, 10),
-					}
-				},
-			},
-			{
 				Name: "State",
 				Wide: false,
 				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
@@ -107,6 +98,15 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorNamespaceList, wide bo
 					}
 
 					return r
+				},
+			},
+			{
+				Name: "Version",
+				Wide: true,
+				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+					return dumper.Row{
+						Value: strconv.FormatInt(in.ResourceVersion, 10),
+					}
 				},
 			},
 			{

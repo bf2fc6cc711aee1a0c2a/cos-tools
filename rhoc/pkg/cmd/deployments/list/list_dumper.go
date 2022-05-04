@@ -64,24 +64,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 				},
 			},
 			{
-				Name: "Version",
-				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
-					return dumper.Row{
-						Value: strconv.FormatInt(in.Metadata.ResourceVersion, 10),
-					}
-				},
-			},
-			{
-				Name: "ConnectorVersion",
-				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
-					return dumper.Row{
-						Value: strconv.FormatInt(in.Spec.ConnectorResourceVersion, 10),
-					}
-				},
-			},
-			{
 				Name: "DesiredState",
 				Wide: false,
 				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
@@ -94,7 +76,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 				Name: "State",
 				Wide: false,
 				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
-
 					r := dumper.Row{
 						Value: string(in.Status.Phase),
 					}
@@ -106,6 +87,36 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorDeploymentAdminViewLis
 						r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
 					case "stopped":
 						r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+					}
+
+					return r
+				},
+			},
+			{
+				Name: "Version",
+				Wide: true,
+				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+					return dumper.Row{
+						Value: strconv.FormatInt(in.Metadata.ResourceVersion, 10),
+					}
+				},
+			},
+			{
+				Name: "DeploymentVersion",
+				Wide: true,
+				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+					r := dumper.Row{
+						Value: strconv.FormatInt(in.Status.ResourceVersion, 10),
+					}
+
+					switch {
+					case in.Metadata.ResourceVersion > in.Status.ResourceVersion:
+						r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgCyanColor}
+
+					case in.Metadata.ResourceVersion < in.Status.ResourceVersion:
+						r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgRedColor}
+					case in.Metadata.ResourceVersion == in.Status.ResourceVersion:
+						r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgGreenColor}
 					}
 
 					return r

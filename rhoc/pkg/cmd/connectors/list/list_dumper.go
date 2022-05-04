@@ -65,15 +65,6 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 				},
 			},
 			{
-				Name: "Version",
-				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
-					return dumper.Row{
-						Value: strconv.FormatInt(in.ResourceVersion, 10),
-					}
-				},
-			},
-			{
 				Name: "DesiredState",
 				Wide: false,
 				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
@@ -100,6 +91,15 @@ func dumpAsTable(f *factory.Factory, items admin.ConnectorAdminViewList, wide bo
 					}
 
 					return r
+				},
+			},
+			{
+				Name: "Version",
+				Wide: false,
+				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+					return dumper.Row{
+						Value: strconv.FormatInt(in.ResourceVersion, 10),
+					}
 				},
 			},
 			{

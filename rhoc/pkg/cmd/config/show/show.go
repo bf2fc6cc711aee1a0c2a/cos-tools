@@ -40,7 +40,7 @@ func NewConfigShowCommand(f *factory.Factory) *cobra.Command {
 				},
 			}
 
-			dumper.DumpWithConfig(config, f.IOStreams.Out, []keyVal{
+			dumper.DumpTable(config, f.IOStreams.Out, []keyVal{
 				{key: "API URL", val: c.APIUrl},
 				{key: "Auth URL", val: c.AuthURL},
 				{key: "Mas Auth URL", val: c.MasAuthURL},

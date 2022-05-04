@@ -95,5 +95,5 @@ func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, sty
 		},
 	}
 
-	dumper.DumpWithConfig(config, out, items.Items)
+	dumper.DumpTable(config, out, items.Items)
 }

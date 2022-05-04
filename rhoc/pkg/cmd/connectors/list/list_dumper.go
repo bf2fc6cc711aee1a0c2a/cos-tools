@@ -134,5 +134,5 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 		},
 	}
 
-	dumper.DumpWithConfig(config, out, items.Items)
+	dumper.DumpTable(config, out, items.Items)
 }

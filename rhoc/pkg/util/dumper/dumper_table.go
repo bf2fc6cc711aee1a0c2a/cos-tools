@@ -34,44 +34,33 @@ type TableConfig[T any] struct {
 	Wide    bool
 	Columns ColumnList[T]
 }
-type Table[K any] struct {
-	Config TableConfig[K]
-}
 
-func NewTable[K any](conf TableConfig[K]) *Table[K] {
-	t := Table[K]{
-		Config: conf,
-	}
-
-	return &t
-}
-
-func (t *Table[K]) Dump(out io.Writer, items []K) error {
+func DumpTable[T any](config TableConfig[T], out io.Writer, items []T) error {
 	if len(items) == 0 {
 		return nil
 	}
 
-	headers := make([]string, 0, len(t.Config.Columns))
-	for i := range t.Config.Columns {
-		if !t.Config.Wide && t.Config.Columns[i].Wide {
+	headers := make([]string, 0, len(config.Columns))
+	for i := range config.Columns {
+		if !config.Wide && config.Columns[i].Wide {
 			continue
 		}
 
-		header := stringy.New(t.Config.Columns[i].Name).SnakeCase().ToUpper()
+		header := stringy.New(config.Columns[i].Name).SnakeCase().ToUpper()
 		headers = append(headers, header)
 
 	}
 
-	switch t.Config.Style {
+	switch config.Style {
 	case TableStyleCSV:
 		w := csv.NewWriter(out)
 
 		w.Write(headers)
 
 		for _, i := range items {
-			row := make([]string, 0, len(t.Config.Columns))
+			row := make([]string, 0, len(config.Columns))
 
-			for _, f := range t.Config.Columns {
+			for _, f := range config.Columns {
 				r := f.Getter(&i)
 
 				row = append(row, r.Value)
@@ -97,11 +86,11 @@ func (t *Table[K]) Dump(out io.Writer, items []K) error {
 		table.SetAlignment(tablewriter.ALIGN_LEFT)
 
 		for _, item := range items {
-			row := make([]string, 0, len(t.Config.Columns))
-			col := make([]tablewriter.Colors, 0, len(t.Config.Columns))
+			row := make([]string, 0, len(config.Columns))
+			col := make([]tablewriter.Colors, 0, len(config.Columns))
 
-			for i, f := range t.Config.Columns {
-				if !t.Config.Wide && t.Config.Columns[i].Wide {
+			for i, f := range config.Columns {
+				if !config.Wide && config.Columns[i].Wide {
 					continue
 				}
 
@@ -118,10 +107,6 @@ func (t *Table[K]) Dump(out io.Writer, items []K) error {
 
 		return nil
 	default:
-		return fmt.Errorf("unsupported table style %d", t.Config.Style)
+		return fmt.Errorf("unsupported table style %d", config.Style)
 	}
-}
-
-func DumpWithConfig[T any](config TableConfig[T], out io.Writer, items []T) {
-	NewTable(config).Dump(out, items)
 }

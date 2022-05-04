@@ -169,5 +169,5 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 		},
 	}
 
-	dumper.DumpWithConfig(config, out, items.Items)
+	dumper.DumpTable(config, out, items.Items)
 }

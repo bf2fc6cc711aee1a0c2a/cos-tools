@@ -17,11 +17,22 @@ func ReadError(response *http.Response) (admin.Error, error) {
 }
 
 func Error(err error, resp *http.Response) error {
-	if resp != nil && resp.StatusCode == http.StatusInternalServerError {
+	if resp == nil {
+		return err
+	}
+
+	switch resp.StatusCode {
+	case http.StatusInternalServerError:
+		e, _ := ReadError(resp)
+		if e.Reason != "" {
+			err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
+		}
+	case http.StatusBadRequest:
 		e, _ := ReadError(resp)
 		if e.Reason != "" {
 			err = fmt.Errorf("%s: [%w]", err.Error(), errors.New(e.Reason))
 		}
 	}
+
 	return err
 }

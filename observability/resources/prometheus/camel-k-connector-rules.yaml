@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: rhoc
+  name: camel-k-connector-rules
+spec:
+  groups:
+    - name: camel-k-connector
+      rules:
+        - alert: CamelKConnectorContainerFrequentlyRestarting
+          expr: increase(kube_pod_container_status_restarts_total{container="integration"} by (pod)[60m]) > 3
+          labels:
+            severity: warning
+          annotations:
+            summary: 'the camel-k connector is restarting frequently'
+            description: 'the camel-k connector container {{ $labels.pod }} restarted frequently in the last 60 minutes'
+            sop_url: 'https://TODO'

@@ -85,28 +85,41 @@ func run(opts *options) error {
 	table.Append([]string{opts.id, "", "", ""})
 
 	for i, ns := range namespaces.Items {
+
+		data := []string{}
+		style := []tablewriter.Colors{{}, {}, {}, {}}
+
 		age := duration.HumanDuration(time.Since(ns.CreatedAt))
 		if ns.CreatedAt.IsZero() {
 			age = ""
 		}
 
 		if i == len(namespaces.Items)-1 {
-			table.Append([]string{
+			data = []string{
 				fmt.Sprintf("%s%s", lastElemPrefix, ns.Id),
 				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,
 				age,
-			})
+			}
 		} else {
-			table.Append([]string{
+			data = []string{
 				fmt.Sprintf("%s%s", firstElemPrefix, ns.Id),
 				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,
 				age,
-			})
+			}
 		}
+
+		switch string(ns.Status.State) {
+		case "ready":
+			style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+		case "disconnected":
+			style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+		}
+
+		table.Rich(data, style)
 
 		connectors, err := service.ListConnectorsForNamespace(c, opts.ListOptions, ns.Id)
 		if err != nil {
@@ -114,9 +127,6 @@ func run(opts *options) error {
 		}
 
 		for i, ct := range connectors.Items {
-			data := []string{}
-			style := []tablewriter.Colors{{}, {}, {}, {}}
-
 			age := duration.HumanDuration(time.Since(ct.CreatedAt))
 			if ct.CreatedAt.IsZero() {
 				age = ""

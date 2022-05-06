@@ -35,7 +35,8 @@
         "prometheus/strimzi-operator-rules.yaml",
         "prometheus/cos-fleetshard-sync-rules.yaml",
         "prometheus/cos-fleetshard-operator-camel-rules.yaml",
-        "prometheus/cos-fleetshard-operator-debezium-rules.yaml"
+        "prometheus/cos-fleetshard-operator-debezium-rules.yaml",
+        "prometheus/camel-k-connector-rules.yaml"
       ],
       "federation": "prometheus/federation-config.yaml",
       "overridePrometheusPvcSize": "50Gi"

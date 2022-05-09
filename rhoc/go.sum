@@ -610,6 +610,8 @@ github.com/prometheus/procfs v0.6.0/go.mod h1:cz+aTbrPOrUb4q7XlbU9ygM+/jj0fzG6c1
 github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
 github.com/redhat-developer/app-services-cli v0.40.2-0.20220420135221-897b4f80acc2 h1:0gvSjqqLiJ3VbUK+fBsUSdkvfXQjqBmTAOpc/RLP+sg=
 github.com/redhat-developer/app-services-cli v0.40.2-0.20220420135221-897b4f80acc2/go.mod h1:y/dDfUjZ5n+nU8M5K7Rg9LYsrXITr8nv3meK1x0YXEM=
+github.com/redhat-developer/app-services-cli v0.42.2 h1:HzaWZPdthhcg3ahBjpEzXUbBlCCPcrYmJg3cxivB9vo=
+github.com/redhat-developer/app-services-cli v0.42.2/go.mod h1:y/dDfUjZ5n+nU8M5K7Rg9LYsrXITr8nv3meK1x0YXEM=
 github.com/redhat-developer/app-services-sdk-go v0.10.0 h1:zI0X5FR0NOj6IwBWk3y1TWn0JASEV8qoBPQjzkv8wbQ=
 github.com/redhat-developer/app-services-sdk-go v0.10.0/go.mod h1:enn8Zz6IT0HZYzS6LSttiME2apwnvfVWZnGRS81A4rk=
 github.com/redhat-developer/app-services-sdk-go/accountmgmt v0.1.0 h1:MOljVN8AKTM72Yed8ioAwhdW0KdWEhBZjjam3lY2lyY=

@@ -20,7 +20,7 @@ spec:
         - alert: CosFleetShardOperatorDebeziumContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-operator-debezium"}[60m]) > 3
           labels:
-            severity: warning
+            severity: critical
           annotations:
             summary: 'cos-fleetshard-operator-debezium is restarting frequently'
             description: 'cos-fleetshard-operator-debezium container restarted frequently in the last 60 minutes'

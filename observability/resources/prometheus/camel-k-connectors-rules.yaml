@@ -11,7 +11,7 @@ spec:
         - alert: CamelKConnectorContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="integration"}[60m]) >3
           labels:
-            severity: warning
+            severity: critical
           annotations:
             summary: 'the connector is restarting frequently'
             description: 'the connector container {{ $labels.pod }} in the namespace {{ $labels.namespace }} restarted frequently (>3) in the last 60 minutes'

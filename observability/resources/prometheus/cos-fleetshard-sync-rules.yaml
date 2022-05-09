@@ -20,7 +20,7 @@ spec:
         - alert: CosFleetShardSyncContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-sync"}[60m]) > 3
           labels:
-            severity: warning
+            severity: critical
           annotations:
             summary: 'cos-fleetshard-sync is restarting frequently'
             description: 'cos-fleetshard-sync container restarted frequently in the last 60 minutes'

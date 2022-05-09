@@ -20,7 +20,7 @@ spec:
         - alert: StrimziOperatorContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="strimzi-cluster-operator"}[60m]) > 3
           labels:
-            severity: warning
+            severity: critical
           annotations:
             summary: 'the strimzi operator is restarting frequently'
             description: 'the strimzi operator container restarted frequently in the last 60 minutes'

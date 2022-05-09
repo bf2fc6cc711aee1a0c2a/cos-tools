@@ -20,7 +20,7 @@ spec:
         - alert: CamelKOperatorContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="camel-k-operator"}[60m]) > 3
           labels:
-            severity: warning
+            severity: critical
           annotations:
             summary: 'the camel-k operator is restarting frequently'
             description: 'the camel-k operator container restarted frequently in the last 60 minutes'
@@ -36,7 +36,7 @@ spec:
             > 10
           for: 1m
           labels:
-            severity: warning
+            severity: critical
           annotations:
             message: |
               {{ printf "%0.0f" $value }}% of the reconciliation requests
@@ -50,7 +50,7 @@ spec:
             > 1
           for: 10m
           labels:
-            severity: warning
+            severity: critical
           annotations:
             message: |
               {{ printf "%0.0f" $value }}% of the reconciliation requests

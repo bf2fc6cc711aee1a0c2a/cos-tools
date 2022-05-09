@@ -77,12 +77,13 @@ func run(opts *options) error {
 	table.SetBorder(false)
 	table.SetAutoFormatHeaders(false)
 	table.SetRowLine(false)
+	table.SetAutoWrapText(false)
 	table.SetColumnSeparator(tablewriter.SPACE)
 	table.SetCenterSeparator(tablewriter.SPACE)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 
-	table.Append([]string{opts.id, "", "", ""})
+	table.Append([]string{"cluster/" + opts.id, "", "", ""})
 
 	for i, ns := range namespaces.Items {
 
@@ -96,7 +97,7 @@ func run(opts *options) error {
 
 		if i == len(namespaces.Items)-1 {
 			data = []string{
-				fmt.Sprintf("%s%s", lastElemPrefix, ns.Id),
+				fmt.Sprintf("%s%s", lastElemPrefix, "namespace/"+ns.Id),
 				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,
@@ -104,12 +105,19 @@ func run(opts *options) error {
 			}
 		} else {
 			data = []string{
-				fmt.Sprintf("%s%s", firstElemPrefix, ns.Id),
+				fmt.Sprintf("%s%s", firstElemPrefix, "namespace/"+ns.Id),
 				ns.Owner,
 				string(ns.Status.State),
 				ns.Status.Error,
 				age,
 			}
+		}
+
+		switch ns.Tenant.Kind {
+		case admin.CONNECTORNAMESPACETENANTKIND_USER:
+			style[1] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgCyanColor}
+		case admin.CONNECTORNAMESPACETENANTKIND_ORGANISATION:
+			style[1] = tablewriter.Colors{}
 		}
 
 		switch string(ns.Status.State) {
@@ -134,7 +142,7 @@ func run(opts *options) error {
 
 			if i == len(connectors.Items)-1 {
 				data = []string{
-					fmt.Sprintf("%s%s%s%s", pipe, indent, lastElemPrefix, ct.Id),
+					fmt.Sprintf("%s%s%s%s", pipe, indent, lastElemPrefix, "connector/"+ct.Id),
 					ct.Owner,
 					string(ct.Status.State),
 					ns.Status.Error,
@@ -142,7 +150,7 @@ func run(opts *options) error {
 				}
 			} else {
 				data = []string{
-					fmt.Sprintf("%s%s%s%s", pipe, indent, firstElemPrefix, ct.Id),
+					fmt.Sprintf("%s%s%s%s", pipe, indent, firstElemPrefix, "connector/"+ct.Id),
 					ct.Owner,
 					string(ct.Status.State),
 					ns.Status.Error,

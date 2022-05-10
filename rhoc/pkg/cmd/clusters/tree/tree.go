@@ -73,7 +73,7 @@ func run(opts *options) error {
 	}
 
 	table := tablewriter.NewWriter(opts.f.IOStreams.Out)
-	table.SetHeader([]string{"ID", "OWNER", "STATUS", "REASON", "AGE"})
+	table.SetHeader([]string{"ID", "OWNER", "AGE", "STATUS", "REASON"})
 	table.SetBorder(false)
 	table.SetAutoFormatHeaders(false)
 	table.SetRowLine(false)
@@ -99,17 +99,17 @@ func run(opts *options) error {
 			data = []string{
 				fmt.Sprintf("%s%s", lastElemPrefix, "namespace/"+ns.Id),
 				ns.Owner,
+				age,
 				string(ns.Status.State),
 				ns.Status.Error,
-				age,
 			}
 		} else {
 			data = []string{
 				fmt.Sprintf("%s%s", firstElemPrefix, "namespace/"+ns.Id),
 				ns.Owner,
+				age,
 				string(ns.Status.State),
 				ns.Status.Error,
-				age,
 			}
 		}
 
@@ -122,9 +122,9 @@ func run(opts *options) error {
 
 		switch string(ns.Status.State) {
 		case "ready":
-			style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+			style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
 		case "disconnected":
-			style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+			style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
 		}
 
 		table.Rich(data, style)
@@ -144,27 +144,27 @@ func run(opts *options) error {
 				data = []string{
 					fmt.Sprintf("%s%s%s%s", pipe, indent, lastElemPrefix, "connector/"+ct.Id),
 					ct.Owner,
-					string(ct.Status.State),
-					ns.Status.Error,
 					age,
+					string(ct.Status.State),
+					ct.Status.Error,
 				}
 			} else {
 				data = []string{
 					fmt.Sprintf("%s%s%s%s", pipe, indent, firstElemPrefix, "connector/"+ct.Id),
 					ct.Owner,
-					string(ct.Status.State),
-					ns.Status.Error,
 					age,
+					string(ct.Status.State),
+					ct.Status.Error,
 				}
 			}
 
 			switch string(ct.Status.State) {
 			case "ready":
-				style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+				style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
 			case "failed":
-				style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+				style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
 			case "stopped":
-				style[2] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+				style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
 			}
 
 			table.Rich(data, style)

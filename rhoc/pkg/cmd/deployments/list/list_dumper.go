@@ -53,12 +53,43 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, wi
 				},
 			},
 			{
-				Name: "ConnectorTypeId",
+				Name: "Type",
 				Wide: true,
 				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
 					return dumper.Row{
 						Value: in.Spec.ConnectorTypeId,
 					}
+				},
+			},
+			{
+				Name: "TypeRevision",
+				Wide: true,
+				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+					if image, ok := in.Spec.ShardMetadata["connector_revision"]; ok {
+						return dumper.Row{
+							Value: image.(string),
+						}
+					}
+
+					return dumper.Row{}
+				},
+			},
+			{
+				Name: "TypeImage",
+				Wide: true,
+				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+					if image, ok := in.Spec.ShardMetadata["connector_image"]; ok {
+						return dumper.Row{
+							Value: image.(string),
+						}
+					}
+					if image, ok := in.Spec.ShardMetadata["container_image"]; ok {
+						return dumper.Row{
+							Value: image.(string),
+						}
+					}
+
+					return dumper.Row{}
 				},
 			},
 			{

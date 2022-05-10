@@ -48,9 +48,16 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 				Name: "Owner",
 				Wide: false,
 				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
-					return dumper.Row{
+					r := dumper.Row{
 						Value: in.Owner,
 					}
+
+					switch in.Tenant.Kind {
+					case admin.CONNECTORNAMESPACETENANTKIND_USER:
+						r.Colors = tablewriter.Colors{tablewriter.Normal, tablewriter.FgCyanColor}
+					}
+
+					return r
 				},
 			},
 			{
@@ -65,7 +72,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 
 			{
 				Name: "TenantID",
-				Wide: false,
+				Wide: true,
 				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
 					return dumper.Row{
 						Value: in.Tenant.Id,

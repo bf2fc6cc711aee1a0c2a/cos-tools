@@ -91,6 +91,15 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 				},
 			},
 			{
+				Name: "Reason",
+				Wide: true,
+				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+					return dumper.Row{
+						Value: in.Status.Error,
+					}
+				},
+			},
+			{
 				Name: "Version",
 				Wide: false,
 				Getter: func(in *admin.ConnectorAdminView) dumper.Row {

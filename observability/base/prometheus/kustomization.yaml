@@ -1,9 +1,0 @@
-resources:
-  - ./cluster-role.yaml
-  - ./config-map.yaml
-  - ./volume.yaml
-  - ./deployment.yaml
-  - ./service.yaml
-commonLabels:
-  app.kubernetes.io/name: prometheus
-  app.kubernetes.io/version: latest

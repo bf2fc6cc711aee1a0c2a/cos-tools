@@ -1,5 +1,5 @@
 {
-  "id": "managed-connectors-staging",
+  "id": "managed-connectors",
   "config": {
     "alertmanager": {
       "pagerDutySecretName": "redhat-managed-connectors-pagerduty",

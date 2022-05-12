@@ -4,6 +4,8 @@ LOCAL_BIN_PATH := ${PROJECT_PATH}/bin
 CLI_VERSION ?= $(shell git rev-parse --short HEAD)
 GO_LDFLAGS := -X github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build.Version=$(CLI_VERSION) $(GO_LDFLAGS)
 
+SHELL = bash
+
 GO := go
 GOFMT := gofmt
 

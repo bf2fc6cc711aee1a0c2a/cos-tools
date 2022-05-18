@@ -1,0 +1,336 @@
+writeRelabelConfigs:
+  # WHAT: Reports the current amount of samples that have failed to be sent to observatorium
+  - action: replace
+    regex: prometheus_remote_storage_failed_samples_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Reports the current amount of samples that have been successfully sent to observatorium
+  - action: replace
+    regex: prometheus_remote_storage_succeeded_samples_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Reports the current amount of samples that have tried to be resent to observatorium
+  - action: replace
+    regex: prometheus_remote_storage_retried_samples_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Reports the current amount of Prometheus remote storage shards
+  - action: replace
+    regex: prometheus_remote_storage_shards$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Reports the desired amount of Prometheus remote storage shards
+  - action: replace
+    regex: prometheus_remote_storage_shards_desired$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Reports maximum amount of Prometheus remote storage shards
+  - action: replace
+    regex: prometheus_remote_storage_shards_max$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Reports minimum amount of Prometheus remote storage shards
+  - action: replace
+    regex: prometheus_remote_storage_shards_min$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Reports version of cluster
+  - action: replace
+    regex: cluster_version$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: kube_node_labels$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Gives the status of alerts, including alert state, severity.
+  - action: replace
+    regex: ALERTS$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+    # WHAT: Define the time spent by fleetshard operator in reconciles
+  - action: replace
+    regex: cos_fleetshard_controller_connectors_reconcile_monitor_time_seconds_max$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: The total number of backend connections
+  - action: replace
+    regex: cos_fleetshard_controller_connectors_reconcile_monitor_time_seconds$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Container cpu usage in seconds Used for user facing metrics
+  - action: replace
+    regex: >-
+      node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: >-
+      node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  # WHAT: Container resources limits
+  - action: replace
+    regex: kube_pod_container_resource_limits$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Requested resources by a container
+  # CARDINALITY: 18000 Scales based on number of Kafka Instances, brokers & zookeepers (and any other pods per kafka), and number of resource types. namespace:1000 pod:9 resources:2
+  - action: replace
+    regex: kube_pod_container_resource_requests$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Status of a container
+  - action: replace
+    regex: kube_pod_container_status_ready$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: kube_pod_container_status_ready;ma.*
+    sourceLabels:
+      - __name__
+      - namespace
+  # WHAT: Pod information
+  # CARDINALITY: 9000 Scales based on number of Kafka Instances, brokers & zookeepers (and any other pods per kafka). namespace:1000 pod:9
+  - action: replace
+    regex: kube_pod_info$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: kube_pod_info;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  # WHAT: Resource quota information
+  - action: replace
+    regex: kube_resourcequota$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT WHAT namespace was created (unix timestamp)
+  - action: replace
+    regex: kube_namespace_created$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Number of available bytes in the volume. Used for user facing metrics
+  - action: replace
+    regex: kubelet_volume_stats_available_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Capacity in bytes of the volume.
+  - action: replace
+    regex: kubelet_volume_stats_capacity_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Maximum number of inodes in the volume.
+  - action: replace
+    regex: kubelet_volume_stats_inodes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Number of used inodes in the volume.
+  - action: replace
+    regex: kubelet_volume_stats_inodes_used$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Number of used bytes in the volume.
+  - action: replace
+    regex: kubelet_volume_stats_used_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: kubelet.*;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  # WHAT: PVC status condition
+  - action: replace
+    regex: kube_persistentvolumeclaim_status_condition$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Persistent volume names for PVCs
+  - action: replace
+    regex: kube_persistentvolumeclaim_info$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Persistent volumes size
+  - action: replace
+    regex: kube_persistentvolume_capacity_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Persistent volumes requested size
+  - action: replace
+    regex: kube_persistentvolumeclaim_resource_requests_storage_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Total amount of container enforcement period intervals that have elapsed
+  - action: replace
+    regex: container_cpu_cfs_periods_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: total amount of throttled enforcement period intervals that have elapsed in the container
+  - action: replace
+    regex: container_cpu_cfs_throttled_periods_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: container_cpu_cfs.*;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  # WHAT: Amount of bytes a container receives over network per second
+  - action: replace
+    regex: container_network_receive_bytes_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: total amount of receive packets dropped over network per second
+  - action: replace
+    regex: container_network_receive_packets_dropped_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: total amount of packets received over network per second
+  - action: replace
+    regex: container_network_receive_packets_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: total amount of packets dropped while transmitting
+  - action: replace
+    regex: container_network_transmit_packets_dropped_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: the number of bytes transmitted by the container over the network
+  - action: replace
+    regex: container_network_transmit_bytes_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: the number of packets transmitted by the container over the network
+  - action: replace
+    regex: container_network_transmit_packets_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: container_network.*;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  - action: drop
+    regex: ^;container_network.*$
+    sourceLabels:
+      - namespace
+      - __name__
+  # WHAT: The amount of page cache memory in bytes
+  - action: replace
+    regex: container_memory_cache$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: The size in bytes of the RSS
+  - action: replace
+    regex: container_memory_rss$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: The amount of memory swap the container uses (bytes)
+  - action: replace
+    regex: container_memory_swap$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: The current amount of working set memory in bytes
+  - action: replace
+    regex: container_memory_working_set_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: container_memory.*;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  - action: drop
+    regex: ^;container_memory.*$
+    sourceLabels:
+      - namespace
+      - __name__
+  # LEAVE THIS AT BOTTOM OF FILE
+  - action: keep
+    regex: true$
+    sourceLabels:
+      - __tmp_keep
+  - action: labeldrop
+    regex: __tmp_keep

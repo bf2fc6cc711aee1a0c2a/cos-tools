@@ -98,7 +98,7 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Uptime in hrs",
+          "title": "Uptime ",
           "type": "stat"
         },
         {

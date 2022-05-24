@@ -3,9 +3,9 @@ kind: GrafanaDashboard
 metadata:
   labels:
     app: rhoc
-  name: camelk-connectors
+  name: camelk-operators
 spec:
-  name: camelk-connectors.json
+  name: camelk-operators.json
   json: |
     {
       "annotations": {

@@ -25,7 +25,7 @@ spec:
       "gnetId": null,
       "graphTooltip": 0,
       "id": 5,
-      "iteration": 1652897560141,
+      "iteration": 1653373559251,
       "links": [],
       "panels": [
         {
@@ -67,7 +67,7 @@ spec:
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
+            "w": 5,
             "x": 0,
             "y": 1
           },
@@ -127,7 +127,7 @@ spec:
           "gridPos": {
             "h": 4,
             "w": 4,
-            "x": 4,
+            "x": 5,
             "y": 1
           },
           "id": 12,
@@ -183,19 +183,19 @@ spec:
           },
           "gridPos": {
             "h": 4,
-            "w": 8,
+            "w": 10,
             "x": 9,
             "y": 1
           },
-          "id": 8,
+          "id": 4,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
               "calcs": [
-                "mean"
+                "last"
               ],
               "fields": "",
               "values": false
@@ -205,7 +205,83 @@ spec:
           "pluginVersion": "7.3.10",
           "targets": [
             {
-              "expr": "application_camel_exchange_processing_seconds_count{namespace=\"$namespace\", pod=\"$pod\"}",
+              "expr": "application_camel_context_exchanges_total{namespace=\"$namespace\", pod=\"$pod\"}",
+              "interval": "",
+              "legendFormat": "Exchanges Total",
+              "refId": "A"
+            },
+            {
+              "expr": "application_camel_context_exchanges_completed_total{namespace=\"$namespace\", pod=\"$pod\"}",
+              "interval": "",
+              "legendFormat": "Exchanges Completed",
+              "refId": "D"
+            },
+            {
+              "expr": "application_camel_context_exchanges_failed_total{namespace=\"$namespace\", pod=\"$pod\"}",
+              "interval": "",
+              "legendFormat": "Exchanges Failed",
+              "refId": "B"
+            },
+            {
+              "expr": "application_camel_context_exchanges_inflight_count{namespace=\"$namespace\", pod=\"$pod\"}",
+              "interval": "",
+              "legendFormat": "Exchanges Inflight",
+              "refId": "C"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Exchanges",
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 19,
+            "y": 1
+          },
+          "id": 33,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "application_camel_route_count{namespace=\"$namespace\", pod=\"$pod\"}",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -213,7 +289,7 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Exchange Processing Count per Second",
+          "title": "Total routes",
           "type": "stat"
         },
         {
@@ -260,12 +336,12 @@ spec:
           "fillGradient": 0,
           "gridPos": {
             "h": 8,
-            "w": 12,
+            "w": 8,
             "x": 0,
             "y": 6
           },
           "hiddenSeries": false,
-          "id": 4,
+          "id": 8,
           "legend": {
             "avg": false,
             "current": false,
@@ -292,23 +368,112 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "application_camel_context_exchanges_total{namespace=\"$namespace\", pod=\"$pod\"}",
+              "expr": "increase(application_camel_exchange_processing_seconds_count{namespace=\"$namespace\", pod=\"$pod\"}[60m])",
               "interval": "",
-              "legendFormat": "Exchanges total",
+              "legendFormat": "Rate of increase in Exchange Processing Time",
               "refId": "A"
-            },
-            {
-              "expr": "application_camel_context_exchanges_failed_total{namespace=\"$namespace\", pod=\"$pod\"}",
-              "interval": "",
-              "legendFormat": "Exchanges failed",
-              "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Exchanges",
+          "title": "Exchange Processing Time",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 7,
+            "x": 8,
+            "y": 6
+          },
+          "hiddenSeries": false,
+          "id": 32,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "increase(application_camel_context_exchanges_completed_total{namespace=\"$namespace\", pod=\"$pod\"}[60m])",
+              "interval": "",
+              "legendFormat": "{{camelContext}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Exchanges completed",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -375,8 +540,8 @@ spec:
           "fillGradient": 0,
           "gridPos": {
             "h": 8,
-            "w": 12,
-            "x": 12,
+            "w": 8,
+            "x": 15,
             "y": 6
           },
           "hiddenSeries": false,
@@ -518,7 +683,7 @@ spec:
             {
               "expr": "vendor_cpu_systemCpuLoad_percent{namespace=\"$namespace\", pod=\"$pod\"}",
               "interval": "",
-              "legendFormat": "",
+              "legendFormat": "System Load Percent",
               "refId": "A"
             }
           ],
@@ -613,7 +778,7 @@ spec:
             {
               "expr": "base_cpu_processCpuLoad_percent{namespace=\"$namespace\", pod=\"$pod\"}",
               "interval": "",
-              "legendFormat": "",
+              "legendFormat": "Process Load Percent",
               "refId": "A"
             }
           ],
@@ -708,7 +873,7 @@ spec:
             {
               "expr": "base_cpu_systemLoadAverage{namespace=\"$namespace\", pod=\"$pod\"}",
               "interval": "",
-              "legendFormat": "",
+              "legendFormat": "System Load Average",
               "refId": "A"
             }
           ],
@@ -782,7 +947,7 @@ spec:
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 7,
+            "h": 8,
             "w": 7,
             "x": 0,
             "y": 24
@@ -883,7 +1048,7 @@ spec:
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 7,
+            "h": 8,
             "w": 8,
             "x": 7,
             "y": 24
@@ -984,7 +1149,7 @@ spec:
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 7,
+            "h": 8,
             "w": 8,
             "x": 15,
             "y": 24
@@ -1075,6 +1240,121 @@ spec:
             "align": false,
             "alignLevel": null
           }
+        },
+        {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 32
+          },
+          "id": 37,
+          "panels": [],
+          "title": "Network",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 23,
+            "x": 0,
+            "y": 33
+          },
+          "hiddenSeries": false,
+          "id": 35,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(container_network_receive_bytes_total{namespace=\"$namespace\", pod=\"$pod\"}[10m]))",
+              "interval": "",
+              "legendFormat": "Received",
+              "refId": "A"
+            },
+            {
+              "expr": "- sum(rate(container_network_transmit_bytes_total{namespace=\"$namespace\", pod=\"$pod\"}[10m]))",
+              "interval": "",
+              "legendFormat": "Sent",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Network I/O pressure",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "refresh": "30s",
@@ -1086,7 +1366,7 @@ spec:
           {
             "allValue": null,
             "current": {
-              "selected": true,
+              "selected": false,
               "text": "redhat-openshift-connectors-c95j6h66ar2c9mtr5vjg",
               "value": "redhat-openshift-connectors-c95j6h66ar2c9mtr5vjg"
             },
@@ -1114,8 +1394,8 @@ spec:
             "allValue": null,
             "current": {
               "selected": true,
-              "text": "mctr-c9c380sb6db8jvtshdog-f7cb77cc4-tsd7z",
-              "value": "mctr-c9c380sb6db8jvtshdog-f7cb77cc4-tsd7z"
+              "text": "mctr-ca5osef46g0ae32av9k0-7b6c67964-nz6qd",
+              "value": "mctr-ca5osef46g0ae32av9k0-7b6c67964-nz6qd"
             },
             "datasource": "Prometheus",
             "definition": "label_values(application_camel_route_count{}, pod)",
@@ -1140,12 +1420,12 @@ spec:
         ]
       },
       "time": {
-        "from": "now-6h",
+        "from": "now-1h",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
       "title": "connectors",
       "uid": "nnrd9pu7k",
-      "version": 6
+      "version": 17
     }

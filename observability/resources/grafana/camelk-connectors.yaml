@@ -25,7 +25,7 @@ spec:
       "gnetId": null,
       "graphTooltip": 0,
       "id": 5,
-      "iteration": 1653373559251,
+      "iteration": 1653378156005,
       "links": [],
       "panels": [
         {
@@ -98,7 +98,7 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Uptime ",
+          "title": "Uptime",
           "type": "stat"
         },
         {
@@ -156,7 +156,7 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Memory used",
+          "title": "Memory Used",
           "type": "stat"
         },
         {
@@ -289,7 +289,7 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Total routes",
+          "title": "Total Routes",
           "type": "stat"
         },
         {
@@ -473,7 +473,7 @@ spec:
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Exchanges completed",
+          "title": "Exchanges Completed",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1319,7 +1319,7 @@ spec:
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Network I/O pressure",
+          "title": "Network I/O Pressure",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1393,9 +1393,9 @@ spec:
           {
             "allValue": null,
             "current": {
-              "selected": true,
-              "text": "mctr-ca5osef46g0ae32av9k0-7b6c67964-nz6qd",
-              "value": "mctr-ca5osef46g0ae32av9k0-7b6c67964-nz6qd"
+              "selected": false,
+              "text": "mctr-c9c380sb6db8jvtshdog-f7cb77cc4-tsd7z",
+              "value": "mctr-c9c380sb6db8jvtshdog-f7cb77cc4-tsd7z"
             },
             "datasource": "Prometheus",
             "definition": "label_values(application_camel_route_count{}, pod)",
@@ -1420,12 +1420,12 @@ spec:
         ]
       },
       "time": {
-        "from": "now-1h",
+        "from": "now-6h",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
-      "title": "connectors",
+      "title": "CamelK Connectors",
       "uid": "nnrd9pu7k",
-      "version": 17
+      "version": 19
     }

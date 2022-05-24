@@ -3,7 +3,7 @@ kind: GrafanaDashboard
 metadata:
   labels:
     app: rhoc
-  name: camelk-operators
+  name: camelk-connectos
 spec:
   name: camelk-operators.json
   json: |

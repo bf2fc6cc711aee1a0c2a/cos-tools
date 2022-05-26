@@ -9,7 +9,8 @@
       "dashboards": [
         "grafana/overview.yaml",
         "grafana/camelk-operators.yaml",
-        "grafana/strimzi-operators.yaml"
+        "grafana/strimzi-operators.yaml",
+        "grafana/camelk-connectors.yaml"
       ]
     },
     "promtail": {
@@ -38,8 +39,16 @@
         "prometheus/cos-fleetshard-operator-debezium-rules.yaml",
         "prometheus/camel-k-connectors-rules.yaml"
       ],
+      "observatorium": "default",
+      "remoteWrite": "prometheus/remote-write.yaml",
       "federation": "prometheus/federation-config.yaml",
       "overridePrometheusPvcSize": "50Gi"
-    }
+    },
+    "observatoria": [
+      {
+        "id": "default",
+        "secretName": "observatorium-configuration-red-hat-sso"
+      }
+    ]
   }
 }

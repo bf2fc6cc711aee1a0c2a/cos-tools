@@ -24,7 +24,7 @@ spec:
           annotations:
             summary: 'the strimzi operator is restarting frequently'
             description: 'the strimzi operator container restarted frequently in the last 60 minutes'
-            sop_url: 'https://TODO'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tree/main/observability/sops/alerts/strimzi_operator_container_frequently_restarting.adoc'
     - name: strimzi-cluster-resources
       rules:
         - alert: StrimziOperatorReconciliationsFailed

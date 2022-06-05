@@ -15,4 +15,4 @@ kamel
 .kamel/
 
 dist/
-bin/
+rhoc/bin/

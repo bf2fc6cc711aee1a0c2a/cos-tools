@@ -1,10 +1,10 @@
 # cos-tools
 
 requires:
-- jq
+- [jq](https://stedolan.github.io/jq/)
 - curl
-- stern
-- ocm
+- [stern](https://github.com/stern/stern)
+- [ocm](https://github.com/openshift-online/ocm-cli)
 - kubectl
 
 define the following env vars:

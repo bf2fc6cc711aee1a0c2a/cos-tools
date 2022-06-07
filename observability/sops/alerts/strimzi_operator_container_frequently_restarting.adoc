@@ -40,7 +40,7 @@ There may be a number of reason for this alert to be fired.
 
 . The *redhat-openshift-connectors-observability / Strimzi Operators* Grafana dashboard can help you to troubleshoot the issue.
 
-. Identify the reason why the Strimg Operator keep restarting.
+. Identify the reason why the Strimzi Operator keeps restarting.
 . If the alert is not resolved move to the Troubleshooting section below.
 . If a workaround is applied, open an issue for further investigations.
 

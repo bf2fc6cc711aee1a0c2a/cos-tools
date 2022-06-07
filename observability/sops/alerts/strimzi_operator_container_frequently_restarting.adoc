@@ -84,7 +84,7 @@ LAST SEEN   TYPE      REASON               OBJECT                               
 +
 In this case, the operator got restarted because of the liveness probe failed.
 
-* In case the operator get restarted because of the liveness probe fails, check the logs of the strimzi operator POD
+* In this case, check the logs of the Strimzi operator pod.
 +
 [source]
 ----

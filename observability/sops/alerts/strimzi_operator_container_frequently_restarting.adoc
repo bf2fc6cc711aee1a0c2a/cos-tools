@@ -49,7 +49,7 @@ There may be a number of reason for this alert to be fired.
 What steps are required to verify that the procedure has been followed correctly and the required changes have been implemented correctly, with the desired outcome.
 
 . Check the alert is no longer firing.
-. Check the dashboard are shows a regression of Failed Reconciliations per Hour.
+. Check the dashboard shows a regression of Failed Reconciliations per hour.
 
 == Troubleshooting
 

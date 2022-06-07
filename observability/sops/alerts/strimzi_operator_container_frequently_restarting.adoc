@@ -24,7 +24,7 @@ It fires when the increase in the time series in the range vector is greater tha
 
 When this alert triggers it means that in the past hour the Strimzi operator has been restarted more than 3 times.
 
-There may be a number of reason for this alert to be fired.
+There may be a number of reasons for this alert to be fired.
 
 == Prerequisites
 

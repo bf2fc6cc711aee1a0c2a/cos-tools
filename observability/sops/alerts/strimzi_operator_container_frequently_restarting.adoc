@@ -22,7 +22,7 @@ The purpose of this SOP is to describe the process of resolving the alert `Strim
 The source of the alert is the `kube_pod_container_status_restarts_total` related to the `strimzi-cluster-operator` container.
 It fires when the increase in the time series in the range vector is greater than 3 in the last hour: `increase(kube_pod_container_status_restarts_total{container="strimzi-cluster-operator"}[1h]) > 3`
 
-When this alert triggers it means that in the past hour, strimzi operator has been restarted more that 3 times.
+When this alert triggers it means that in the past hour the Strimzi operator has been restarted more than 3 times.
 
 There may be a number of reason for this alert to be fired.
 

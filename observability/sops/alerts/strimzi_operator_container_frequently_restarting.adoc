@@ -129,7 +129,7 @@ strimzi-cluster-operator-6ddcb45f47-2jpp2 strimzi-cluster-operator 	at java.lang
 I
 ----
 +
-In case yu see something like `Thread blocked` as above, then the reason is likely related to GC taking too much time to perform its taska hence, the issue may be related to memory limits being too low.
+In case you see something like `Thread blocked` as above, then the reason is likely related to garbage collection taking too much time to perform its task. Hence, the issue may be related to memory limits being too low.
 +
 This can be confirmed by looking at the various jvm entries in prometheus/grapahana, as example, you may get entries like the ones below:
 [source]

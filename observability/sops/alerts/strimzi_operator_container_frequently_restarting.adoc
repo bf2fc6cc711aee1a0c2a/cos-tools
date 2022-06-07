@@ -82,7 +82,7 @@ LAST SEEN   TYPE      REASON               OBJECT                               
 14m         Normal    NeedsReinstall       clusterserviceversion/strimzi-kafka-operator.v0.28.0    installing: waiting for deployment strimzi-cluster-operator to become ready: deployment "strimzi-cluster-operator" not available: Deployment does not have minimum availability.
 ----
 +
-In this case, the operator get restarted because of the liveness probe fails
+In this case, the operator got restarted because of the liveness probe failed.
 
 * In case the operator get restarted because of the liveness probe fails, check the logs of the strimzi operator POD
 +

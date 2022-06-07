@@ -142,5 +142,5 @@ action="end of minor GC", cause="Allocation Failure", container="strimzi-cluster
 
 // Include the following step in every alert SOP
 * If the above hasn't worked contact engineering:
-** Use the Managed Connectors Service Gchat channel during business hours.
+** Use the `MAS - Connectors` Google Chat channel during business hours.
 ** Use the #rhoc-support slack channel during business hours.

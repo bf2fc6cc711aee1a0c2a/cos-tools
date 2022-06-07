@@ -138,7 +138,7 @@ action="end of major GC", cause="Metadata GC Threshold", container="strimzi-clus
 action="end of minor GC", cause="Allocation Failure", container="strimzi-cluster-operator", endpoint="http", instance="10.131.0.67:8080", job="redhat-openshift-connectors-observability/strimzi-metrics", namespace="redhat-openshift-connectors", pod="strimzi-cluster-operator-6ddcb45f47-2jpp2"
 ----
 
-* As workaround, the limits of the strimzi operator can be temporarly changed by changing them in the operator's CSV
+* As workaround, the limits of the Strimzi operator can be temporarly changed in the operator's CSV (ClusterServiceVersion)
 
 // Include the following step in every alert SOP
 * If the above hasn't worked contact engineering:

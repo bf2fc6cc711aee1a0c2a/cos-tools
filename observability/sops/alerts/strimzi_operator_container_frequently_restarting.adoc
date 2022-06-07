@@ -53,7 +53,7 @@ What steps are required to verify that the procedure has been followed correctly
 
 == Troubleshooting
 
-* Check how may time the strimzi-cluster-operator has been restarted, es example:
+* Check how may times the strimzi-cluster-operator has been restarted, es example:
 +
 [source]
 ----

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+BASE=${COS_BASE_PATH}/api/connector_mgmt/v1
+NS_BASE=${BASE}/kafka_connector_namespaces
+
+if [ "$#" -eq 1 ]; then
+  curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${NS_BASE}/eval" -d '{ "name": "'"${1}"'"} ' | jq
+else
+  curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${NS_BASE}/eval" -d '{}' | jq
+fi

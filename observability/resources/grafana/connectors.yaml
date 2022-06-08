@@ -65,7 +65,7 @@ spec:
           },
           "gridPos": {
             "h": 6,
-            "w": 10,
+            "w": 9,
             "x": 0,
             "y": 1
           },
@@ -73,7 +73,7 @@ spec:
           "options": {
             "colorMode": "value",
             "graphMode": "none",
-            "justifyMode": "auto",
+            "justifyMode": "center",
             "orientation": "auto",
             "reduceOptions": {
               "calcs": [
@@ -111,23 +111,81 @@ spec:
           "type": "stat"
         },
         {
-          "aliasColors": {},
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 95
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 4,
+            "x": 9,
+            "y": 1
+          },
+          "id": 15,
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": " count(up{container=\"integration\"} > 0) / count(up{container=\"integration\"}) * 100",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Connectors Uptime",
+          "type": "gauge"
+        },
+        {
+          "aliasColors": {
+            "Connectors Failing": "dark-red"
+          },
           "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "",
           "fieldConfig": {
             "defaults": {
               "custom": {}
             },
             "overrides": []
           },
-          "fill": 1,
+          "fill": 2,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
-            "w": 11,
-            "x": 10,
+            "w": 9,
+            "x": 13,
             "y": 1
           },
           "hiddenSeries": false,
@@ -143,9 +201,9 @@ spec:
           },
           "lines": true,
           "linewidth": 1,
-          "nullPointMode": "null",
+          "nullPointMode": "null as zero",
           "options": {
-            "alertThreshold": true
+            "alertThreshold": false
           },
           "percentage": false,
           "pluginVersion": "7.3.10",
@@ -154,13 +212,13 @@ spec:
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "stack": false,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(up{container=\"integration\"})",
+              "expr": "count(increase(kube_pod_container_status_restarts_total{container=\"integration\"}[60m]) >3)",
               "interval": "",
-              "legendFormat": "Total",
+              "legendFormat": "Connectors Failing",
               "refId": "A"
             },
             {
@@ -180,10 +238,10 @@ spec:
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Connectors Count",
+          "title": "Connectors Running / Crashing",
           "tooltip": {
             "shared": true,
-            "sort": 0,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -231,6 +289,228 @@ spec:
           "panels": [],
           "title": "CamelK Connectors",
           "type": "row"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 9,
+            "x": 0,
+            "y": 8
+          },
+          "id": 9,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "value_and_name"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "sum(application_camel_context_exchanges_total)",
+              "interval": "",
+              "legendFormat": "Total",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(application_camel_context_exchanges_completed_total)",
+              "interval": "",
+              "legendFormat": "Completed",
+              "refId": "B"
+            },
+            {
+              "expr": "sum(application_camel_context_exchanges_failed_total)",
+              "interval": "",
+              "legendFormat": "Failed",
+              "refId": "C"
+            },
+            {
+              "expr": "sum(application_camel_context_exchanges_inflight_count)",
+              "interval": "",
+              "legendFormat": "Inflight",
+              "refId": "D"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Exchanges Overview",
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 4,
+            "x": 9,
+            "y": 8
+          },
+          "id": 16,
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "sum(rate(application_camel_context_exchanges_completed_total[$__range])) / sum(rate(application_camel_context_exchanges_total[$__range])) * 100",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Exchanges Processed",
+          "type": "gauge"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 9,
+            "x": 13,
+            "y": 8
+          },
+          "hiddenSeries": false,
+          "id": 18,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "rate(camel_k_reconciliation_duration_seconds_count[5m])",
+              "interval": "",
+              "legendFormat": "{{kind}}-{{result}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": " Camel Connectors / Reconciliation Durations",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "datasource": null,
@@ -302,10 +582,10 @@ spec:
             ]
           },
           "gridPos": {
-            "h": 8,
-            "w": 11,
+            "h": 7,
+            "w": 22,
             "x": 0,
-            "y": 8
+            "y": 14
           },
           "id": 5,
           "options": {
@@ -342,78 +622,116 @@ spec:
           "type": "table"
         },
         {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 21
+          },
+          "id": 21,
+          "panels": [],
+          "title": "Debezium Connectors",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": null,
           "fieldConfig": {
             "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              }
+              "custom": {}
             },
             "overrides": []
           },
+          "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
-            "h": 6,
+            "h": 8,
             "w": 11,
-            "x": 11,
-            "y": 8
+            "x": 0,
+            "y": 22
           },
-          "id": 9,
+          "hiddenSeries": false,
+          "id": 19,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
           "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "value_and_name"
+            "alertThreshold": true
           },
+          "percentage": false,
           "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(application_camel_context_exchanges_total)",
+              "expr": "sum(increase(strimzi_reconciliations_failed_total[1h])) by (kind)",
               "interval": "",
-              "legendFormat": "Exchanges Total",
+              "legendFormat": "{{kind}}",
               "refId": "A"
-            },
-            {
-              "expr": "sum(application_camel_context_exchanges_completed_total)",
-              "interval": "",
-              "legendFormat": "Exchanges Completed",
-              "refId": "B"
-            },
-            {
-              "expr": "sum(application_camel_context_exchanges_failed_total)",
-              "interval": "",
-              "legendFormat": "Exchanges Failed",
-              "refId": "C"
-            },
-            {
-              "expr": "sum(application_camel_context_exchanges_inflight_count)",
-              "interval": "",
-              "legendFormat": "Exchanges Inflight",
-              "refId": "D"
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
-          "title": "Exchanges Overview",
-          "type": "stat"
+          "title": "Debezium / Failed Reconciliation per hour",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
-      "refresh": "1m",
+      "refresh": "5s",
       "schemaVersion": 26,
       "style": "dark",
       "tags": [],
@@ -421,12 +739,12 @@ spec:
         "list": []
       },
       "time": {
-        "from": "now-6h",
+        "from": "now-1h",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
       "title": "Connectors",
       "uid": "TZbaaBr7z",
-      "version": 17
+      "version": 25
     }

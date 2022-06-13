@@ -10,7 +10,8 @@
         "grafana/overview.yaml",
         "grafana/camelk-operators.yaml",
         "grafana/strimzi-operators.yaml",
-        "grafana/camelk-connectors.yaml"
+        "grafana/camelk-connectors.yaml",
+        "grafana/connectors.yaml"
       ]
     },
     "promtail": {

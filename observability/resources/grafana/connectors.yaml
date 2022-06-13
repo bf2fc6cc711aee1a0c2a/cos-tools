@@ -216,7 +216,7 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "count(increase(kube_pod_container_status_restarts_total{container=\"integration\"}[60m]) >3)",
+              "expr": "count(increase(kube_pod_container_status_restarts_total{container=\"integration\"}[10m]) >3)",
               "interval": "",
               "legendFormat": "Connectors Failing",
               "refId": "A"
@@ -746,5 +746,5 @@ spec:
       "timezone": "",
       "title": "Connectors",
       "uid": "TZbaaBr7z",
-      "version": 25
+      "version": 2
     }

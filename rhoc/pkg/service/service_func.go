@@ -323,3 +323,49 @@ func ListDeploymentsForNamespace(c *AdminAPI, opts request.ListOptions, namespac
 
 	return items, nil
 }
+
+func ListConnectorTypes(c *AdminAPI, opts request.ListOptions) (admin.ConnectorTypeAdminViewList, error) {
+	items := admin.ConnectorTypeAdminViewList{
+		Kind:  "ConnectorTypeAdminViewList",
+		Items: make([]admin.ConnectorTypeAdminView, 0),
+		Total: 0,
+		Size:  0,
+	}
+
+	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
+		e := c.Catalog().GetConnectorTypes(c.Context())
+		e = e.Page(strconv.Itoa(i))
+		e = e.Size(strconv.Itoa(opts.Limit))
+
+		if opts.OrderBy != "" {
+			e = e.OrderBy(opts.OrderBy)
+		}
+		if opts.Search != "" {
+			e = e.Search(opts.Search)
+		}
+
+		result, httpRes, err := e.Execute()
+
+		if httpRes != nil {
+			defer func() {
+				_ = httpRes.Body.Close()
+			}()
+		}
+		if err != nil {
+			items.Size = 0
+			items.Total = 0
+			items.Items = nil
+
+			return items, response.Error(err, httpRes)
+		}
+		if len(result.Items) == 0 {
+			break
+		}
+
+		items.Items = append(items.Items, result.Items...)
+		items.Size = int32(len(items.Items))
+		items.Total = result.Total
+	}
+
+	return items, nil
+}

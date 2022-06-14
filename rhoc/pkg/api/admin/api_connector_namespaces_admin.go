@@ -18,11 +18,6 @@ import (
 	"net/url"
 )
 
-// Linger please
-var (
-	_ context.Context
-)
-
 // ConnectorNamespacesAdminApiService ConnectorNamespacesAdminApi service
 type ConnectorNamespacesAdminApiService service
 

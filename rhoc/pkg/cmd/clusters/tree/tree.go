@@ -2,19 +2,15 @@ package tree
 
 import (
 	"fmt"
-	"net/http"
-	"strconv"
-	"time"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/request"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/resource"
 	"github.com/olekukonko/tablewriter"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
-	"k8s.io/apimachinery/pkg/util/duration"
 )
 
 const (
@@ -67,11 +63,6 @@ func run(opts *options) error {
 		return err
 	}
 
-	namespaces, err := service.ListNamespacesForCluster(c, opts.ListOptions, opts.id)
-	if err != nil {
-		return err
-	}
-
 	table := tablewriter.NewWriter(opts.f.IOStreams.Out)
 	table.SetHeader([]string{"ID", "OWNER", "AGE", "STATUS", "REASON"})
 	table.SetBorder(false)
@@ -83,91 +74,29 @@ func run(opts *options) error {
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 
-	table.Append([]string{"cluster/" + opts.id, "", "", ""})
+	if err := renderCluster(c, opts, table); err != nil {
+		return err
+	}
 
-	for i, ns := range namespaces.Items {
+	namespaces, err := service.ListNamespacesForCluster(c, opts.ListOptions, opts.id)
+	if err != nil {
+		return err
+	}
 
-		data := []string{}
-		style := []tablewriter.Colors{{}, {}, {}, {}}
-
-		age := duration.HumanDuration(time.Since(ns.CreatedAt))
-		if ns.CreatedAt.IsZero() {
-			age = ""
+	for nsIndex := range namespaces.Items {
+		if err := renderNamespace(namespaces, nsIndex, table); err != nil {
+			return err
 		}
 
-		if i == len(namespaces.Items)-1 {
-			data = []string{
-				fmt.Sprintf("%s%s", lastElemPrefix, "namespace/"+ns.Id),
-				ns.Owner,
-				age,
-				string(ns.Status.State),
-				ns.Status.Error,
-			}
-		} else {
-			data = []string{
-				fmt.Sprintf("%s%s", firstElemPrefix, "namespace/"+ns.Id),
-				ns.Owner,
-				age,
-				string(ns.Status.State),
-				ns.Status.Error,
-			}
-		}
-
-		switch ns.Tenant.Kind {
-		case admin.CONNECTORNAMESPACETENANTKIND_USER:
-			style[1] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgCyanColor}
-		case admin.CONNECTORNAMESPACETENANTKIND_ORGANISATION:
-			style[1] = tablewriter.Colors{}
-		}
-
-		switch string(ns.Status.State) {
-		case "ready":
-			style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
-		case "disconnected":
-			style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
-		}
-
-		table.Rich(data, style)
-
-		connectors, err := service.ListConnectorsForNamespace(c, opts.ListOptions, ns.Id)
+		connectors, err := service.ListConnectorsForNamespace(c, opts.ListOptions, namespaces.Items[nsIndex].Id)
 		if err != nil {
 			return err
 		}
 
-		for i, ct := range connectors.Items {
-			age := duration.HumanDuration(time.Since(ct.CreatedAt))
-			if ct.CreatedAt.IsZero() {
-				age = ""
+		for cntIndex := range connectors.Items {
+			if err := renderConnector(connectors, cntIndex, table); err != nil {
+				return err
 			}
-
-			if i == len(connectors.Items)-1 {
-				data = []string{
-					fmt.Sprintf("%s%s%s%s", pipe, indent, lastElemPrefix, "connector/"+ct.Id),
-					ct.Owner,
-					age,
-					string(ct.Status.State),
-					ct.Status.Error,
-				}
-			} else {
-				data = []string{
-					fmt.Sprintf("%s%s%s%s", pipe, indent, firstElemPrefix, "connector/"+ct.Id),
-					ct.Owner,
-					age,
-					string(ct.Status.State),
-					ct.Status.Error,
-				}
-			}
-
-			switch string(ct.Status.State) {
-			case "ready":
-				style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
-			case "failed":
-				style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
-			case "stopped":
-				style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
-			}
-
-			table.Rich(data, style)
 		}
 	}
 
@@ -176,80 +105,115 @@ func run(opts *options) error {
 	return nil
 }
 
-func listNamespaces(c *service.AdminAPI, opts *options, clusterId string) ([]admin.ConnectorNamespace, error) {
-	items := make([]admin.ConnectorNamespace, 0)
-
-	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
-		var result *admin.ConnectorNamespaceList
-		var err error
-		var httpRes *http.Response
-
-		e := c.Clusters().GetClusterNamespaces(opts.f.Context, clusterId)
-		e = e.Page(strconv.Itoa(i))
-		e = e.Size(strconv.Itoa(opts.Limit))
-
-		if opts.OrderBy != "" {
-			e = e.OrderBy(opts.OrderBy)
-		}
-		if opts.Search != "" {
-			e = e.Search(opts.Search)
-		}
-
-		result, httpRes, err = e.Execute()
-
-		if httpRes != nil {
-			defer func() {
-				_ = httpRes.Body.Close()
-			}()
-		}
-		if err != nil {
-			return []admin.ConnectorNamespace{}, response.Error(err, httpRes)
-		}
-		if len(result.Items) == 0 {
-			break
-		}
-
-		items = append(items, result.Items...)
+func renderCluster(c *service.AdminAPI, opts *options, table *tablewriter.Table) error {
+	cluster, httpRes, err := c.Clusters().GetConnectorCluster(c.Context(), opts.id).Execute()
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return err
 	}
 
-	return items, nil
+	data := []string{
+		"cluster/" + cluster.Id,
+		cluster.Owner,
+		resource.Age(cluster.CreatedAt),
+		string(cluster.Status.State),
+		cluster.Status.Error}
+
+	style := []tablewriter.Colors{{}, {}, {}, {}, {}}
+
+	switch string(cluster.Status.State) {
+	case "ready":
+		style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+	case "disconnected":
+		style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+	}
+
+	table.Rich(data, style)
+
+	return nil
 }
 
-func listConnectors(c *service.AdminAPI, opts *options, namespaceId string) ([]admin.ConnectorAdminView, error) {
-	items := make([]admin.ConnectorAdminView, 0)
+func renderNamespace(namespaces admin.ConnectorNamespaceList, index int, table *tablewriter.Table) error {
+	var data []string
 
-	for i := opts.Page; i == opts.Page || opts.AllPages; i++ {
-		var result *admin.ConnectorAdminViewList
-		var err error
-		var httpRes *http.Response
+	ns := namespaces.Items[index]
+	style := []tablewriter.Colors{{}, {}, {}, {}, {}}
 
-		e := c.Clusters().GetNamespaceConnectors(opts.f.Context, namespaceId)
-		e = e.Page(strconv.Itoa(i))
-		e = e.Size(strconv.Itoa(opts.Limit))
-
-		if opts.OrderBy != "" {
-			e = e.OrderBy(opts.OrderBy)
+	if index == len(namespaces.Items)-1 {
+		data = []string{
+			fmt.Sprintf("%s%s", lastElemPrefix, "namespace/"+ns.Id),
+			ns.Owner,
+			resource.Age(ns.CreatedAt),
+			string(ns.Status.State),
+			ns.Status.Error,
 		}
-		if opts.Search != "" {
-			e = e.Search(opts.Search)
+	} else {
+		data = []string{
+			fmt.Sprintf("%s%s", firstElemPrefix, "namespace/"+ns.Id),
+			ns.Owner,
+			resource.Age(ns.CreatedAt),
+			string(ns.Status.State),
+			ns.Status.Error,
 		}
-
-		result, httpRes, err = e.Execute()
-
-		if httpRes != nil {
-			defer func() {
-				_ = httpRes.Body.Close()
-			}()
-		}
-		if err != nil {
-			return []admin.ConnectorAdminView{}, response.Error(err, httpRes)
-		}
-		if len(result.Items) == 0 {
-			break
-		}
-
-		items = append(items, result.Items...)
 	}
 
-	return items, nil
+	switch ns.Tenant.Kind {
+	case admin.CONNECTORNAMESPACETENANTKIND_USER:
+		style[1] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgCyanColor}
+	case admin.CONNECTORNAMESPACETENANTKIND_ORGANISATION:
+		style[1] = tablewriter.Colors{}
+	}
+
+	switch string(ns.Status.State) {
+	case "ready":
+		style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+	case "disconnected":
+		style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiBlueColor}
+	}
+
+	table.Rich(data, style)
+
+	return nil
+}
+
+func renderConnector(connectors admin.ConnectorAdminViewList, index int, table *tablewriter.Table) error {
+	var data []string
+
+	ct := connectors.Items[index]
+	style := []tablewriter.Colors{{}, {}, {}, {}, {}}
+
+	if index == len(connectors.Items)-1 {
+		data = []string{
+			fmt.Sprintf("%s%s%s%s", pipe, indent, lastElemPrefix, "connector/"+ct.Id),
+			ct.Owner,
+			resource.Age(ct.CreatedAt),
+			string(ct.Status.State),
+			ct.Status.Error,
+		}
+	} else {
+		data = []string{
+			fmt.Sprintf("%s%s%s%s", pipe, indent, firstElemPrefix, "connector/"+ct.Id),
+			ct.Owner,
+			resource.Age(ct.CreatedAt),
+			string(ct.Status.State),
+			ct.Status.Error,
+		}
+	}
+
+	switch string(ct.Status.State) {
+	case "ready":
+		style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiGreenColor}
+	case "failed":
+		style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiRedColor}
+	case "stopped":
+		style[3] = tablewriter.Colors{tablewriter.Normal, tablewriter.FgHiYellowColor}
+	}
+
+	table.Rich(data, style)
+
+	return nil
 }

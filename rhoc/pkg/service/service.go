@@ -3,9 +3,11 @@ package service
 import (
 	"net/http"
 
+	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 
@@ -57,4 +59,25 @@ func NewAdminClient(config *Config) (*AdminAPI, error) {
 	}
 
 	return &adminAPI, nil
+}
+
+func Get(f *factory.Factory, format string, getter func(api *AdminAPI) (interface{}, *http.Response, error)) error {
+	c, err := NewAdminClient(&Config{
+		F: f,
+	})
+	if err != nil {
+		return err
+	}
+
+	result, httpRes, err := getter(c)
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return response.Error(err, httpRes)
+	}
+
+	return dump.Formatted(f.IOStreams.Out, format, result)
 }

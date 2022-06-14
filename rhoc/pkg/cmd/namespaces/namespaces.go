@@ -22,7 +22,6 @@ func NewNamespacesCommand(f *factory.Factory) *cobra.Command {
 		list.NewListCommand(f),
 		create.NewCreateCommand(f),
 		delete.NewDeletesCommand(f),
-		//describe.NewDescribeCommand(f),
 		get.NewGetCommand(f))
 
 	return cmd

@@ -33,6 +33,10 @@ func (api *AdminAPI) Namespaces() *admin.ConnectorNamespacesAdminApiService {
 	return api.admin.ConnectorNamespacesAdminApi
 }
 
+func (api *AdminAPI) Catalog() *admin.ConnectorTypesApiService {
+	return api.admin.ConnectorTypesApi
+}
+
 func (api *AdminAPI) GET(relativePath string) (interface{}, *http.Response, error) {
 	return api.do(relativePath, http.MethodGet, "", nil)
 }

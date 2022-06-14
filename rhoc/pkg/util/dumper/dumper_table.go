@@ -84,6 +84,7 @@ func DumpTable[T any](config TableConfig[T], out io.Writer, items []T) error {
 		table.SetCenterSeparator(tablewriter.SPACE)
 		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 		table.SetAlignment(tablewriter.ALIGN_LEFT)
+		table.SetAutoWrapText(false)
 
 		for _, item := range items {
 			row := make([]string, 0, len(config.Columns))

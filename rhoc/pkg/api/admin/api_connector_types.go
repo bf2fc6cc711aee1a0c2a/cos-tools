@@ -19,11 +19,6 @@ import (
 	"strings"
 )
 
-// Linger please
-var (
-	_ context.Context
-)
-
 // ConnectorTypesApiService ConnectorTypesApi service
 type ConnectorTypesApiService service
 

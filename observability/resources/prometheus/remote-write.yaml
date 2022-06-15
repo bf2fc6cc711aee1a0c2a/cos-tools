@@ -82,6 +82,8 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
     targetLabel: __tmp_keep
+
+  # No such metrics, there is a metrics "node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate"
   # WHAT: Container cpu usage in seconds Used for user facing metrics
   - action: replace
     regex: >-
@@ -90,6 +92,8 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
     targetLabel: __tmp_keep
+
+    # No such metrics
   - action: drop
     regex: >-
       node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate;openshift.*$
@@ -143,6 +147,8 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
     targetLabel: __tmp_keep
+
+  # No such metrics
   # WHAT WHAT namespace was created (unix timestamp)
   - action: replace
     regex: kube_namespace_created$
@@ -190,6 +196,8 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
       - namespace
+
+  # No such metrics
   # WHAT: PVC status condition
   - action: replace
     regex: kube_persistentvolumeclaim_status_condition$
@@ -237,58 +245,6 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
       - namespace
-  # WHAT: Amount of bytes a container receives over network per second
-  - action: replace
-    regex: container_network_receive_bytes_total$
-    replacement: 'true'
-    sourceLabels:
-      - __name__
-    targetLabel: __tmp_keep
-  # WHAT: total amount of receive packets dropped over network per second
-  - action: replace
-    regex: container_network_receive_packets_dropped_total$
-    replacement: 'true'
-    sourceLabels:
-      - __name__
-    targetLabel: __tmp_keep
-  # WHAT: total amount of packets received over network per second
-  - action: replace
-    regex: container_network_receive_packets_total$
-    replacement: 'true'
-    sourceLabels:
-      - __name__
-    targetLabel: __tmp_keep
-  # WHAT: total amount of packets dropped while transmitting
-  - action: replace
-    regex: container_network_transmit_packets_dropped_total$
-    replacement: 'true'
-    sourceLabels:
-      - __name__
-    targetLabel: __tmp_keep
-  # WHAT: the number of bytes transmitted by the container over the network
-  - action: replace
-    regex: container_network_transmit_bytes_total$
-    replacement: 'true'
-    sourceLabels:
-      - __name__
-    targetLabel: __tmp_keep
-  # WHAT: the number of packets transmitted by the container over the network
-  - action: replace
-    regex: container_network_transmit_packets_total$
-    replacement: 'true'
-    sourceLabels:
-      - __name__
-    targetLabel: __tmp_keep
-  - action: drop
-    regex: container_network.*;openshift.*$
-    sourceLabels:
-      - __name__
-      - namespace
-  - action: drop
-    regex: ^;container_network.*$
-    sourceLabels:
-      - namespace
-      - __name__
   # WHAT: The amount of page cache memory in bytes
   - action: replace
     regex: container_memory_cache$
@@ -327,6 +283,184 @@ writeRelabelConfigs:
     sourceLabels:
       - namespace
       - __name__
+
+  # Up Specific
+  - action: replace
+    regex: up$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+  - action: drop
+    regex: up$;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  - action: drop
+    regex: ^;up$
+    sourceLabels:
+      - namespace
+      - __name__
+
+  # Network Specific
+  - action: replace
+    regex: container_network_transmit_bytes_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: container_network_receive_bytes_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: container_network.*;openshift.*$
+    sourceLabels:
+      - __name__
+      - namespace
+  - action: drop
+    regex: container_network.*;redhat-openshift-connectors-observability$
+    sourceLabels:
+      - __name__
+      - namespace
+  - action: drop
+    regex: ^;container_network.*$
+    sourceLabels:
+      - namespace
+      - __name__
+
+  # Camel-k Connector specific
+  - action: replace
+    regex: application_camel_context_uptime_seconds$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: application_camel_context_exchanges_.*$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: application_camel_route_count$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: vendor_memoryPool_usage_.*$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: application_camel_exchange_processing_seconds_count$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: application_camel_exchange_processing_rate_per_second$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: vendor_cpu_systemCpuLoad_percent$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: base_cpu_processCpuLoad_percent$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: base_cpu_systemLoadAverage$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: vendor_memory_usedNonHeap_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: vendor_memory_committedNonHeap_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: vendor_memoryPool_usage_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: vendor_memoryPool_usage_max_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: base_memory_usedHeap_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: base_memory_maxHeap_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: base_memory_committedHeap_bytes$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: application_camel_context_status$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  - action: replace
+    regex: camel_k_reconciliation_duration_seconds_count$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+  # WHAT: Restart Status of a connector
+  - action: replace
+    regex: kube_pod_container_status_restarts_total$;redhat-openshift-connectors-.*$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+      - namespace
+    targetLabel: __tmp_keep
+  - action: drop
+    regex: kube_pod_container_status_restarts_total$;redhat-openshift-connectors-observability$
+    sourceLabels:
+      - __name__
+      - namespace
+
+  # Debezium Connector specific
+  - action: replace
+    regex: strimzi_reconciliations_failed_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
   # LEAVE THIS AT BOTTOM OF FILE
   - action: keep
     regex: true$

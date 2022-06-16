@@ -290,6 +290,7 @@ writeRelabelConfigs:
     replacement: 'true'
     sourceLabels:
       - __name__
+    targetLabel: __tmp_keep
   - action: drop
     regex: up$;openshift.*$
     sourceLabels:

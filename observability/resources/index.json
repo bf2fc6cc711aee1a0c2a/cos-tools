@@ -29,7 +29,8 @@
         "prometheus/pod_monitors/cos-fleetshard-camel-operator-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-debezium-operator-metrics.yaml",
         "prometheus/pod_monitors/cos-fleetshard-connectors-camel.yaml",
-        "prometheus/pod_monitors/cos-fleetshard-connectors-debezium.yaml"
+        "prometheus/pod_monitors/cos-fleetshard-connectors-debezium.yaml",
+        "prometheus/pod_monitors/prometheus-metrics.yaml"
       ],
       "rules": [
         "prometheus/prometheus-rules.yaml",

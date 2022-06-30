@@ -24,7 +24,7 @@ spec:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 6,
+      "id": 3,
       "links": [],
       "panels": [
         {
@@ -162,7 +162,7 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Connectors Uptime",
+          "title": "Connectors Availability",
           "type": "gauge"
         },
         {
@@ -369,7 +369,7 @@ spec:
               "custom": {},
               "mappings": [],
               "thresholds": {
-                "mode": "absolute",
+                "mode": "percentage",
                 "steps": [
                   {
                     "color": "red",
@@ -377,7 +377,7 @@ spec:
                   },
                   {
                     "color": "green",
-                    "value": 80
+                    "value": 95
                   }
                 ]
               },
@@ -519,7 +519,8 @@ spec:
             "defaults": {
               "custom": {
                 "align": null,
-                "filterable": false
+                "displayMode": "color-text",
+                "filterable": true
               },
               "mappings": [],
               "thresholds": {
@@ -530,11 +531,16 @@ spec:
                     "value": null
                   },
                   {
+                    "color": "yellow",
+                    "value": 43200
+                  },
+                  {
                     "color": "red",
-                    "value": 80
+                    "value": 86400
                   }
                 ]
-              }
+              },
+              "unit": "s"
             },
             "overrides": [
               {
@@ -552,30 +558,45 @@ spec:
                         "url": "https://grafana-route-redhat-openshift-connectors-observability.apps.rhoc-stage.c8hw.s1.devshift.org/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "pod"
-                },
-                "properties": [
+                  },
                   {
                     "id": "displayName",
                     "value": "Connector"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
                   }
                 ]
               },
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "namespace"
+                  "options": "namespace 1"
                 },
                 "properties": [
                   {
                     "id": "displayName",
                     "value": "Namespace"
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "auto"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Value #B"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Time Since Creation"
                   }
                 ]
               }
@@ -601,6 +622,14 @@ spec:
               "interval": "",
               "legendFormat": "",
               "refId": "A"
+            },
+            {
+              "expr": "application_camel_context_uptime_seconds",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
             }
           ],
           "timeFrom": null,
@@ -608,12 +637,19 @@ spec:
           "title": "CamelK Connectors ",
           "transformations": [
             {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "pod"
+              }
+            },
+            {
               "id": "filterFieldsByName",
               "options": {
                 "include": {
                   "names": [
-                    "namespace",
-                    "pod"
+                    "pod",
+                    "namespace 1",
+                    "Value #B"
                   ]
                 }
               }
@@ -746,5 +782,5 @@ spec:
       "timezone": "",
       "title": "Connectors",
       "uid": "TZbaaBr7z",
-      "version": 2
+      "version": 4
     }

@@ -9,6 +9,8 @@ SHELL = bash
 GO := go
 GOFMT := gofmt
 
+SHELL = bash
+
 .PHONY: all
 all: build
 

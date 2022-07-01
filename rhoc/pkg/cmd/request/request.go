@@ -43,7 +43,6 @@ func NewRequestCommand(f *factory.Factory) *cobra.Command {
 		},
 	}
 
-	//cmd.Flags().StringVarP(&opts.urlPath, "path", "p", "", "Path to send request. For example /api/connector_mgmt/v1/admin/kafka_connector_clusters")
 	cmd.Flags().StringVarP(&opts.method, "method", "X", http.MethodGet, "HTTP method to use. (GET, POST, PUT, PATCH, DELETE)")
 
 	cmd.MarkFlagRequired("path")

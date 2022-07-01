@@ -1988,7 +1988,7 @@ func (a *ConnectorClustersAdminApiService) ListConnectorClustersExecute(r ApiLis
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiPatchConnectorClusterDeploymentAdmiRequest struct {
+type ApiPatchConnectorClusterDeploymentAdminRequest struct {
 	ctx                context.Context
 	ApiService         *ConnectorClustersAdminApiService
 	connectorClusterId string
@@ -1997,27 +1997,27 @@ type ApiPatchConnectorClusterDeploymentAdmiRequest struct {
 }
 
 // Data to patch the deployment with
-func (r ApiPatchConnectorClusterDeploymentAdmiRequest) Body(body map[string]interface{}) ApiPatchConnectorClusterDeploymentAdmiRequest {
+func (r ApiPatchConnectorClusterDeploymentAdminRequest) Body(body map[string]interface{}) ApiPatchConnectorClusterDeploymentAdminRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiPatchConnectorClusterDeploymentAdmiRequest) Execute() (*ConnectorDeploymentAdminView, *http.Response, error) {
-	return r.ApiService.PatchConnectorClusterDeploymentAdmiExecute(r)
+func (r ApiPatchConnectorClusterDeploymentAdminRequest) Execute() (*ConnectorDeploymentAdminView, *http.Response, error) {
+	return r.ApiService.PatchConnectorClusterDeploymentAdminExecute(r)
 }
 
 /*
-PatchConnectorClusterDeploymentAdmi Patch a deployment
+PatchConnectorClusterDeploymentAdmin Patch a deployment
 
 Patch a deployment
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param connectorClusterId The id of the connector cluster
  @param deploymentId The id of the connector deployment
- @return ApiPatchConnectorClusterDeploymentAdmiRequest
+ @return ApiPatchConnectorClusterDeploymentAdminRequest
 */
-func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmi(ctx context.Context, connectorClusterId string, deploymentId string) ApiPatchConnectorClusterDeploymentAdmiRequest {
-	return ApiPatchConnectorClusterDeploymentAdmiRequest{
+func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmin(ctx context.Context, connectorClusterId string, deploymentId string) ApiPatchConnectorClusterDeploymentAdminRequest {
+	return ApiPatchConnectorClusterDeploymentAdminRequest{
 		ApiService:         a,
 		ctx:                ctx,
 		connectorClusterId: connectorClusterId,
@@ -2027,7 +2027,7 @@ func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmi(c
 
 // Execute executes the request
 //  @return ConnectorDeploymentAdminView
-func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmiExecute(r ApiPatchConnectorClusterDeploymentAdmiRequest) (*ConnectorDeploymentAdminView, *http.Response, error) {
+func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdminExecute(r ApiPatchConnectorClusterDeploymentAdminRequest) (*ConnectorDeploymentAdminView, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
@@ -2035,7 +2035,7 @@ func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmiEx
 		localVarReturnValue *ConnectorDeploymentAdminView
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectorClustersAdminApiService.PatchConnectorClusterDeploymentAdmi")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectorClustersAdminApiService.PatchConnectorClusterDeploymentAdmin")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -2052,7 +2052,7 @@ func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmiEx
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/merge-patch+json"}
+	localVarHTTPContentTypes := []string{"application/merge-patch+json", "application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)

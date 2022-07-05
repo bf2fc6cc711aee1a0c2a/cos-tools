@@ -43,6 +43,7 @@ spec:
         },
         {
           "datasource": null,
+          "description": "Total Connectors, CamelK Connectors vs Debezium Connectors running in the selected time range.",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -87,19 +88,19 @@ spec:
           "pluginVersion": "7.3.10",
           "targets": [
             {
-              "expr": "sum(up{container=\"integration\"})",
+              "expr": "sum(max_over_time(up{container=\"integration\"}[$__range]))",
               "interval": "",
               "legendFormat": "Total Connectors",
               "refId": "A"
             },
             {
-              "expr": "count(application_camel_context_status{camelContext=\"camel-1\"})",
+              "expr": "count(max_over_time(application_camel_context_status{camelContext=\"camel-1\"}[$__range]))",
               "interval": "",
               "legendFormat": "CamelK Connectors",
               "refId": "B"
             },
             {
-              "expr": "sum(up{container=\"integration\"}) - count(application_camel_context_status{camelContext=\"camel-1\"})",
+              "expr": "sum(max_over_time(up{container=\"integration\"}[$__range])) - count(max_over_time(application_camel_context_status{camelContext=\"camel-1\"}[$__range]))",
               "interval": "",
               "legendFormat": "Debezium connectors",
               "refId": "C"
@@ -107,11 +108,12 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Connectors Count",
+          "title": "Connectors Count (selected time)",
           "type": "stat"
         },
         {
           "datasource": null,
+          "description": "The percentage of time that the Connectors are available in the selected time range.",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -139,7 +141,7 @@ spec:
             "x": 9,
             "y": 1
           },
-          "id": 15,
+          "id": 22,
           "options": {
             "reduceOptions": {
               "calcs": [
@@ -154,7 +156,7 @@ spec:
           "pluginVersion": "7.3.10",
           "targets": [
             {
-              "expr": " count(up{container=\"integration\"} > 0) / count(up{container=\"integration\"}) * 100",
+              "expr": "sum(avg_over_time(up{container=\"integration\"}[$__range])) / sum(max_over_time(up{container=\"integration\"}[$__range])) * 100",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -162,7 +164,7 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Connectors Availability",
+          "title": "Availability (selected time)",
           "type": "gauge"
         },
         {
@@ -173,7 +175,7 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
-          "description": "",
+          "description": "CamelK Connectors, Debezium Connectors, and crashing Connectors over time. Crashing connectors are only shown when they are crashing(connectors that successfully got created previously and now crashing). ",
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -292,6 +294,7 @@ spec:
         },
         {
           "datasource": null,
+          "description": "Total, Completed, Failed, and Currently Inflight Exchanges for all the CamelK Connectors.",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -333,19 +336,19 @@ spec:
           "pluginVersion": "7.3.10",
           "targets": [
             {
-              "expr": "sum(application_camel_context_exchanges_total)",
+              "expr": "sum(max_over_time(application_camel_context_exchanges_total[$__range]))",
               "interval": "",
               "legendFormat": "Total",
               "refId": "A"
             },
             {
-              "expr": "sum(application_camel_context_exchanges_completed_total)",
+              "expr": "sum(max_over_time(application_camel_context_exchanges_completed_total[$__range]))",
               "interval": "",
               "legendFormat": "Completed",
               "refId": "B"
             },
             {
-              "expr": "sum(application_camel_context_exchanges_failed_total)",
+              "expr": "sum(max_over_time(application_camel_context_exchanges_failed_total[$__range]))",
               "interval": "",
               "legendFormat": "Failed",
               "refId": "C"
@@ -353,17 +356,18 @@ spec:
             {
               "expr": "sum(application_camel_context_exchanges_inflight_count)",
               "interval": "",
-              "legendFormat": "Inflight",
+              "legendFormat": "Inflight Currently",
               "refId": "D"
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Exchanges Overview",
+          "title": "Exchanges Count (selected time)",
           "type": "stat"
         },
         {
           "datasource": null,
+          "description": "Percentage of exchanges completed in the selected time range.",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -406,7 +410,8 @@ spec:
           "pluginVersion": "7.3.10",
           "targets": [
             {
-              "expr": "sum(rate(application_camel_context_exchanges_completed_total[$__range])) / sum(rate(application_camel_context_exchanges_total[$__range])) * 100",
+              "expr": "sum(max_over_time(application_camel_context_exchanges_completed_total[$__range])) / sum(max_over_time(application_camel_context_exchanges_total[$__range])) * 100",
+              "instant": false,
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -414,8 +419,113 @@ spec:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Exchanges Processed",
+          "title": "Exchanges Processed (selected time)",
           "type": "gauge"
+        },
+        {
+          "aliasColors": {
+            "Connectors Failing": "dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "Exchanges Quantitative Information over time",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 2,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 9,
+            "x": 13,
+            "y": 8
+          },
+          "hiddenSeries": false,
+          "id": 23,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null as zero",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(application_camel_context_exchanges_total)",
+              "interval": "",
+              "legendFormat": "Total",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(application_camel_context_exchanges_completed_total)",
+              "interval": "",
+              "legendFormat": "Completed",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "No. of Exchanges",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": 0,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -432,10 +542,10 @@ spec:
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 6,
-            "w": 9,
-            "x": 13,
-            "y": 8
+            "h": 7,
+            "w": 22,
+            "x": 0,
+            "y": 14
           },
           "hiddenSeries": false,
           "id": 18,
@@ -514,7 +624,7 @@ spec:
         },
         {
           "datasource": null,
-          "description": "CamelK Connectors with their respective Namespace. Click on the connector to see the detailed dashboard ",
+          "description": "CamelK Connectors, their respective Namespace, and their time since creation. Click on the connector to see that connector's detailed dashboard. Filter column using the Filter option next to the column header.",
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -555,7 +665,7 @@ spec:
                       {
                         "targetBlank": true,
                         "title": "url",
-                        "url": "https://grafana-route-redhat-openshift-connectors-observability.apps.rhoc-stage.c8hw.s1.devshift.org/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
+                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
                       }
                     ]
                   },
@@ -606,7 +716,7 @@ spec:
             "h": 7,
             "w": 22,
             "x": 0,
-            "y": 14
+            "y": 21
           },
           "id": 5,
           "options": {
@@ -664,7 +774,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 21
+            "y": 28
           },
           "id": 21,
           "panels": [],
@@ -689,7 +799,7 @@ spec:
             "h": 8,
             "w": 11,
             "x": 0,
-            "y": 22
+            "y": 29
           },
           "hiddenSeries": false,
           "id": 19,
@@ -775,12 +885,12 @@ spec:
         "list": []
       },
       "time": {
-        "from": "now-1h",
+        "from": "now-24h",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
       "title": "Connectors",
       "uid": "TZbaaBr7z",
-      "version": 4
+      "version": 17
     }

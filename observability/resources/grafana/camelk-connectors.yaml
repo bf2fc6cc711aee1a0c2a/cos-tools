@@ -24,8 +24,8 @@ spec:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 5,
-      "iteration": 1653416849772,
+      "id": 6,
+      "iteration": 1657269803982,
       "links": [],
       "panels": [
         {
@@ -44,6 +44,7 @@ spec:
         },
         {
           "datasource": null,
+          "description": "Time Since Creation",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -54,10 +55,6 @@ spec:
                   {
                     "color": "green",
                     "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
               },
@@ -103,6 +100,7 @@ spec:
         },
         {
           "datasource": null,
+          "description": "Current Memory Usage",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -161,6 +159,7 @@ spec:
         },
         {
           "datasource": null,
+          "description": "Exchange Overview",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -312,6 +311,7 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Increase in the Exchange processing time series",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -421,6 +421,7 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Increase in the Exchange Completion Rate",
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -516,6 +517,7 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Camel Exchange Processing Rate Per Second",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -639,9 +641,11 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "CPU Utilization for the Connector",
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "unit": "percentunit"
             },
             "overrides": []
           },
@@ -707,7 +711,7 @@ spec:
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "percentunit",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -734,9 +738,11 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "CPU Utilization for the Connector",
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "unit": "percentunit"
             },
             "overrides": []
           },
@@ -802,7 +808,7 @@ spec:
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "percentunit",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -829,9 +835,11 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Load Average for the Connector",
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "unit": "none"
             },
             "overrides": []
           },
@@ -897,7 +905,7 @@ spec:
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "none",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -938,9 +946,11 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Used vs Committed (Non-Heap) Memory for the Connector.",
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "unit": "decbytes"
             },
             "overrides": []
           },
@@ -1012,7 +1022,7 @@ spec:
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "decbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1039,9 +1049,11 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Used vs Maximum (Heap) Memory for the Connector.",
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "unit": "decbytes"
             },
             "overrides": []
           },
@@ -1113,7 +1125,7 @@ spec:
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "decbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1140,9 +1152,11 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Used vs Committed vs Maximum Memory for the Connector.",
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "unit": "decbytes"
             },
             "overrides": []
           },
@@ -1220,7 +1234,7 @@ spec:
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "decbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1261,9 +1275,11 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": "Prometheus",
+          "description": "Network packets received vs transmitted for the Connectors.",
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "custom": {},
+              "unit": "decbytes"
             },
             "overrides": []
           },
@@ -1303,13 +1319,13 @@ spec:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(container_network_receive_bytes_total{namespace=\"$namespace\", pod=\"$pod\", name=~\".*_mctr-.*\"}[10m]))",
+              "expr": "rate(container_network_receive_bytes_total{namespace=\"$namespace\", pod=\"$pod\", name=~\".*_mctr-.*\"}[10m])",
               "interval": "",
               "legendFormat": "Received",
               "refId": "A"
             },
             {
-              "expr": "- sum(rate(container_network_transmit_bytes_total{namespace=\"$namespace\", pod=\"$pod\", name=~\".*_mctr-.*\"}[10m]))",
+              "expr": "- rate(container_network_transmit_bytes_total{namespace=\"$namespace\", pod=\"$pod\", name=~\".*_mctr-.*\"}[10m])",
               "interval": "",
               "legendFormat": "Sent",
               "refId": "B"
@@ -1335,7 +1351,7 @@ spec:
           },
           "yaxes": [
             {
-              "format": "Bps",
+              "format": "decbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1366,9 +1382,9 @@ spec:
           {
             "allValue": null,
             "current": {
-              "selected": true,
-              "text": "redhat-openshift-connectors-ca6dog746g0ae32bsf40",
-              "value": "redhat-openshift-connectors-ca6dog746g0ae32bsf40"
+              "selected": false,
+              "text": "redhat-openshift-connectors-c95j6h66ar2c9mtr5vjg",
+              "value": "redhat-openshift-connectors-c95j6h66ar2c9mtr5vjg"
             },
             "datasource": "Prometheus",
             "definition": "label_values(application_camel_route_count{},namespace)",
@@ -1393,9 +1409,9 @@ spec:
           {
             "allValue": null,
             "current": {
-              "selected": true,
-              "text": "mctr-ca6dptn46g0ae32bshd0-564b4f9bdb-pncrr",
-              "value": "mctr-ca6dptn46g0ae32bshd0-564b4f9bdb-pncrr"
+              "selected": false,
+              "text": "mctr-cb3ehh1l04t2ndvmhmk0-88d98d85b-vn2cm",
+              "value": "mctr-cb3ehh1l04t2ndvmhmk0-88d98d85b-vn2cm"
             },
             "datasource": "Prometheus",
             "definition": "label_values(application_camel_route_count{namespace=\"$namespace\"}, pod)",
@@ -1420,12 +1436,12 @@ spec:
         ]
       },
       "time": {
-        "from": "now-6h",
+        "from": "now-5m",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
       "title": "CamelK Connectors",
       "uid": "nnrd9pu7k",
-      "version": 21
+      "version": 2
     }

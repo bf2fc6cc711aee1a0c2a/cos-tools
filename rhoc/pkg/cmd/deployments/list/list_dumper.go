@@ -7,11 +7,12 @@ import (
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/request"
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, wide bool, style dumper.TableStyle) {
+func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, options request.ListDeploymentsOptions, wide bool, style dumper.TableStyle) {
 	config := dumper.TableConfig[admin.ConnectorDeploymentAdminView]{
 		Style: style,
 		Wide:  wide,
@@ -63,15 +64,38 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, wi
 			},
 			{
 				Name: "TypeRevision",
-				Wide: true,
+				Wide: !options.ChannelUpdate,
 				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
-					if image, ok := in.Spec.ShardMetadata["connector_revision"]; ok {
-						return dumper.Row{
-							Value: image.(string),
+					if typeRevision, ok := in.Spec.ShardMetadata["connector_revision"]; ok {
+						floatRevision, isfloat64 := typeRevision.(float64)
+						if isfloat64 {
+							return dumper.Row{
+								Value: strconv.FormatInt(int64(floatRevision), 10),
+							}
+						} else {
+							return dumper.Row{
+								Value: typeRevision.(string),
+							}
 						}
+
 					}
 
 					return dumper.Row{}
+				},
+			},
+			{
+				Name: "UpdatableTypeRevision",
+				Wide: !options.ChannelUpdate,
+				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+					var updatableTypeRevision string
+					if in.Status.ShardMetadata.Available.Revision == 0 {
+						updatableTypeRevision = "-"
+					} else {
+						updatableTypeRevision = strconv.FormatInt(in.Status.ShardMetadata.Available.Revision, 10)
+					}
+					return dumper.Row{
+						Value: updatableTypeRevision,
+					}
 				},
 			},
 			{

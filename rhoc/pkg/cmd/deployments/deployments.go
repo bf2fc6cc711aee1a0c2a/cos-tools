@@ -3,6 +3,7 @@ package deployments
 import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments/get"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments/list"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/deployments/updateChannel"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -18,7 +19,8 @@ func NewDeploymentsCommand(f *factory.Factory) *cobra.Command {
 	cmdutil.Bind(
 		cmd,
 		list.NewListCommand(f),
-		get.NewGetCommand(f))
+		get.NewGetCommand(f),
+		updateChannel.NewUpdateChannelCommand(f))
 
 	return cmd
 }

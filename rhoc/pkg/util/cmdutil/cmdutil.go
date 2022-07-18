@@ -312,6 +312,45 @@ func AddYes(cmd *cobra.Command, yes *bool) *FlagOptions {
 	return withFlagOptions(cmd, name)
 }
 
+func AddChannelUpdate(cmd *cobra.Command, output *bool) *FlagOptions {
+	name := "channel-update"
+
+	cmd.Flags().BoolVar(
+		output,
+		name,
+		false,
+		"Filter deployment with channel updates available",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddDanglingDeployments(cmd *cobra.Command, output *bool) *FlagOptions {
+	name := "dangling-deployments"
+
+	cmd.Flags().BoolVar(
+		output,
+		name,
+		false,
+		"Filter not deleted deployment referring to a deleted connector",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddRevision(cmd *cobra.Command, output *int64) *FlagOptions {
+	name := "revision"
+
+	cmd.Flags().Int64Var(
+		output,
+		name,
+		0,
+		"Revision to update to",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
 func withFlagOptions(cmd *cobra.Command, flagName string) *FlagOptions {
 	options := FlagOptions{}
 

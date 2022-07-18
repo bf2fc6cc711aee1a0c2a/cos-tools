@@ -238,7 +238,7 @@ func ListConnectorsForNamespace(c *AdminAPI, opts request.ListOptions, namespace
 	return items, nil
 }
 
-func ListDeploymentsForCluster(c *AdminAPI, opts request.ListOptions, clusterID string) (admin.ConnectorDeploymentAdminViewList, error) {
+func ListDeploymentsForCluster(c *AdminAPI, opts request.ListDeploymentsOptions, clusterID string) (admin.ConnectorDeploymentAdminViewList, error) {
 	items := admin.ConnectorDeploymentAdminViewList{
 		Kind:  "ConnectorDeploymentAdminViewList",
 		Items: make([]admin.ConnectorDeploymentAdminView, 0),
@@ -253,6 +253,14 @@ func ListDeploymentsForCluster(c *AdminAPI, opts request.ListOptions, clusterID 
 
 		if opts.OrderBy != "" {
 			e = e.OrderBy(opts.OrderBy)
+		}
+
+		if opts.DanglingDeployments {
+			e = e.DanglingDeployments(opts.DanglingDeployments)
+		}
+
+		if opts.ChannelUpdate {
+			e = e.ChannelUpdates(opts.ChannelUpdate)
 		}
 
 		result, httpRes, err := e.Execute()

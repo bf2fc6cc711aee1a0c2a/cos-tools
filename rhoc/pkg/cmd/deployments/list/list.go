@@ -19,7 +19,7 @@ const (
 )
 
 type options struct {
-	request.ListOptions
+	request.ListDeploymentsOptions
 
 	outputFormat string
 	clusterID    string
@@ -47,6 +47,9 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 			if opts.clusterID == "" && opts.namespaceID == "" {
 				return errors.New("either cluster-id or namespace-id are required")
 			}
+			if opts.namespaceID != "" && (opts.DanglingDeployments || opts.ChannelUpdate) {
+				return errors.New("dangling-deployments and channel-update are not supported with namespace-id at the moment")
+			}
 
 			return nil
 		},
@@ -60,9 +63,10 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	cmdutil.AddLimit(cmd, &opts.Limit)
 	cmdutil.AddAllPages(cmd, &opts.AllPages)
 	cmdutil.AddOrderBy(cmd, &opts.OrderBy)
-	//cmdutil.AddSearch(cmd, &opts.search)
 	cmdutil.AddClusterID(cmd, &opts.clusterID)
 	cmdutil.AddNamespaceID(cmd, &opts.namespaceID)
+	cmdutil.AddChannelUpdate(cmd, &opts.ChannelUpdate)
+	cmdutil.AddDanglingDeployments(cmd, &opts.DanglingDeployments)
 
 	return cmd
 }
@@ -79,7 +83,7 @@ func run(opts *options) error {
 
 	switch {
 	case opts.clusterID != "":
-		items, err = service.ListDeploymentsForCluster(c, opts.ListOptions, opts.clusterID)
+		items, err = service.ListDeploymentsForCluster(c, opts.ListDeploymentsOptions, opts.clusterID)
 	case opts.namespaceID != "":
 		items, err = service.ListDeploymentsForNamespace(c, opts.ListOptions, opts.namespaceID)
 	}
@@ -96,14 +100,14 @@ func run(opts *options) error {
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
 		opts.f.Logger.Info("")
-		dumpAsTable(opts.f.IOStreams.Out, items, false, dumper.TableStyleDefault)
+		dumpAsTable(opts.f.IOStreams.Out, items, opts.ListDeploymentsOptions, false, dumper.TableStyleDefault)
 		opts.f.Logger.Info("")
 	case cmdutil.OutputFormatWide:
 		opts.f.Logger.Info("")
-		dumpAsTable(opts.f.IOStreams.Out, items, true, dumper.TableStyleDefault)
+		dumpAsTable(opts.f.IOStreams.Out, items, opts.ListDeploymentsOptions, true, dumper.TableStyleDefault)
 		opts.f.Logger.Info("")
 	case cmdutil.OutputFormatCSV:
-		dumpAsTable(opts.f.IOStreams.Out, items, true, dumper.TableStyleCSV)
+		dumpAsTable(opts.f.IOStreams.Out, items, opts.ListDeploymentsOptions, true, dumper.TableStyleCSV)
 	default:
 		return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, items)
 	}

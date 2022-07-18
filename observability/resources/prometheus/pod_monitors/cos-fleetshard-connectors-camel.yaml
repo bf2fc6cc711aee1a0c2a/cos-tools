@@ -15,22 +15,6 @@ spec:
       port: http
       relabelings:
         - separator: ;
-          regex: __meta_kubernetes_pod_label_cos_bf2_org_connector_id
+          regex: __meta_kubernetes_pod_label_(.+)
           replacement: $1
-          action: replace
-          targetLabel: connector_id
-        - separator: ;
-          regex: __meta_kubernetes_pod_label_cos_bf2_org_connector_type_id
-          replacement: $1
-          action: replace
-          targetLabel: connector_type
-        - separator: ;
-          regex: __meta_kubernetes_pod_label_camel_apache_org_integration
-          replacement: $1
-          action: replace
-          targetLabel: integration
-        - separator: ;
-          regex: __meta_kubernetes_pod_label_cos_bf2_org_deployment_id
-          replacement: $1
-          action: replace
-          targetLabel: deployment_id
+          action: labelmap

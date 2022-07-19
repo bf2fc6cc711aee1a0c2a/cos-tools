@@ -14,7 +14,27 @@ spec:
     - path: /q/metrics
       port: http
       relabelings:
-        - separator: ;
-          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_pod_label_cos_bf2_org_connector_id]
+          separator: ;
+          regex: (.*)
           replacement: $1
-          action: labelmap
+          action: replace
+          targetLabel: connector_id
+        - source_labels: [__meta_kubernetes_pod_label_cos_bf2_org_connector_type_id]
+          separator: ;
+          regex: (.*)
+          replacement: $1
+          action: replace
+          targetLabel: connector_type
+        - source_labels: [__meta_kubernetes_pod_label_camel_apache_org_integration]
+          separator: ;
+          regex: (.*)
+          replacement: $1
+          action: replace
+          targetLabel: integration
+        - source_labels: [__meta_kubernetes_pod_label_cos_bf2_org_deployment_id]
+          separator: ;
+          regex: (.*)
+          replacement: $1
+          action: replace
+          targetLabel: deployment_id

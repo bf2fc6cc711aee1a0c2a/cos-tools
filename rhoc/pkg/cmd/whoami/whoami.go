@@ -21,7 +21,7 @@ func NewWhoAmICommand(f *factory.Factory) *cobra.Command {
 				return err
 			}
 
-			userName, ok := token.GetUsername(a.GetConfig().MasAccessToken)
+			userName, ok := token.GetUsername(a.GetConfig().AccessToken)
 			if !ok {
 				userName = "unknown"
 			}

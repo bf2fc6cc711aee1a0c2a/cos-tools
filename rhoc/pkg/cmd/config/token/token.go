@@ -18,22 +18,11 @@ func NewConfigTokenCommand(f *factory.Factory) *cobra.Command {
 				return err
 			}
 
-			mas, err := cmd.Flags().GetBool("mas")
-			if err != nil {
-				return err
-			}
-
-			if mas {
-				_, _ = f.IOStreams.Out.Write([]byte(a.GetConfig().MasAccessToken))
-			} else {
-				_, _ = f.IOStreams.Out.Write([]byte(a.GetConfig().AccessToken))
-			}
+			_, _ = f.IOStreams.Out.Write([]byte(a.GetConfig().AccessToken))
 
 			return nil
 		},
 	}
-
-	cmd.Flags().BoolP("mas", "m", false, "mas")
 
 	return cmd
 }

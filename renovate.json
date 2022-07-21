@@ -1,0 +1,23 @@
+{
+  "extends": ["config:base", ":pinAllExceptPeerDependencies"],
+  "groupName": "all",
+  "automerge": false,
+  "major": {
+    "automerge": false
+  },
+  "transitiveRemediation": true,
+  "packageRules": [
+    {
+      "matchPackagePrefixes": [
+        "github.com/redhat-developer/app-services-sdk-go"
+      ],
+      "groupName": "RHOAS Golang SDK",
+      "automerge": false
+    },
+    {
+      "matchPackagePrefixes": ["github.com/redhat-developer/app-services-cli"],
+      "groupName": "RHOAS CLI SDK",
+      "automerge": false
+    }
+  ]
+}

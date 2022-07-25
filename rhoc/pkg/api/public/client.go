@@ -446,7 +446,7 @@ func setBody(body interface{}, contentType string) (bodyBuf *bytes.Buffer, err e
 	if bodyBuf == nil {
 		bodyBuf = &bytes.Buffer{}
 	}
-	fmt.Println("diocane")
+
 	if reader, ok := body.(io.Reader); ok {
 		_, err = bodyBuf.ReadFrom(reader)
 	} else if fp, ok := body.(**os.File); ok {

@@ -1,13 +1,12 @@
 package service
 
 import (
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/public"
 	"net/http"
 
-	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection/api"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/connection"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 
@@ -61,23 +60,36 @@ func NewAdminClient(config *Config) (*AdminAPI, error) {
 	return &adminAPI, nil
 }
 
-func Get(f *factory.Factory, format string, getter func(api *AdminAPI) (interface{}, *http.Response, error)) error {
-	c, err := NewAdminClient(&Config{
-		F: f,
-	})
+func NewPublicClient(config *Config) (*PublicAPI, error) {
+	a, err := API(config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	result, httpRes, err := getter(c)
-	if httpRes != nil {
-		defer func() {
-			_ = httpRes.Body.Close()
-		}()
-	}
-	if err != nil {
-		return response.Error(err, httpRes)
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{
+			AccessToken: a.GetConfig().MasAccessToken,
+		},
+	)
+
+	c := public.NewConfiguration()
+	c.Scheme = a.GetConfig().ApiURL.Scheme
+	c.Host = a.GetConfig().ApiURL.Host
+	c.UserAgent = a.GetConfig().UserAgent
+	c.Debug = config.F.Logger.DebugEnabled()
+	c.HTTPClient = &http.Client{
+		Transport: &oauth2.Transport{
+			Base:   a.GetConfig().HTTPClient.Transport,
+			Source: oauth2.ReuseTokenSource(nil, ts),
+		},
 	}
 
-	return dump.Formatted(f.IOStreams.Out, format, result)
+	publicAPI := PublicAPI{
+		f:      config.F,
+		a:      a,
+		c:      c,
+		public: public.NewAPIClient(c),
+	}
+
+	return &publicAPI, nil
 }

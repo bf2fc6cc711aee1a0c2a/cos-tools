@@ -76,7 +76,7 @@ openapi/generate/public: openapi-generator
 		-t etc/openapi/templates \
 		--ignore-file-override etc/openapi/.openapi-generator-ignore
 
-	$(GOFMT) -w pkg/api/admin
+	$(GOFMT) -w pkg/api/public
 	
 	rm pkg/api/public/go.sum
 	rm pkg/api/public/go.mod
@@ -108,6 +108,4 @@ ifeq (, $(shell which ${LOCAL_BIN_PATH}/openapi-generator 2> /dev/null))
 	ln -s openapi-generator-installation/node_modules/.bin/openapi-generator-cli openapi-generator ;\
 	}
 endif
-
-
 .PHONY: openapi-generator

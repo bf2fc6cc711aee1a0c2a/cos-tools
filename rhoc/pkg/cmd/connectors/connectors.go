@@ -5,6 +5,7 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors/get"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors/list"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors/types"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/connectors/update"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -21,6 +22,7 @@ func NewConnectorsCommand(f *factory.Factory) *cobra.Command {
 		cmd,
 		list.NewListCommand(f),
 		delete.NewDeletesCommand(f),
+		update.NewStopCommand(f),
 		get.NewGetCommand(f),
 		types.NeConnectorTypesCommand(f))
 

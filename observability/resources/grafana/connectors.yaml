@@ -24,7 +24,7 @@ spec:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 3,
+      "id": 4,
       "links": [],
       "panels": [
         {
@@ -524,6 +524,281 @@ spec:
           }
         },
         {
+          "datasource": null,
+          "description": "CamelK Connectors, their respective Namespace, and their time since creation. Click on the Connector/Connector ID to see that connector's detailed dashboard. Filter column using the Filter option next to the column header.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": null,
+                "displayMode": "color-text",
+                "filterable": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "pod"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "url",
+                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Connector"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "namespace 1"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Namespace"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Value #B"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Time Since Creation"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "connector_id 1"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Connector ID"
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "URL",
+                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "connector_type 1"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Connector Type"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "yellow",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Connector"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 331
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Connector Type"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 328
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Namespace"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 409
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "deployment_id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 239
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time Since Creation"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 166
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Connector ID"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 207
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "deployment_id 1"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Deployment ID"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "orange",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 14
+          },
+          "id": 5,
+          "options": {
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "application_camel_context_status{camelContext=\"camel-1\"}",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "expr": "application_camel_context_uptime_seconds",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Running CamelK Connectors",
+          "transformations": [
+            {
+              "id": "seriesToColumns",
+              "options": {
+                "byField": "pod"
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "pod",
+                    "connector_id 1",
+                    "connector_type 1",
+                    "namespace 1",
+                    "Value #B",
+                    "deployment_id 1"
+                  ]
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
@@ -542,7 +817,7 @@ spec:
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 21
           },
           "hiddenSeries": false,
           "id": 36,
@@ -638,7 +913,7 @@ spec:
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 21
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 39,
@@ -734,7 +1009,7 @@ spec:
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 35
           },
           "hiddenSeries": false,
           "id": 40,
@@ -810,143 +1085,6 @@ spec:
             "align": false,
             "alignLevel": null
           }
-        },
-        {
-          "datasource": null,
-          "description": "CamelK Connectors, their respective Namespace, and their time since creation. Click on the connector to see that connector's detailed dashboard. Filter column using the Filter option next to the column header.",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {
-                "align": null,
-                "displayMode": "color-text",
-                "filterable": true
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "s"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "pod"
-                },
-                "properties": [
-                  {
-                    "id": "links",
-                    "value": [
-                      {
-                        "targetBlank": true,
-                        "title": "url",
-                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
-                      }
-                    ]
-                  },
-                  {
-                    "id": "displayName",
-                    "value": "Connector"
-                  },
-                  {
-                    "id": "color",
-                    "value": {
-                      "fixedColor": "blue",
-                      "mode": "fixed"
-                    }
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "namespace 1"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Namespace"
-                  },
-                  {
-                    "id": "custom.displayMode",
-                    "value": "auto"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "Value #B"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Time Since Creation"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 24,
-            "x": 0,
-            "y": 35
-          },
-          "id": 5,
-          "options": {
-            "showHeader": true,
-            "sortBy": []
-          },
-          "pluginVersion": "7.3.10",
-          "targets": [
-            {
-              "expr": "application_camel_context_status{camelContext=\"camel-1\"}",
-              "format": "table",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            },
-            {
-              "expr": "application_camel_context_uptime_seconds",
-              "format": "table",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "B"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Running CamelK Connectors",
-          "transformations": [
-            {
-              "id": "seriesToColumns",
-              "options": {
-                "byField": "pod"
-              }
-            },
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "pod",
-                    "namespace 1",
-                    "Value #B"
-                  ]
-                }
-              }
-            }
-          ],
-          "type": "table"
         },
         {
           "collapsed": true,
@@ -1803,5 +1941,5 @@ spec:
       "timezone": "",
       "title": "Connectors",
       "uid": "TZbaaBr7z",
-      "version": 29
+      "version": 5
     }

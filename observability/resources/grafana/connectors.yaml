@@ -24,7 +24,7 @@ spec:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 4,
+      "id": 6,
       "links": [],
       "panels": [
         {
@@ -558,7 +558,7 @@ spec:
                       {
                         "targetBlank": true,
                         "title": "url",
-                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
+                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-connector_id=${__data.fields.connector_id}&var-pod=${__data.fields.pod}"
                       }
                     ]
                   },
@@ -622,7 +622,7 @@ spec:
                       {
                         "targetBlank": true,
                         "title": "URL",
-                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-pod=${__data.fields.pod}"
+                        "url": "/d/nnrd9pu7k/camelk-connectors?orgId=1&refresh=30s&var-namespace=${__data.fields.namespace}&var-connector_id=${__data.fields.connector_id}&var-pod=${__data.fields.pod}"
                       }
                     ]
                   }
@@ -1941,5 +1941,5 @@ spec:
       "timezone": "",
       "title": "Connectors",
       "uid": "TZbaaBr7z",
-      "version": 5
+      "version": 2
     }

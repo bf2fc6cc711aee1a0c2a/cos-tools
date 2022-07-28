@@ -24,8 +24,8 @@ spec:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 6,
-      "iteration": 1657269803982,
+      "id": 5,
+      "iteration": 1659011243713,
       "links": [],
       "panels": [
         {
@@ -292,13 +292,253 @@ spec:
           "type": "stat"
         },
         {
+          "datasource": null,
+          "description": "Connector Type of the Connector.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 5,
+            "x": 0,
+            "y": 5
+          },
+          "id": 39,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "fields": "/^connector_type$/",
+              "values": true
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "application_camel_route_count{namespace=\"$namespace\",pod=\"$pod\"}",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Connector Type",
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "description": "Connector Id for the connector",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 5,
+            "y": 5
+          },
+          "id": 40,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "fields": "/^connector_id$/",
+              "values": true
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "application_camel_route_count{namespace=\"$namespace\",pod=\"$pod\"}",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Connector ID",
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "description": "Namespace the Connector belongs to.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 10,
+            "x": 9,
+            "y": 5
+          },
+          "id": 41,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "fields": "/^namespace$/",
+              "values": true
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "application_camel_route_count{namespace=\"$namespace\",pod=\"$pod\"}",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Namespace",
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "description": "Deployment ID for the Connector.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 19,
+            "y": 5
+          },
+          "id": 42,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "fields": "/^deployment_id$/",
+              "values": true
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "application_camel_route_count{namespace=\"$namespace\",pod=\"$pod\"}",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Deployment ID",
+          "type": "stat"
+        },
+        {
           "collapsed": false,
           "datasource": null,
           "gridPos": {
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 5
+            "y": 9
           },
           "id": 19,
           "panels": [],
@@ -338,7 +578,7 @@ spec:
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 6
+            "y": 10
           },
           "hiddenSeries": false,
           "id": 8,
@@ -434,7 +674,7 @@ spec:
             "h": 8,
             "w": 7,
             "x": 8,
-            "y": 6
+            "y": 10
           },
           "hiddenSeries": false,
           "id": 32,
@@ -544,7 +784,7 @@ spec:
             "h": 8,
             "w": 8,
             "x": 15,
-            "y": 6
+            "y": 10
           },
           "hiddenSeries": false,
           "id": 6,
@@ -628,7 +868,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 18
           },
           "id": 30,
           "panels": [],
@@ -655,7 +895,7 @@ spec:
             "h": 8,
             "w": 7,
             "x": 0,
-            "y": 15
+            "y": 19
           },
           "hiddenSeries": false,
           "id": 27,
@@ -752,7 +992,7 @@ spec:
             "h": 8,
             "w": 8,
             "x": 7,
-            "y": 15
+            "y": 19
           },
           "hiddenSeries": false,
           "id": 25,
@@ -849,7 +1089,7 @@ spec:
             "h": 8,
             "w": 8,
             "x": 15,
-            "y": 15
+            "y": 19
           },
           "hiddenSeries": false,
           "id": 28,
@@ -933,7 +1173,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 27
           },
           "id": 21,
           "panels": [],
@@ -960,7 +1200,7 @@ spec:
             "h": 8,
             "w": 7,
             "x": 0,
-            "y": 24
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 15,
@@ -1063,7 +1303,7 @@ spec:
             "h": 8,
             "w": 8,
             "x": 7,
-            "y": 24
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 14,
@@ -1166,7 +1406,7 @@ spec:
             "h": 8,
             "w": 8,
             "x": 15,
-            "y": 24
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 23,
@@ -1262,7 +1502,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 36
           },
           "id": 37,
           "panels": [],
@@ -1289,7 +1529,7 @@ spec:
             "h": 8,
             "w": 23,
             "x": 0,
-            "y": 33
+            "y": 37
           },
           "hiddenSeries": false,
           "id": 35,
@@ -1383,8 +1623,8 @@ spec:
             "allValue": null,
             "current": {
               "selected": false,
-              "text": "redhat-openshift-connectors-c95j6h66ar2c9mtr5vjg",
-              "value": "redhat-openshift-connectors-c95j6h66ar2c9mtr5vjg"
+              "text": "redhat-openshift-connectors-ca34tr1nnj5k851srhk0",
+              "value": "redhat-openshift-connectors-ca34tr1nnj5k851srhk0"
             },
             "datasource": "Prometheus",
             "definition": "label_values(application_camel_route_count{},namespace)",
@@ -1409,12 +1649,39 @@ spec:
           {
             "allValue": null,
             "current": {
-              "selected": false,
-              "text": "mctr-cb3ehh1l04t2ndvmhmk0-88d98d85b-vn2cm",
-              "value": "mctr-cb3ehh1l04t2ndvmhmk0-88d98d85b-vn2cm"
+              "selected": true,
+              "text": "cb6nd9k4brotmsrcf1c0",
+              "value": "cb6nd9k4brotmsrcf1c0"
             },
             "datasource": "Prometheus",
-            "definition": "label_values(application_camel_route_count{namespace=\"$namespace\"}, pod)",
+            "definition": "label_values(application_camel_route_count{namespace=\"$namespace\"}, connector_id)",
+            "error": null,
+            "hide": 0,
+            "includeAll": false,
+            "label": "Connector ID",
+            "multi": false,
+            "name": "connector_id",
+            "options": [],
+            "query": "label_values(application_camel_route_count{namespace=\"$namespace\"}, connector_id)",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": null,
+            "current": {
+              "selected": true,
+              "text": "mctr-cb6nd9s4brotmsrcf1e0-86666dfb66-b69ml",
+              "value": "mctr-cb6nd9s4brotmsrcf1e0-86666dfb66-b69ml"
+            },
+            "datasource": "Prometheus",
+            "definition": "label_values(application_camel_route_count{namespace=\"$namespace\", connector_id=\"$connector_id\"}, pod)",
             "error": null,
             "hide": 0,
             "includeAll": false,
@@ -1422,7 +1689,7 @@ spec:
             "multi": false,
             "name": "pod",
             "options": [],
-            "query": "label_values(application_camel_route_count{namespace=\"$namespace\"}, pod)",
+            "query": "label_values(application_camel_route_count{namespace=\"$namespace\", connector_id=\"$connector_id\"}, pod)",
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
@@ -1443,5 +1710,5 @@ spec:
       "timezone": "",
       "title": "CamelK Connectors",
       "uid": "nnrd9pu7k",
-      "version": 2
+      "version": 6
     }

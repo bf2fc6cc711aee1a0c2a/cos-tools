@@ -1,10 +1,10 @@
 package list
 
 import (
-	"io"
-
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
+	"io"
+	"strconv"
 )
 
 func dumpAsTable(out io.Writer, items admin.ConnectorTypeAdminViewList, wide bool, style dumper.TableStyle) {
@@ -36,8 +36,15 @@ func dumpAsTable(out io.Writer, items admin.ConnectorTypeAdminViewList, wide boo
 				Getter: func(in *admin.ConnectorTypeAdminView) dumper.Row {
 					// assume we have only the stable channel for now
 					if data, ok := in.Channels["stable"].ShardMetadata["connector_revision"]; ok {
-						return dumper.Row{
-							Value: data.(string),
+						switch val := data.(type) {
+						case float64:
+							return dumper.Row{
+								Value: strconv.FormatInt(int64(val), 10),
+							}
+						default:
+							return dumper.Row{
+								Value: data.(string),
+							}
 						}
 					}
 

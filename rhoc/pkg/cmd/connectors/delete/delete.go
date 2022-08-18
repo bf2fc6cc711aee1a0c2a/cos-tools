@@ -1,8 +1,6 @@
 package delete
 
 import (
-	"strconv"
-
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
@@ -74,7 +72,7 @@ func run(opts *options) error {
 	}
 
 	e := c.Clusters().DeleteConnector(opts.f.Context, opts.id)
-	e = e.Force(strconv.FormatBool(opts.force))
+	e = e.Force(opts.force)
 
 	result, httpRes, err := e.Execute()
 	if httpRes != nil {

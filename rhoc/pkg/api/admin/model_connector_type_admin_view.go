@@ -30,6 +30,4 @@ type ConnectorTypeAdminView struct {
 	Capabilities []string `json:"capabilities,omitempty"`
 	// A json schema that can be used to validate a ConnectorRequest connector field.
 	Schema map[string]interface{} `json:"schema"`
-	// A json schema that can be used to validate a ConnectorRequest connector field.
-	JsonSchema map[string]interface{} `json:"json_schema"`
 }

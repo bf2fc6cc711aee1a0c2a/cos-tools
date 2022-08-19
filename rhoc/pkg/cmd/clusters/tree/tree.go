@@ -50,7 +50,7 @@ func NewTreeCommand(f *factory.Factory) *cobra.Command {
 	cmdutil.AddAllPages(cmd, &opts.AllPages)
 	cmdutil.AddOrderBy(cmd, &opts.OrderBy)
 	cmdutil.AddSearch(cmd, &opts.Search)
-	cmdutil.AddID(cmd, &opts.id)
+	cmdutil.AddID(cmd, &opts.id).Required()
 
 	return cmd
 }

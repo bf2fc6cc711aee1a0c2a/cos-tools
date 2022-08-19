@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/must_gather"
 	"os"
 	"strings"
 
@@ -56,7 +57,8 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 		namespaces.NewNamespacesCommand(f),
 		connectors.NewConnectorsCommand(f),
 		deployments.NewDeploymentsCommand(f),
-		clusters.NeClustersCommand(f))
+		clusters.NeClustersCommand(f),
+		must_gather.NewMustGatherCommand(f))
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		f.Logger.SetDebug(flagutil.DebugEnabled())

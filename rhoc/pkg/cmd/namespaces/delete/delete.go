@@ -18,6 +18,7 @@ type options struct {
 	outputFormat string
 	id           string
 	skipConfirm  bool
+	force        bool
 
 	f *factory.Factory
 }
@@ -45,6 +46,7 @@ func NewDeletesCommand(f *factory.Factory) *cobra.Command {
 
 	cmdutil.AddOutput(cmd, &opts.outputFormat)
 	cmdutil.AddYes(cmd, &opts.skipConfirm)
+	cmdutil.AddForce(cmd, &opts.force)
 	cmdutil.AddID(cmd, &opts.id).Required()
 
 	return cmd
@@ -70,6 +72,7 @@ func run(opts *options) error {
 	}
 
 	e := c.Clusters().DeleteConnectorNamespace(opts.f.Context, opts.id)
+	e = e.Force(opts.force)
 
 	result, httpRes, err := e.Execute()
 	if httpRes != nil {

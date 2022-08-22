@@ -351,6 +351,19 @@ func AddRevision(cmd *cobra.Command, output *int64) *FlagOptions {
 	return withFlagOptions(cmd, name)
 }
 
+func AddFile(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "file"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"file",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
 func withFlagOptions(cmd *cobra.Command, flagName string) *FlagOptions {
 	options := FlagOptions{}
 

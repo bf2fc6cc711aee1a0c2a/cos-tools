@@ -1,18 +1,21 @@
 package must_gather
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes/pods"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes/resources"
-	"gopkg.in/yaml.v3"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	"io"
 	"os"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes/pods"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes/resources"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
-	"github.com/spf13/cobra"
 
+	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
+
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/client-go/discovery"
@@ -24,6 +27,7 @@ import (
 type options struct {
 	id        string
 	logs      bool
+	file      string
 	resources []string
 	gvrs      []schema.GroupVersionResource
 	f         *factory.Factory
@@ -73,55 +77,93 @@ func NewMustGatherCommand(f *factory.Factory) *cobra.Command {
 				}
 			}
 
-			ulist := make([]map[string]interface{}, 0)
+			for i := range opts.gvrs {
+				// exclude secrets
+				if opts.gvrs[i].Group == "" && opts.gvrs[i].Version == "v1" && opts.gvrs[i].Resource == "secrets" {
+					opts.gvrs[i].Group = ""
+					opts.gvrs[i].Version = ""
+					opts.gvrs[i].Resource = ""
+				}
+			}
 
-			for _, gvr := range opts.gvrs {
+			var o io.Writer
+			var mustClose bool
 
-				resList, err := dynamicClient.Resource(gvr).List(f.Context, metav1.ListOptions{
-					LabelSelector: "cos.bf2.org/connector.id=" + opts.id,
-				})
+			if opts.file == "" {
+				o = f.IOStreams.Out
+				mustClose = false
+			} else {
+				f, err := os.Create(opts.file)
 				if err != nil {
 					return err
 				}
 
-				for _, res := range resList.Items {
-					switch {
-					case res.GetAPIVersion() == "v1" && res.GetKind() == "Secret":
-						continue
-					case res.GetAPIVersion() == "v1" && res.GetKind() == "ConfigMap":
-						continue
-					default:
-						fmt.Printf("Gathering -> %s:%s\n", res.GetAPIVersion(), gvr.Resource)
+				o = f
+				mustClose = true
+			}
 
-						// remove managed fields as they are only making noise
-						res.SetManagedFields(nil)
+			out := bufio.NewWriter(o)
+			defer func() {
+				_ = out.Flush()
 
-						ulist = append(ulist, res.Object)
+				if mustClose {
+					if c, ok := o.(io.Closer); ok {
+						_ = c.Close()
+					}
+				}
+			}()
 
-						if res.GetAPIVersion() == "v1" && res.GetKind() == "Pod" && opts.logs {
-							containers, err := pods.ListContainers(f.Context, client, res.GetNamespace(), res.GetName())
+			items, err := resources.List(f.Context, dynamicClient, opts.gvrs, opts.id)
+			if err != nil {
+				return err
+			}
+
+			if len(items) != 0 {
+				raw, err := yaml.Marshal(items)
+				if err != nil {
+					return err
+				}
+
+				_, err = out.Write(raw)
+				if err != nil {
+					return err
+				}
+			}
+
+			if opts.logs {
+				for _, item := range items {
+					if item.GetAPIVersion() == "v1" && item.GetKind() == "Pod" {
+						containers, err := pods.ListContainers(f.Context, client, item.GetNamespace(), item.GetName())
+						if err != nil {
+							return err
+						}
+
+						for _, container := range containers {
+							_, err = fmt.Fprintf(
+								out,
+								"%s/%s:%s:%s@%s\n",
+								item.GetAPIVersion(),
+								item.GetKind(),
+								item.GetNamespace(),
+								item.GetName(),
+								container)
+
 							if err != nil {
 								return err
 							}
 
-							for _, container := range containers {
-								err := pods.Logs(f.Context, client, res.GetNamespace(), res.GetName(), container, os.Stdout)
-								if err != nil {
-									return err
-								}
+							err := pods.Logs(f.Context, client, item.GetNamespace(), item.GetName(), container, out)
+							if err != nil && !errors.Is(err, io.EOF) {
+								return err
 							}
+						}
+
+						_, err = out.Write([]byte{'\n'})
+						if err != nil {
+							return err
 						}
 					}
 				}
-			}
-
-			if len(ulist) != 0 {
-				out, err := yaml.Marshal(ulist)
-				if err != nil {
-					return err
-				}
-
-				fmt.Println(string(out))
 			}
 
 			return nil
@@ -129,6 +171,7 @@ func NewMustGatherCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	cmdutil.AddID(cmd, &opts.id).Required()
+	cmdutil.AddFile(cmd, &opts.file)
 
 	cmd.Flags().BoolVar(&opts.logs, "logs", opts.logs, "Include logs")
 	cmd.Flags().StringSliceVar(&opts.resources, "resource", nil, "resources to include apiVersion:plural")

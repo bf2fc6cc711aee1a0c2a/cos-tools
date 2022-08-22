@@ -48,10 +48,10 @@ func Logs(ctx context.Context, client kubernetes.Interface, namespace string, na
 	for {
 		data, err := reader.ReadBytes('\n')
 		if errors.Is(err, io.EOF) {
-			return err
+			return nil
 		}
 		if err != nil {
-			break
+			return err
 		}
 
 		data = re.ReplaceAll(data, empty)

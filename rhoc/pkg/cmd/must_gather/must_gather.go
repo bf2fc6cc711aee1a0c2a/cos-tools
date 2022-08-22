@@ -1,16 +1,12 @@
 package must_gather
 
 import (
-	"bufio"
-	"errors"
-	"fmt"
-	"io"
-	"os"
-
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes/pods"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/collections"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes/resources"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
@@ -18,9 +14,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
-	"k8s.io/client-go/discovery"
-	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 )
 
@@ -30,6 +23,7 @@ type options struct {
 	file      string
 	resources []string
 	gvrs      []schema.GroupVersionResource
+	o         *cmdutil.OutputWriter
 	f         *factory.Factory
 }
 
@@ -51,22 +45,13 @@ func NewMustGatherCommand(f *factory.Factory) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			client, _ := kubernetes.NewForConfig(config)
-			if err != nil {
-				return err
-			}
-			dynamicClient, err := dynamic.NewForConfig(config)
+			client, err := kubernetes.NewClient(f.Context, config)
 			if err != nil {
 				return err
 			}
 
 			if opts.resources == nil {
-				discoveryClient, err := discovery.NewDiscoveryClientForConfig(config)
-				if err != nil {
-					return err
-				}
-
-				opts.gvrs, err = resources.Discover(discoveryClient)
+				opts.gvrs, err = client.ServerResources()
 				if err != nil {
 					return err
 				}
@@ -77,43 +62,34 @@ func NewMustGatherCommand(f *factory.Factory) *cobra.Command {
 				}
 			}
 
-			for i := range opts.gvrs {
-				// exclude secrets
-				if opts.gvrs[i].Group == "" && opts.gvrs[i].Version == "v1" && opts.gvrs[i].Resource == "secrets" {
-					opts.gvrs[i].Group = ""
-					opts.gvrs[i].Version = ""
-					opts.gvrs[i].Resource = ""
+			opts.gvrs = collections.Filter(opts.gvrs, func(gvr schema.GroupVersionResource) bool {
+				if gvr.Group == "" && gvr.Version == "v1" && gvr.Resource == "secrets" {
+					return false
 				}
-			}
 
-			var o io.Writer
-			var mustClose bool
+				return true
+			})
 
 			if opts.file == "" {
-				o = f.IOStreams.Out
-				mustClose = false
-			} else {
-				f, err := os.Create(opts.file)
+				opts.o, err = cmdutil.NewOutputWriter(f.IOStreams.Out)
 				if err != nil {
 					return err
 				}
-
-				o = f
-				mustClose = true
+			} else {
+				opts.o, err = cmdutil.NewOutputFileWriter(opts.file)
+				if err != nil {
+					return err
+				}
 			}
 
-			out := bufio.NewWriter(o)
 			defer func() {
-				_ = out.Flush()
-
-				if mustClose {
-					if c, ok := o.(io.Closer); ok {
-						_ = c.Close()
-					}
-				}
+				_ = opts.o.Close()
 			}()
 
-			items, err := resources.List(f.Context, dynamicClient, opts.gvrs, opts.id)
+			items, err := client.List(opts.gvrs, metav1.ListOptions{
+				LabelSelector: "cos.bf2.org/connector.id=" + opts.id,
+			})
+
 			if err != nil {
 				return err
 			}
@@ -124,7 +100,7 @@ func NewMustGatherCommand(f *factory.Factory) *cobra.Command {
 					return err
 				}
 
-				_, err = out.Write(raw)
+				_, err = opts.o.Write(raw)
 				if err != nil {
 					return err
 				}
@@ -133,32 +109,7 @@ func NewMustGatherCommand(f *factory.Factory) *cobra.Command {
 			if opts.logs {
 				for _, item := range items {
 					if item.GetAPIVersion() == "v1" && item.GetKind() == "Pod" {
-						containers, err := pods.ListContainers(f.Context, client, item.GetNamespace(), item.GetName())
-						if err != nil {
-							return err
-						}
-
-						for _, container := range containers {
-							_, err = fmt.Fprintf(
-								out,
-								"%s/%s:%s:%s@%s\n",
-								item.GetAPIVersion(),
-								item.GetKind(),
-								item.GetNamespace(),
-								item.GetName(),
-								container)
-
-							if err != nil {
-								return err
-							}
-
-							err := pods.Logs(f.Context, client, item.GetNamespace(), item.GetName(), container, out)
-							if err != nil && !errors.Is(err, io.EOF) {
-								return err
-							}
-						}
-
-						_, err = out.Write([]byte{'\n'})
+						err = client.Logs(item.GetNamespace(), item.GetName(), opts.o)
 						if err != nil {
 							return err
 						}

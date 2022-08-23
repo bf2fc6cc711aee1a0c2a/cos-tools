@@ -91,12 +91,15 @@ func (in *Client) List(resources []schema.GroupVersionResource, options metav1.L
 
 		resList, err := dc.Resource(gvr).List(in.ctx, options)
 
-		if err != nil && kerr.IsUnauthorized(err) {
-			continue
-		}
-
 		if err != nil {
-			return nil, err
+			switch {
+			case kerr.IsUnauthorized(err):
+				continue
+			case kerr.IsForbidden(err):
+				continue
+			default:
+				return nil, err
+			}
 		}
 
 		for i := range resList.Items {

@@ -90,19 +90,21 @@ func (in *Client) List(resources []schema.GroupVersionResource, options metav1.L
 		}
 
 		resList, err := dc.Resource(gvr).List(in.f.Context, options)
-
 		if err != nil {
 			switch {
 			case kerr.IsUnauthorized(err):
-				in.f.Logger.Errorf("Unauthorized access to %s:%s", gvr.GroupVersion(), gvr.Resource)
+				in.f.Logger.Debugf("unauthorized access to %s:%s", gvr.GroupVersion(), gvr.Resource)
 				continue
 			case kerr.IsForbidden(err):
-				in.f.Logger.Errorf("Forbidden access to %s:%s", gvr.GroupVersion(), gvr.Resource)
+				in.f.Logger.Debugf("forbidden access to %s:%s", gvr.GroupVersion(), gvr.Resource)
 				continue
 			default:
+				in.f.Logger.Debugf("error listing %s:%s, %s", gvr.GroupVersion(), gvr.Resource, err.Error())
 				return nil, err
 			}
 		}
+
+		in.f.Logger.Debugf("found %d %s:%s resources", len(resList.Items), gvr.GroupVersion(), gvr.Resource)
 
 		for i := range resList.Items {
 			// remove managed fields as they are only making noise

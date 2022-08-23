@@ -1,11 +1,11 @@
 package kubernetes
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/collections"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/kubernetes/pods"
+	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"io"
 	kerr "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -18,19 +18,19 @@ import (
 )
 
 type Client struct {
-	ctx    context.Context
+	f      *factory.Factory
 	config *r.Config
 	C      k.Interface
 }
 
-func NewClient(ctx context.Context, config *r.Config) (*Client, error) {
+func NewClient(f *factory.Factory, config *r.Config) (*Client, error) {
 	client, err := k.NewForConfig(config)
 	if err != nil {
 		return nil, err
 	}
 
 	answer := Client{
-		ctx:    ctx,
+		f:      f,
 		config: config,
 		C:      client,
 	}
@@ -89,13 +89,15 @@ func (in *Client) List(resources []schema.GroupVersionResource, options metav1.L
 			continue
 		}
 
-		resList, err := dc.Resource(gvr).List(in.ctx, options)
+		resList, err := dc.Resource(gvr).List(in.f.Context, options)
 
 		if err != nil {
 			switch {
 			case kerr.IsUnauthorized(err):
+				in.f.Logger.Errorf("Unauthorized access to %s:%s", gvr.GroupVersion(), gvr.Resource)
 				continue
 			case kerr.IsForbidden(err):
+				in.f.Logger.Errorf("Forbidden access to %s:%s", gvr.GroupVersion(), gvr.Resource)
 				continue
 			default:
 				return nil, err
@@ -114,7 +116,7 @@ func (in *Client) List(resources []schema.GroupVersionResource, options metav1.L
 }
 
 func (in *Client) Logs(namespace string, name string, writer io.Writer) error {
-	containers, err := pods.ListContainers(in.ctx, in.C, namespace, name)
+	containers, err := pods.ListContainers(in.f.Context, in.C, namespace, name)
 	if err != nil {
 		return err
 	}
@@ -141,7 +143,7 @@ func (in *Client) LogsForContainer(namespace string, name string, container stri
 		return err
 	}
 
-	err = pods.Logs(in.ctx, in.C, namespace, name, container, writer)
+	err = pods.Logs(in.f.Context, in.C, namespace, name, container, writer)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return err
 	}

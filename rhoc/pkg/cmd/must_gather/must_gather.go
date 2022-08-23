@@ -45,7 +45,7 @@ func NewMustGatherCommand(f *factory.Factory) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			client, err := kubernetes.NewClient(f.Context, config)
+			client, err := kubernetes.NewClient(f, config)
 			if err != nil {
 				return err
 			}

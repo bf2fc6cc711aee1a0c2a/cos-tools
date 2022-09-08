@@ -11,7 +11,8 @@
         "grafana/camelk-operators.yaml",
         "grafana/strimzi-operators.yaml",
         "grafana/camelk-connectors.yaml",
-        "grafana/connectors.yaml"
+        "grafana/connectors.yaml",
+        "grafana/debezium-connectors.yaml"
       ]
     },
     "promtail": {

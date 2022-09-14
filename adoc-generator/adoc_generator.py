@@ -3,9 +3,16 @@
 
 import argparse
 import json
+from pprint import pprint
 import os
 import sys
 import textwrap
+
+"""Auxiliary function to output errors to stderr."""
+
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def print_connector_header(connector_id, connector_name, connector_description):
@@ -67,26 +74,50 @@ def validate_args(
         parser (argparse.ArgumentParser): the argument parser instance
     """
     if file_path_args is None and source_dir_path_arg is None:
-        print("error: -f, -s (or both) options must be provided!\n")
+        eprint("error: -f, -s (or both) options must be provided!\n")
         parser.print_help()
         sys.exit(1)
     if file_path_args is not None:
         for file_path in file_path_args:
             if file_path is None or not os.path.exists(file_path):
-                print(f'error: "{file_path}" does not exist or is not a file')
+                eprint(f'error: "{file_path}" does not exist or is not a file')
                 sys.exit(2)
     if source_dir_path_arg is not None:
         if not os.path.exists(source_dir_path_arg) or not os.path.isdir(source_dir_path_arg):
-            print(f'error: "{source_dir_path_arg}" does not exist or is not a directory')
+            eprint(f'error: "{source_dir_path_arg}" does not exist or is not a directory')
             sys.exit(3)
     if destination_dir_path_arg is not None:
         if not os.path.exists(destination_dir_path_arg) or not os.path.isdir(destination_dir_path_arg):
-            print(f'error: "{destination_dir_path_arg}" does not exist or is not a directory')
+            eprint(f'error: "{destination_dir_path_arg}" does not exist or is not a directory')
             sys.exit(4)
 
 
-def get_composite_property(property_content, attribute_name: str) -> str:
-    """Retrieves the contents of a property which can be inside multiple ``oneOf`` objects"""
+def get_composite_property(connector_schema, attribute_name: str, property_key: str, data_shape_key_or_value: str) -> str:
+    """Retrieves the contents of a property which can be inside multiple ``oneOf`` objects
+    There is a special case to get the description of the data_shape property. It will be inside the $defs object
+    The format for camel and debezium connectors differs a little so there is also a special case for that.
+
+    Args:
+        connector_schema (): json object which represents the connector_json_definition["connector_type"]["schema"]
+        attribute_name (str): attribute to get the value of
+        property_key (str): which property to get the attribute from
+    """
+    property_content = connector_schema["properties"][property_key]
+    if property_key == "data_shape" and attribute_name == "description":
+        camel_data_shape_description = ""
+        if property_key in connector_schema["$defs"]:  # camel connector
+            if "consumes" in connector_schema["$defs"][property_key]:
+                camel_data_shape_description = connector_schema["$defs"][
+                    property_key]["consumes"]["properties"]["format"]["description"]
+            if "produces" in connector_schema["$defs"][property_key]:
+                camel_data_shape_description = connector_schema["$defs"][
+                    property_key]["produces"]["properties"]["format"]["description"]
+            return camel_data_shape_description
+        # debezium connector
+        elif property_key in connector_schema["properties"]:
+            debezium_data_shape_description = f" {connector_schema['properties'][property_key]['properties'][data_shape_key_or_value]['description']}"
+            return debezium_data_shape_description
+
     if attribute_name in property_content:
         return property_content[attribute_name]
     if "oneOf" in property_content:
@@ -103,12 +134,22 @@ def get_normal_property(property_content, attribute_name: str) -> str:
     return property_content[attribute_name] if attribute_name in property_content else ""
 
 
-def get_required_property(property_content, attribute_name: str, property_key: str, required_properties: list) -> str:
+def get_required_property(connector_schema, attribute_name: str, property_key: str, data_shape_key_or_value: str, required_properties: list) -> str:
     """
-    Retrieves the contents of a property which can be required/mandatory.
-    If it is a ``*`` is appended to the returned value
+    Retrieves the contents of a property which can be required/mandatory. If it is a ``*`` is appended to the returned value.
+    There is a special case the data_shape property which normally does not have a "title" attribute. the data_shape property also
+    differs a little between camel and debezium connectors
     """
-    return_value = property_content[attribute_name] if attribute_name in property_content else ""
+    property_content = connector_schema["properties"][property_key]
+
+    if property_key == "data_shape" and attribute_name == "title":
+        if property_key in connector_schema['$defs']: # camel connector
+            return_value = "Data Shape"
+        elif property_key in connector_schema['properties']: # debezium connector
+            return_value = connector_schema['properties'][property_key]['properties'][data_shape_key_or_value]['title']
+    else:
+        return_value = property_content[attribute_name] if attribute_name in property_content else ""
+
     return_value += "*" if property_key in required_properties else ""
     return return_value
 
@@ -127,6 +168,10 @@ def convert_to_adoc_from_json_file(json_file_path: str, destination_dir_path: st
             os.path.splitext(os.path.basename(json_file_path))[0] + ".adoc",
         )
         json_data = json.load(read_file)
+        if "connector_type" not in json_data:
+            eprint(f'warn: connector_type property not found maybe "{json_file_path}" is not a valid connector description file')
+            return
+
         properties_keys = json_data["connector_type"]["schema"]["properties"].keys()
         required_properties = json_data["connector_type"]["schema"]["required"]
         with open(output_adoc_file_path, "w", encoding="utf-8") as out_file:
@@ -139,24 +184,42 @@ def convert_to_adoc_from_json_file(json_file_path: str, destination_dir_path: st
                     connector_description=json_data["connector_type"]["description"],
                 )
             )
-            out_file.write(print_property_table_header("Name", "Property", "Description", "Type", "Default", "Example"))
+            out_file.write(print_property_table_header(
+                "Name", "Property", "Description", "Type", "Default", "Example"))
 
             for property_key in properties_keys:
                 if property_key not in ignored_properties:
                     property_content = json_data["connector_type"]["schema"]["properties"][property_key]
-                    out_file.write(
-                        print_property_table_row(
-                            "*{Empty}" + get_required_property(property_content, "title", property_key, required_properties) + "*",
-                            "`" + property_key + "`",
-                            get_composite_property(property_content, "description"),
-                            get_composite_property(property_content, "type"),
+                    connector_schema = json_data["connector_type"]["schema"]
+                    if property_key == "data_shape" and "key" in property_content["properties"]:
+                        table_row = print_property_table_row(
+                            "*{Empty}" + get_required_property(connector_schema, "title", property_key, "key", required_properties) + "*", "`" + property_key + "`",
+                            get_composite_property(connector_schema, "description", property_key, "key"),
+                            get_composite_property(connector_schema, "type", property_key, "key"),
                             get_normal_property(property_content, "default"),
                             get_normal_property(property_content, "example"),
                         )
-                    )
+                        table_row += print_property_table_row(
+                            "*{Empty}" + get_required_property(connector_schema, "title", property_key, "value", required_properties) + "*", "`" + property_key + "`",
+                            get_composite_property(connector_schema, "description", property_key, "value"),
+                            get_composite_property(connector_schema, "type", property_key, "value"),
+                            get_normal_property(property_content, "default"),
+                            get_normal_property(property_content, "example"),
+                        )
+
+                    else:
+                        table_row = print_property_table_row(
+                            "*{Empty}" + get_required_property(
+                                connector_schema, "title", property_key, "", required_properties) + "*", "`" + property_key + "`",
+                            get_composite_property(connector_schema, "description", property_key, ""),
+                            get_composite_property(connector_schema, "type", property_key, ""),
+                            get_normal_property(property_content, "default"),
+                            get_normal_property(property_content, "example"),
+                        )
+
+                    out_file.write(table_row)
 
             out_file.write(print_property_table_footer())
-
 
 def main():
     """Main function"""
@@ -181,7 +244,10 @@ def main():
     )
 
     optional_group = parser.add_argument_group("optional arguments")
-    optional_group.add_argument("-h", "--help", action="help", help="Show this help message and exit")
+    optional_group.add_argument(
+        "-h", "--help",
+        action="help",
+        help="Show this help message and exit")
     optional_group.add_argument(
         "-r",
         "--recursive",

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/config/context"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/config/show"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/config/token"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
@@ -24,6 +25,7 @@ func NewConfigCommand(f *factory.Factory) *cobra.Command {
 
 	cmd.AddCommand(show.NewConfigShowCommand(f))
 	cmd.AddCommand(token.NewConfigTokenCommand(f))
+	cmd.AddCommand(context.NewContextCommand(f))
 
 	return cmd
 }

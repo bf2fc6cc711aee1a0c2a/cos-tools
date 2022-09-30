@@ -6,17 +6,11 @@ import (
 
 // Define public variables here which you wish to be configurable at build time
 var (
-	// Version is dynamically set by the toolchain or overridden by the Makefile.
-	Version = "dev"
-
-	// Language used, can be overridden by Makefile or CI
-	Language = "en"
-
-	// DefaultPageSize is the default number of items per page when using list commands
-	DefaultPageSize = 100
-
-	// DefaultPageNumber is the default page number when using list commands
+	Version           = "dev"
+	DefaultPageSize   = 100
 	DefaultPageNumber = 1
+	ConsoleURL        = "https://console.redhat.com"
+	AuthURL           = "https://auth.redhat.com/auth/realms/EmployeeIDP"
 )
 
 func init() {

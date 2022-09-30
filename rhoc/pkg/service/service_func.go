@@ -8,10 +8,10 @@ import (
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 )
 
-func ListClusters(c *AdminAPI, opts request.ListOptions) (admin.ConnectorClusterList, error) {
-	items := admin.ConnectorClusterList{
-		Kind:  "ConnectorClusterList",
-		Items: make([]admin.ConnectorCluster, 0),
+func ListClusters(c *AdminAPI, opts request.ListOptions) (admin.ConnectorClusterAdminList, error) {
+	items := admin.ConnectorClusterAdminList{
+		Kind:  "ConnectorClusterAdminList",
+		Items: make([]admin.ConnectorClusterAdminView, 0),
 		Total: 0,
 		Size:  0,
 	}

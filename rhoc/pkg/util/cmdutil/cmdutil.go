@@ -20,16 +20,17 @@ const (
 	OutputFormatCSV  = "csv"
 )
 
-func Add(root *cobra.Command, sub *cobra.Command) {
+func Add(root *cobra.Command, sub *cobra.Command) *cobra.Command {
 	if err := bindPFlags(sub); err != nil {
 		panic(err)
 	}
 
 	root.AddCommand(sub)
 
+	return root
 }
 
-func Bind(root *cobra.Command, subs ...*cobra.Command) {
+func Bind(root *cobra.Command, subs ...*cobra.Command) *cobra.Command {
 	if err := bindPFlags(root); err != nil {
 		panic(err)
 	}
@@ -37,6 +38,8 @@ func Bind(root *cobra.Command, subs ...*cobra.Command) {
 	for _, s := range subs {
 		Add(root, s)
 	}
+
+	return root
 }
 
 func bindPFlags(cmd *cobra.Command) (err error) {
@@ -184,7 +187,7 @@ func AddOrderBy(cmd *cobra.Command, output *string) *FlagOptions {
 	cmd.Flags().StringVar(
 		output,
 		name,
-		"",
+		*output,
 		"Specifies the order by criteria",
 	)
 
@@ -197,7 +200,7 @@ func AddSearch(cmd *cobra.Command, output *string) *FlagOptions {
 	cmd.Flags().StringVar(
 		output,
 		name,
-		"",
+		*output,
 		"Search criteria",
 	)
 
@@ -211,7 +214,7 @@ func AddClusterID(cmd *cobra.Command, output *string) *FlagOptions {
 		output,
 		name,
 		"c",
-		"",
+		*output,
 		"Cluster ID",
 	)
 
@@ -225,7 +228,7 @@ func AddNamespaceID(cmd *cobra.Command, output *string) *FlagOptions {
 		output,
 		name,
 		"n",
-		"",
+		*output,
 		"Namespace ID",
 	)
 
@@ -238,7 +241,7 @@ func AddID(cmd *cobra.Command, output *string) *FlagOptions {
 	cmd.Flags().StringVar(
 		output,
 		name,
-		"",
+		*output,
 		"ID",
 	)
 
@@ -251,7 +254,7 @@ func AddTenantKind(cmd *cobra.Command, output *string) *FlagOptions {
 	cmd.Flags().StringVar(
 		output,
 		name,
-		"",
+		*output,
 		"Tenant Kind",
 	)
 
@@ -264,7 +267,7 @@ func AddTenantID(cmd *cobra.Command, output *string) *FlagOptions {
 	cmd.Flags().StringVar(
 		output,
 		name,
-		"",
+		*output,
 		"Tenant ID",
 	)
 
@@ -277,7 +280,7 @@ func AddName(cmd *cobra.Command, output *string) *FlagOptions {
 	cmd.Flags().StringVar(
 		output,
 		name,
-		"",
+		*output,
 		"Name",
 	)
 
@@ -293,6 +296,19 @@ func AddForce(cmd *cobra.Command, output *bool) *FlagOptions {
 		"f",
 		false,
 		"Force",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddUse(cmd *cobra.Command, output *bool) *FlagOptions {
+	name := "use"
+
+	cmd.Flags().BoolVar(
+		output,
+		name,
+		false,
+		"Use",
 	)
 
 	return withFlagOptions(cmd, name)
@@ -371,6 +387,10 @@ func withFlagOptions(cmd *cobra.Command, flagName string) *FlagOptions {
 		_ = cmd.MarkFlagRequired(flagName)
 		return &options
 	}
+	options.Complete = func(f func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective)) *FlagOptions {
+		_ = cmd.RegisterFlagCompletionFunc(flagName, f)
+		return &options
+	}
 
 	return &options
 }
@@ -378,4 +398,5 @@ func withFlagOptions(cmd *cobra.Command, flagName string) *FlagOptions {
 // FlagOptions defines additional flag options
 type FlagOptions struct {
 	Required func() *FlagOptions
+	Complete func(func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective)) *FlagOptions
 }

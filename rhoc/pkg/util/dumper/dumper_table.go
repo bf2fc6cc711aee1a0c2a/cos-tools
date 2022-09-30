@@ -3,10 +3,13 @@ package dumper
 import (
 	"encoding/csv"
 	"fmt"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/collections"
 	"io"
+	"sort"
 	"strconv"
 
 	"github.com/gobeam/stringy"
+	"github.com/jeremywohl/flatten/v2"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -110,4 +113,72 @@ func DumpTable[T any](config TableConfig[T], out io.Writer, items []T) error {
 	default:
 		return fmt.Errorf("unsupported table style %d", config.Style)
 	}
+}
+
+func DumpKV(out io.Writer, columns []string, items [][]string) error {
+	if len(items) == 0 {
+		return nil
+	}
+
+	headers := make([]string, 0, len(columns))
+	for i := range columns {
+		header := stringy.New(columns[i]).SnakeCase().ToUpper()
+		headers = append(headers, header)
+	}
+
+	table := tablewriter.NewWriter(out)
+	table.SetHeader(headers)
+	table.SetBorder(false)
+	table.SetAutoFormatHeaders(false)
+	table.SetRowLine(false)
+	table.SetColumnSeparator(tablewriter.SPACE)
+	table.SetCenterSeparator(tablewriter.SPACE)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAutoWrapText(false)
+	table.AppendBulk(items)
+	table.Render()
+
+	return nil
+}
+
+func DumpStruct(out io.Writer, in any) error {
+	headers := []string{"KEY", "VAL"}
+
+	m, err := collections.StructToMap(in)
+	if err != nil {
+		return err
+	}
+
+	ms, err := flatten.Flatten(m, "", flatten.DotStyle)
+	if err != nil {
+		return err
+	}
+
+	items := make([][]string, 0)
+	for k, v := range ms {
+		items = append(items, []string{
+			k,
+			fmt.Sprintf("%v", v),
+		})
+	}
+
+	sort.SliceStable(items, func(i, j int) bool {
+		return items[i][0] < items[j][0]
+	})
+
+	table := tablewriter.NewWriter(out)
+	table.SetHeader(headers)
+	table.SetBorder(false)
+	table.SetAutoFormatHeaders(false)
+	table.SetRowLine(false)
+	table.SetColumnSeparator(tablewriter.SPACE)
+	table.SetCenterSeparator(tablewriter.SPACE)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAutoWrapText(false)
+	table.AppendBulk(items)
+	table.Render()
+
+	return nil
 }

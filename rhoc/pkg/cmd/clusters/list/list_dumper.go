@@ -10,15 +10,15 @@ import (
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, style dumper.TableStyle) {
-	config := dumper.TableConfig[admin.ConnectorCluster]{
+func dumpAsTable(out io.Writer, items admin.ConnectorClusterAdminList, wide bool, style dumper.TableStyle) {
+	config := dumper.TableConfig[admin.ConnectorClusterAdminView]{
 		Style: style,
 		Wide:  wide,
-		Columns: []dumper.Column[admin.ConnectorCluster]{
+		Columns: []dumper.Column[admin.ConnectorClusterAdminView]{
 			{
 				Name: "ID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorCluster) dumper.Row {
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
 					return dumper.Row{
 						Value: in.Id,
 					}
@@ -27,16 +27,34 @@ func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, sty
 			{
 				Name: "Name",
 				Wide: true,
-				Getter: func(in *admin.ConnectorCluster) dumper.Row {
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
 					return dumper.Row{
 						Value: in.Name,
 					}
 				},
 			},
 			{
+				Name: "PlatformID",
+				Wide: true,
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
+					return dumper.Row{
+						Value: in.Status.Platform.Id,
+					}
+				},
+			},
+			{
+				Name: "PlatformType",
+				Wide: true,
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
+					return dumper.Row{
+						Value: in.Status.Platform.Type,
+					}
+				},
+			},
+			{
 				Name: "Owner",
 				Wide: false,
-				Getter: func(in *admin.ConnectorCluster) dumper.Row {
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
 					return dumper.Row{
 						Value: in.Owner,
 					}
@@ -45,7 +63,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, sty
 			{
 				Name: "State",
 				Wide: false,
-				Getter: func(in *admin.ConnectorCluster) dumper.Row {
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
 					r := dumper.Row{
 						Value: string(in.Status.State),
 					}
@@ -63,7 +81,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, sty
 			{
 				Name: "Age",
 				Wide: false,
-				Getter: func(in *admin.ConnectorCluster) dumper.Row {
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
 					age := duration.HumanDuration(time.Since(in.CreatedAt))
 					if in.CreatedAt.IsZero() {
 						age = ""
@@ -77,7 +95,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, sty
 			{
 				Name: "CreatedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorCluster) dumper.Row {
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
 					return dumper.Row{
 						Value: in.CreatedAt.Format(time.RFC3339),
 					}
@@ -86,7 +104,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorClusterList, wide bool, sty
 			{
 				Name: "ModifiedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorCluster) dumper.Row {
+				Getter: func(in *admin.ConnectorClusterAdminView) dumper.Row {
 					return dumper.Row{
 						Value: in.ModifiedAt.Format(time.RFC3339),
 					}

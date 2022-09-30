@@ -16,11 +16,9 @@ func NeClustersCommand(f *factory.Factory) *cobra.Command {
 		Args:    cobra.MinimumNArgs(1),
 	}
 
-	cmdutil.Bind(
+	return cmdutil.Bind(
 		cmd,
 		list.NewListCommand(f),
 		tree.NewTreeCommand(f),
 		get.NewGetCommand(f))
-
-	return cmd
 }

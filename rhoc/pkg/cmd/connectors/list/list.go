@@ -2,6 +2,7 @@ package list
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
@@ -29,8 +30,14 @@ type options struct {
 }
 
 func NewListCommand(f *factory.Factory) *cobra.Command {
+
 	opts := options{
 		f: f,
+	}
+
+	sc, err := f.ServiceContext.Load()
+	if err == nil && sc != nil {
+		opts.namespaceID = sc.Contexts[sc.CurrentContext].NamespaceID
 	}
 
 	cmd := &cobra.Command{
@@ -89,19 +96,19 @@ func run(opts *options) error {
 	}
 
 	if len(items.Items) == 0 && opts.outputFormat == "" {
-		opts.f.Logger.Info("No result")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "No result\n")
 		return nil
 	}
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 		dumpAsTable(opts.f.IOStreams.Out, items, false, dumper.TableStyleDefault)
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 	case cmdutil.OutputFormatWide:
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 		dumpAsTable(opts.f.IOStreams.Out, items, true, dumper.TableStyleDefault)
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 	case cmdutil.OutputFormatCSV:
 		dumpAsTable(opts.f.IOStreams.Out, items, true, dumper.TableStyleCSV)
 	default:

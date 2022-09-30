@@ -121,7 +121,7 @@ func renderCluster(c *service.AdminAPI, opts *options, table *tablewriter.Table)
 		cluster.Owner,
 		resource.Age(cluster.CreatedAt),
 		string(cluster.Status.State),
-		cluster.Status.Error}
+		""}
 
 	style := []tablewriter.Colors{{}, {}, {}, {}, {}}
 

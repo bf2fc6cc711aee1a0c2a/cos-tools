@@ -4,7 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/cmd/must_gather"
 	"os"
 	"strings"
 
@@ -20,7 +19,6 @@ import (
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/completion"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/login"
 	"github.com/redhat-developer/app-services-cli/pkg/cmd/logout"
-	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 
 	"github.com/spf13/cobra"
@@ -37,13 +35,14 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 	}
 
 	fs := cmd.PersistentFlags()
-	flagutil.VerboseFlag(fs)
 
 	// this flag comes out of the box, but has its own basic usage text, so this overrides that
 	var help bool
 	fs.BoolVarP(&help, "help", "h", false, "Prints help information")
 
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	flag.Set("logtostderr", "true")
+	flag.Parse()
 
 	cmdutil.Bind(
 		cmd,
@@ -57,12 +56,9 @@ func NewRootCommand(f *factory.Factory) *cobra.Command {
 		namespaces.NewNamespacesCommand(f),
 		connectors.NewConnectorsCommand(f),
 		deployments.NewDeploymentsCommand(f),
-		clusters.NeClustersCommand(f),
-		must_gather.NewMustGatherCommand(f))
+		clusters.NeClustersCommand(f))
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
-		f.Logger.SetDebug(flagutil.DebugEnabled())
-
 		configName := os.Getenv("RHOC_CONFIG_NAME")
 		if configName == "" {
 			configName = "rhoc"

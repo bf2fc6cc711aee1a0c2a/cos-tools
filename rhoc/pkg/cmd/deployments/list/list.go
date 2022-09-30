@@ -2,6 +2,7 @@ package list
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
@@ -93,19 +94,19 @@ func run(opts *options) error {
 	}
 
 	if len(items.Items) == 0 && opts.outputFormat == "" {
-		opts.f.Logger.Info("No result")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "No result\n")
 		return nil
 	}
 
 	switch opts.outputFormat {
 	case dump.EmptyFormat:
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 		dumpAsTable(opts.f.IOStreams.Out, items, opts.ListDeploymentsOptions, false, dumper.TableStyleDefault)
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 	case cmdutil.OutputFormatWide:
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 		dumpAsTable(opts.f.IOStreams.Out, items, opts.ListDeploymentsOptions, true, dumper.TableStyleDefault)
-		opts.f.Logger.Info("")
+		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "\n")
 	case cmdutil.OutputFormatCSV:
 		dumpAsTable(opts.f.IOStreams.Out, items, opts.ListDeploymentsOptions, true, dumper.TableStyleCSV)
 	default:

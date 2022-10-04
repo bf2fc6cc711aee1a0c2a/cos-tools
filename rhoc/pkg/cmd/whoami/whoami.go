@@ -21,13 +21,13 @@ func NewWhoAmICommand(f *factory.Factory) *cobra.Command {
 				return err
 			}
 
-			userName, ok := token.GetUsername(a.GetConfig().MasAccessToken)
+			userName, ok := token.GetUsername(a.GetConfig().AccessToken)
 			if !ok {
 				userName = "unknown"
 			}
 
 			if ok {
-				fmt.Fprintf(f.IOStreams.Out, "%s@%s\n", userName, a.GetConfig().ApiURL.String())
+				_, _ = fmt.Fprintf(f.IOStreams.Out, "%s@%s\n", userName, a.GetConfig().ApiURL.String())
 			}
 
 			return nil

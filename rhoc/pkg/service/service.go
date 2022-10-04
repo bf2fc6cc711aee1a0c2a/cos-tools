@@ -8,7 +8,6 @@ import (
 
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
-	"github.com/redhat-developer/app-services-cli/pkg/shared/connection"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 
 	"golang.org/x/oauth2"
@@ -19,7 +18,7 @@ type Config struct {
 }
 
 func API(config *Config) (api.API, error) {
-	conn, err := config.F.Connection(connection.DefaultConfigRequireMasAuth)
+	conn, err := config.F.Connection()
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +34,7 @@ func NewAdminClient(config *Config) (*AdminAPI, error) {
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{
-			AccessToken: a.GetConfig().MasAccessToken,
+			AccessToken: a.GetConfig().AccessToken,
 		},
 	)
 

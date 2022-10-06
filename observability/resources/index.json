@@ -34,7 +34,7 @@
       ],
       "rules": [
         "prometheus/prometheus-rules.yaml",
-        "prometheus/camel-k-operator-rules.yaml",
+        "prometheus/connectors-slo-rules.yaml",
         "prometheus/strimzi-operator-rules.yaml",
         "prometheus/cos-fleetshard-sync-rules.yaml",
         "prometheus/cos-fleetshard-operator-camel-rules.yaml",

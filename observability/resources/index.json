@@ -39,7 +39,7 @@
         "prometheus/cos-fleetshard-sync-rules.yaml",
         "prometheus/cos-fleetshard-operator-camel-rules.yaml",
         "prometheus/cos-fleetshard-operator-debezium-rules.yaml",
-        "prometheus/camel-k-connectors-rules.yaml"
+        "prometheus/connectors-slo-rules.yaml"
       ],
       "observatorium": "default",
       "remoteWrite": "prometheus/remote-write.yaml",

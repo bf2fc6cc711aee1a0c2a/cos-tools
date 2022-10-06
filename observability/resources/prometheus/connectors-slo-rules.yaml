@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: rhoc
+  name: rhoc-connectors-slo-rules
+spec:
+  groups:
+    - name: rhoc-connectors-slo-rules
+      rules:
+        - expr: avg_over_time(cos_fleetshard_sync_connector_state[30m])
+          labels:
+            service: rhoc-fleetshard
+          record: connector_state:interval30m
+
+        - expr: min_over_time(cos_fleetshard_sync_connector_state[24h])
+          labels:
+            service: rhoc-fleetshard
+          record: connector_state_at_least_once:interval24h
+
+        - alert: ConnectorInFailedState
+          expr: connector_state:interval30m == 2 AND connector_state_at_least_once:interval24h == 1
+          labels:
+            severity: critical
+          annotations:
+            summary: 'the connector {{ $labels.cos_connector_id }} is in failed state'
+            description: 'the connector {{ $labels.cos_connector_id }} type {{ $labels.cos_connector_type_id }} is in FAILED state'
+            sop_url: 'https://TODO'

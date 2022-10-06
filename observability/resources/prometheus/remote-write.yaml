@@ -213,6 +213,15 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
     targetLabel: __tmp_keep
+
+  # WHAT: Custom Metrics exposed by the Applications
+  - action: replace
+      regex: cos_fleetshard_sync_connector_state$
+      replacement: 'true'
+      sourceLabels:
+        - __name__
+      targetLabel: __tmp_keep
+
   # WHAT: Restart Status of a connector
   - action: replace
     regex: kube_pod_container_status_restarts_total$

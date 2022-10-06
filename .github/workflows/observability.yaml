@@ -1,0 +1,30 @@
+name: rhoc-observability-run-tests
+
+on:
+  push:
+    paths:
+      - 'observability/**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'observability/**'
+    branches:
+      - main
+      - development
+
+defaults:
+  run:
+    working-directory: observability
+
+env:
+  ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run pr_check
+        run: make run/tests

@@ -1,0 +1,87 @@
+rule_files:
+  - /prometheus/rules.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series:
+      # Total interval: 200 minutes
+      # 10 times 5, connector is in PROCESS for 10 minutes
+      # 40 times 2, connector transitioned to FAILED right after PROCESS and staid in FAILED for 40 minutes
+      # 40 times 1, connector transitioned to READY and staid 40 minutes in READY
+      # 50 times 2, connector transitioned to FAILED for 50 minutes
+      # 60 times 1, at last, the connector transitions to READY again
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1"}'
+        values: '5+0x10 2+0x40 1+0x40 2+0x50 1+0x60'
+
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1"}'
+        values: '2+0x200'
+
+    promql_expr_test:
+      # connector_state:interval30m unit_tests
+      - expr: connector_state:interval30m
+        eval_time: 10m
+        exp_samples:
+          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 5
+          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+      - expr: connector_state:interval30m
+        eval_time: 50m
+        exp_samples:
+          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+      - expr: connector_state:interval30m
+        eval_time: 90m
+        exp_samples:
+          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 1
+          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+      - expr: connector_state:interval30m
+        eval_time: 2h10m
+        exp_samples:
+          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+
+      # connector_state_at_least_once:interval24h unit_tests
+      - expr: connector_state_at_least_once:interval24h
+        eval_time: 2h
+        exp_samples:
+          - labels: 'connector_state_at_least_once:interval24h{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 1
+          - labels: 'connector_state_at_least_once:interval24h{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+
+    alert_rule_test:
+      # A connector transitions to FAILED and never was in READY, no alert should be triggered
+      - eval_time: 40m
+        alertname: ConnectorInFailedState
+        exp_alerts: [ ]
+      # A connector transitions to READY after failing, no alert should be triggered
+      - eval_time: 70m
+        alertname: ConnectorInFailedState
+        exp_alerts: [ ]
+      # A connector transitions to FAILED after being READY, an alert should be triggered
+      - eval_time: 2h10m
+        alertname: ConnectorInFailedState
+        exp_alerts:
+          - exp_labels:
+              alertname: ConnectorInFailedState
+              severity: critical
+              service: 'rhoc-fleetshard'
+              cos_connector_id: 'cbvn81m9fbo9fmh5rn60'
+              cos_connector_type_id: 'aws_kinesis_source_0.1'
+            exp_annotations:
+              summary: 'the connector cbvn81m9fbo9fmh5rn60 is in failed state'
+              description: 'the connector cbvn81m9fbo9fmh5rn60 type aws_kinesis_source_0.1 is in FAILED state'
+              sop_url: 'https://TODO'
+      # A connector transitions to READY after failing, no alert should be triggered
+      - eval_time: 3h
+        alertname: ConnectorInFailedState
+        exp_alerts: [ ]

@@ -17,9 +17,6 @@ defaults:
   run:
     working-directory: observability
 
-env:
-  ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-
 jobs:
   build:
     runs-on: ubuntu-latest

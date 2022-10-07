@@ -54,6 +54,15 @@ validate/index:$(shell pwd)
 check/unit-tests:$(shell pwd)
 	./scripts/unit-test-check.sh
 
+# Check each alert has a SOP
+.PHONY: alerts/sop_url_exists
+alerts/sop_url_exists:$(shell pwd)
+	./scripts/validate-sop-url-exists.sh
+
+.PHONY: validate/sop_url_links
+validate/sop_url_links:$(shell pwd)
+	./scripts/validate-sop-urls.sh
+
 # Run all test targets
 .PHONY: run/tests
-run/tests: unit/test validate/dashboards validate/index check/rules check/unit-tests
+run/tests: unit/test alerts/sop_url_exists validate/sop_url_links validate/dashboards validate/index check/rules check/unit-tests

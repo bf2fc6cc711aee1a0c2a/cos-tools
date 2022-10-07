@@ -16,7 +16,7 @@ spec:
           annotations:
             summary: 'The cos-fleetshard-operator-camel target is down'
             description: 'The cos-fleetshard-operator-camel target has been unable to scrape the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
-            sop_url: 'https://TODO'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/cos_fleet_shard_operator_camel_target_down.adoc'
         - alert: CosFleetShardOperatorCamelContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-operator-camel"}[60m]) > 3
           labels:
@@ -24,4 +24,4 @@ spec:
           annotations:
             summary: 'cos-fleetshard-operator-camel is restarting frequently'
             description: 'cos-fleetshard-operator-camel container restarted frequently in the last 60 minutes'
-            sop_url: 'https://TODO'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/cos_fleet_shard_operator_camel_container_frequently_restarting.adoc'

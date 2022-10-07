@@ -1,0 +1,53 @@
+rule_files:
+  - /prometheus/rules.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'up{container="cos-fleetshard-sync", namespace="some_namespace"}'
+        values: '1+0x30 0+0x30 1+0x30'
+      - series: 'kube_pod_container_status_restarts_total{container="cos-fleetshard-sync", namespace="some_namespace"}'
+        values: '0+0x30 1+1x30 0+0x100'
+
+    alert_rule_test:
+      # CosFleetShardSyncTargetDown test units
+      - eval_time: 10m
+        alertname: CosFleetShardSyncTargetDown
+        exp_alerts: [ ]
+      - eval_time: 50m
+        alertname: CosFleetShardSyncTargetDown
+        exp_alerts:
+          - exp_labels:
+              alertname: CosFleetShardSyncTargetDown
+              severity: critical
+              container: 'cos-fleetshard-sync'
+              namespace: 'some_namespace'
+            exp_annotations:
+              summary: 'the cos-fleetshard-sync target is down'
+              description: 'the cos-fleetshard-sync target has been unable to scrape the cos-fleetshard-sync container in the some_namespace namespace for longer than 10 minutes'
+              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/cos_fleet_shard_sync_target_down.adoc'
+      - eval_time: 70m
+        alertname: CosFleetShardSyncTargetDown
+        exp_alerts: [ ]
+
+      # CosFleetShardSyncContainerFrequentlyRestarting test units
+      - eval_time: 10m
+        alertname: CosFleetShardSyncContainerFrequentlyRestarting
+        exp_alerts: [ ]
+      - eval_time: 50m
+        alertname: CosFleetShardSyncContainerFrequentlyRestarting
+        exp_alerts:
+          - exp_labels:
+              alertname: CosFleetShardSyncContainerFrequentlyRestarting
+              severity: critical
+              container: 'cos-fleetshard-sync'
+              namespace: 'some_namespace'
+            exp_annotations:
+              summary: 'the cos-fleetshard-sync operator is restarting frequently'
+              description: 'the cos-fleetshard-sync operator container restarted frequently in the last 60 minutes'
+              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/cos_fleet_shard_sync_container_frequently_restarting.adoc'
+      - eval_time: 160m
+        alertname: CosFleetShardSyncContainerFrequentlyRestarting
+        exp_alerts: [ ]

@@ -13,7 +13,7 @@ function check() {
 	| select(length!=0)
 	| select(.severity == '$SEVERITY')
 	| parent
-	| .alert' "${CONNECTORS_SLO_RULES##*/}" "${CAMELK_OPERATOR_RULES##*/}" | sort -u)
+	| .alert' "${CONNECTORS_SLO_RULES##*/}" "${CAMELK_OPERATOR_RULES##*/}" "${FLEETSHARD_CAMEL_OPERATOR_RULES##*/}" "${FLEETSHARD_DEBEZIUM_OPERATOR_RULES##*/}" "${FLEETSHARD_SYNC_RULES##*/}" "${STRIMZI_OPERATOR_RULES##*/}" | sort -u)
 
 	while IFS= read -r ALERT; do PROMETHEUS_UNIT_TEST_CHECK+=($ALERT)
 	done < <(yq -N eval-all '.tests[]
@@ -35,5 +35,3 @@ function check() {
 }
 
 check ${CRITICAL_SEVERITY}
-# <TO-DO> https://issues.redhat.com/browse/MGDSTRM-6845
-# check ${WARNING_SEVERITY}

@@ -14,8 +14,8 @@ spec:
           labels:
             severity: critical
           annotations:
-            summary: 'The strimzi operator target is down'
-            description: 'The strimzi operator target has been unable to sync the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
+            summary: 'the strimzi operator target is down'
+            description: 'the strimzi operator target has been unable to scrape the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
             sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/strimzi_operator_target_down.adoc'
         - alert: StrimziOperatorContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="strimzi-cluster-operator"}[60m]) > 3
@@ -24,15 +24,15 @@ spec:
           annotations:
             summary: 'the strimzi operator is restarting frequently'
             description: 'the strimzi operator container restarted frequently in the last 60 minutes'
-            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tree/main/observability/sops/alerts/strimzi_operator_container_frequently_restarting.adoc'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/strimzi_operator_container_frequently_restarting.adoc'
     - name: strimzi-cluster-resources
       rules:
         - alert: StrimziOperatorReconciliationsFailed
           expr: sum(increase(strimzi_reconciliations_failed_total[60m])) > 5
           for: 10m
           labels:
-            severity: critical
+            severity: warning
           annotations:
-            summary: 'The strimzi operator failed to reconcile resources for a longer period of time'
-            description: 'The strimzi operator failed to reconcile resources in the {{ $labels.namespace }} namespace for longer than 10 minutes'
+            summary: 'the strimzi operator failed to reconcile resources for a longer period of time'
+            description: 'the strimzi operator failed to reconcile resources in the {{ $labels.namespace }} namespace for longer than 10 minutes'
             sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tree/main/observability/sops/alerts/strimzi_operator_reconciliations_failed.asciidoc'

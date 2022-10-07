@@ -14,14 +14,14 @@ spec:
           labels:
             severity: critical
           annotations:
-            summary: 'The cos-fleetshard-operator-debezium target is down'
-            description: 'The cos-fleetshard-operator-debezium target has been unable to scrape the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
+            summary: 'the cos-fleetshard-operator-debezium target is down'
+            description: 'the cos-fleetshard-operator-debezium target has been unable to scrape the {{ $labels.container }} container in the {{ $labels.namespace }} namespace for longer than 10 minutes'
             sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/cos_fleet_shard_operator_debezium_target_down.adoc'
         - alert: CosFleetShardOperatorDebeziumContainerFrequentlyRestarting
           expr: increase(kube_pod_container_status_restarts_total{container="cos-fleetshard-operator-debezium"}[60m]) > 3
           labels:
             severity: critical
           annotations:
-            summary: 'cos-fleetshard-operator-debezium is restarting frequently'
-            description: 'cos-fleetshard-operator-debezium container restarted frequently in the last 60 minutes'
+            summary: 'the cos-fleetshard-operator-debezium operator is restarting frequently'
+            description: 'the cos-fleetshard-operator-debezium operator container restarted frequently in the last 60 minutes'
             sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/cos_fleet_shard_operator_debezium_container_frequently_restarting.adoc'

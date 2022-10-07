@@ -78,10 +78,92 @@ tests:
               cos_connector_id: 'cbvn81m9fbo9fmh5rn60'
               cos_connector_type_id: 'aws_kinesis_source_0.1'
             exp_annotations:
-              summary: 'the connector cbvn81m9fbo9fmh5rn60 is in failed state'
+              summary: 'the connector cbvn81m9fbo9fmh5rn60 is in FAILED state'
               description: 'the connector cbvn81m9fbo9fmh5rn60 type aws_kinesis_source_0.1 is in FAILED state'
-              sop_url: 'https://TODO'
+              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connector_in_failed_state.adoc'
       # A connector transitions to READY after failing, no alert should be triggered
       - eval_time: 3h
         alertname: ConnectorInFailedState
         exp_alerts: [ ]
+
+  - interval: 1m
+    input_series:
+      # Total interval: 200 minutes
+
+      # 10 times 5, connector is in PROCESS for 10 minutes
+      # 40 times 2, connector transitioned to FAILED right after PROCESS and staid in FAILED for 40 minutes
+      # 40 times 1, connector transitioned to READY and staid 40 minutes in READY
+      # 50 times 2, connector transitioned to FAILED for 50 minutes
+      # 60 times 1, at last, the connector transitions to READY again
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1"}'
+        values: '5+0x10 2+0x40 1+0x40 2+0x50 1+0x60'
+
+      # 180 times 2, connector failing all the time
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1"}'
+        values: '2+0x180'
+
+      # 100 times 2, connector transitioned to FAILED and staid 100 minutes in FAILED
+      # 100 times 1, connector transitioned to READY and staid in READY for 100 minutes
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="ccbpo0absr9v601smbhg", cos_connector_type_id="aws_kinesis_source_0.1"}'
+        values: '2+0x100 1+0x100'
+
+      # 10 times 5, connector is in PROCESS for 10 minutes
+      # 80 times 1, connector transitioned to READY right after PROCESS and staid in READY for 90 minutes
+      # 40 times 1, connector transitioned to FAILED and staid 100 minutes in FAILED
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cccpkg2bsr9rhboumhd0", cos_connector_type_id="aws_kinesis_source_0.1"}'
+        values: '5+0x10 1+0x90 2+0x100'
+
+      # 200 times 1, connector running all the time
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="ccqpe7g8sdu754v02vn0", cos_connector_type_id="aws_kinesis_source_0.1"}'
+        values: '1+0x200'
+
+      # 100 times 2, connector transitioned to FAILED and staid 100 minutes in FAILED
+      # 100 times 1, connector transitioned to READY and staid in READY for 100 minutes
+      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="ccqkkc33ts1p3ohhbq9g", cos_connector_type_id="debezium_postgres_0.1"}'
+        values: '2+0x100 1+0x100'
+
+    promql_expr_test:
+      # connectors_per_type_count unit_tests
+      - expr: connectors_per_type_count
+        eval_time: 10m
+        exp_samples:
+          - labels: 'connectors_per_type_count{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 5
+          - labels: 'connectors_per_type_count{cos_connector_type_id="debezium_postgres_0.1", service="rhoc-fleetshard"}'
+            value: 1
+      - expr: connectors_per_type_count
+        eval_time: 190m
+        exp_samples:
+          - labels: 'connectors_per_type_count{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 4
+          - labels: 'connectors_per_type_count{cos_connector_type_id="debezium_postgres_0.1", service="rhoc-fleetshard"}'
+            value: 1
+
+      # connectors_failing_per_type:interval30m unit_tests
+      - expr: connectors_failing_per_type:interval30m
+        eval_time: 10m
+        exp_samples:
+          - labels: 'connectors_failing_per_type:interval30m{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+          - labels: 'connectors_failing_per_type:interval30m{cos_connector_type_id="debezium_postgres_0.1", service="rhoc-fleetshard"}'
+            value: 1
+      - expr: connectors_failing_per_type:interval30m
+        eval_time: 180m
+        exp_samples:
+          - labels: 'connectors_failing_per_type:interval30m{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
+            value: 2
+
+    alert_rule_test:
+      # A connector transitions to FAILED and never was in READY, no alert should be triggered
+      - eval_time: 10m
+        alertname: ConnectorsPerTypeInFailedState
+        exp_alerts:
+          - exp_labels:
+              alertname: ConnectorsPerTypeInFailedState
+              severity: critical
+              service: 'rhoc-fleetshard'
+              cos_connector_type_id: 'debezium_postgres_0.1'
+            exp_annotations:
+              summary: 'several connectors of type debezium_postgres_0.1 are in FAILED state'
+              description: 'several connectors of type debezium_postgres_0.1 are in FAILED state'
+              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_per_type_in_failed_state.adoc'

@@ -13,7 +13,7 @@ function check() {
 	| select(length!=0)
 	| select(.severity == '$SEVERITY')
 	| parent
-	| .alert' "${CONNECTORS_SLO_RULES##*/}" | sort -u)
+	| .alert' "${CONNECTORS_SLO_RULES##*/}" "${CAMELK_OPERATOR_RULES##*/}" | sort -u)
 
 	while IFS= read -r ALERT; do PROMETHEUS_UNIT_TEST_CHECK+=($ALERT)
 	done < <(yq -N eval-all '.tests[]

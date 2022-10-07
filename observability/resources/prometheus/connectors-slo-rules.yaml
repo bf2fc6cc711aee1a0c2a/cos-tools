@@ -18,11 +18,30 @@ spec:
             service: rhoc-fleetshard
           record: connector_state_at_least_once:interval24h
 
+        - expr: count by (cos_connector_type_id) (avg_over_time(cos_fleetshard_sync_connector_state[30m]) == 2)
+          labels:
+            service: rhoc-fleetshard
+          record: connectors_failing_per_type:interval30m
+
+        - expr: count by (cos_connector_type_id) (cos_fleetshard_sync_connector_state)
+          labels:
+            service: rhoc-fleetshard
+          record: connectors_per_type_count
+
         - alert: ConnectorInFailedState
           expr: connector_state:interval30m == 2 AND connector_state_at_least_once:interval24h == 1
           labels:
             severity: critical
           annotations:
-            summary: 'the connector {{ $labels.cos_connector_id }} is in failed state'
+            summary: 'the connector {{ $labels.cos_connector_id }} is in FAILED state'
             description: 'the connector {{ $labels.cos_connector_id }} type {{ $labels.cos_connector_type_id }} is in FAILED state'
-            sop_url: 'https://TODO'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connector_in_failed_state.adoc'
+
+        - alert: ConnectorsPerTypeInFailedState
+          expr: connectors_failing_per_type:interval30m / connectors_per_type_count > 0.6
+          labels:
+            severity: critical
+          annotations:
+            summary: 'several connectors of type {{ $labels.cos_connector_type_id }} are in FAILED state'
+            description: 'several connectors of type {{ $labels.cos_connector_type_id }} are in FAILED state'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_per_type_in_failed_state.adoc'

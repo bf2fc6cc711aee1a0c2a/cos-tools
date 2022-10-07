@@ -1,6 +1,7 @@
 UNIT_TEST_DIR ?= $(shell pwd)/resources/prometheus/unit_tests/
 export PROMETHEUS_RULES_DIR ?= $(shell pwd)/resources/prometheus/
 export CONNECTORS_SLO_RULES ?= $(shell pwd)/resources/prometheus/connectors-slo-rules.yaml
+export CAMELK_OPERATOR_RULES ?= $(shell pwd)/resources/prometheus/camel-k-operator-rules.yaml
 export IMAGE ?= quay.io/prometheus/prometheus
 export DASHBOARDS_DIR ?= $(shell pwd)/resources/grafana/
 export INDEX_FILE_PATH ?= $(shell pwd)/resources/index.json
@@ -18,8 +19,9 @@ export FILES_TO_UNIT_TEST ?= *
 unit/test:
 	docker run --rm -t \
     -v $(CONNECTORS_SLO_RULES):/prometheus/connectors-slo-rules.yaml:z \
+    -v $(CAMELK_OPERATOR_RULES):/prometheus/camel-k-operator-rules.yaml:z \
     -v $(UNIT_TEST_DIR):/prometheus/unit_tests:z --entrypoint=/bin/sh \
-$(IMAGE) -c '(tail -n +8 connectors-slo-rules.yaml) \
+$(IMAGE) -c '(tail -n +8 connectors-slo-rules.yaml; tail -n +9 camel-k-operator-rules.yaml) \
               > rules.yaml && cd unit_tests && promtool test rules ${FILES_TO_UNIT_TEST}'
 
 # Checks the prometheus rules in the given rules files

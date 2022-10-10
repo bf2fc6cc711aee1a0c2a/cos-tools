@@ -50,8 +50,8 @@ CreateConnectorCluster Create a new connector cluster
 
 Create a new connector cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateConnectorClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateConnectorClusterRequest
 */
 func (a *ConnectorClustersApiService) CreateConnectorCluster(ctx context.Context) ApiCreateConnectorClusterRequest {
 	return ApiCreateConnectorClusterRequest{
@@ -61,7 +61,8 @@ func (a *ConnectorClustersApiService) CreateConnectorCluster(ctx context.Context
 }
 
 // Execute executes the request
-//  @return ConnectorCluster
+//
+//	@return ConnectorCluster
 func (a *ConnectorClustersApiService) CreateConnectorClusterExecute(r ApiCreateConnectorClusterRequest) (*ConnectorCluster, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -198,9 +199,9 @@ DeleteConnectorCluster Delete a connector cluster
 
 Delete a connector cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiDeleteConnectorClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiDeleteConnectorClusterRequest
 */
 func (a *ConnectorClustersApiService) DeleteConnectorCluster(ctx context.Context, connectorClusterId string) ApiDeleteConnectorClusterRequest {
 	return ApiDeleteConnectorClusterRequest{
@@ -211,7 +212,8 @@ func (a *ConnectorClustersApiService) DeleteConnectorCluster(ctx context.Context
 }
 
 // Execute executes the request
-//  @return Error
+//
+//	@return Error
 func (a *ConnectorClustersApiService) DeleteConnectorClusterExecute(r ApiDeleteConnectorClusterRequest) (*Error, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
@@ -330,9 +332,9 @@ GetConnectorCluster Get a connector cluster
 
 Get a connector cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiGetConnectorClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiGetConnectorClusterRequest
 */
 func (a *ConnectorClustersApiService) GetConnectorCluster(ctx context.Context, connectorClusterId string) ApiGetConnectorClusterRequest {
 	return ApiGetConnectorClusterRequest{
@@ -343,7 +345,8 @@ func (a *ConnectorClustersApiService) GetConnectorCluster(ctx context.Context, c
 }
 
 // Execute executes the request
-//  @return ConnectorCluster
+//
+//	@return ConnectorCluster
 func (a *ConnectorClustersApiService) GetConnectorClusterExecute(r ApiGetConnectorClusterRequest) (*ConnectorCluster, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -479,9 +482,9 @@ GetConnectorClusterAddonParameters Get a connector cluster's addon parameters
 
 Get a connector cluster's addon parameters
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiGetConnectorClusterAddonParametersRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiGetConnectorClusterAddonParametersRequest
 */
 func (a *ConnectorClustersApiService) GetConnectorClusterAddonParameters(ctx context.Context, connectorClusterId string) ApiGetConnectorClusterAddonParametersRequest {
 	return ApiGetConnectorClusterAddonParametersRequest{
@@ -492,7 +495,8 @@ func (a *ConnectorClustersApiService) GetConnectorClusterAddonParameters(ctx con
 }
 
 // Execute executes the request
-//  @return []AddonParameter
+//
+//	@return []AddonParameter
 func (a *ConnectorClustersApiService) GetConnectorClusterAddonParametersExecute(r ApiGetConnectorClusterAddonParametersRequest) ([]AddonParameter, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -652,9 +656,9 @@ GetConnectorClusterNamespaces Get a connector cluster's namespaces
 
 Get a connector cluster's namespaces
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiGetConnectorClusterNamespacesRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiGetConnectorClusterNamespacesRequest
 */
 func (a *ConnectorClustersApiService) GetConnectorClusterNamespaces(ctx context.Context, connectorClusterId string) ApiGetConnectorClusterNamespacesRequest {
 	return ApiGetConnectorClusterNamespacesRequest{
@@ -665,7 +669,8 @@ func (a *ConnectorClustersApiService) GetConnectorClusterNamespaces(ctx context.
 }
 
 // Execute executes the request
-//  @return ConnectorNamespaceList
+//
+//	@return ConnectorNamespaceList
 func (a *ConnectorClustersApiService) GetConnectorClusterNamespacesExecute(r ApiGetConnectorClusterNamespacesRequest) (*ConnectorNamespaceList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -809,8 +814,8 @@ ListConnectorClusters Returns a list of connector clusters
 
 Returns a list of connector clusters
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiListConnectorClustersRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListConnectorClustersRequest
 */
 func (a *ConnectorClustersApiService) ListConnectorClusters(ctx context.Context) ApiListConnectorClustersRequest {
 	return ApiListConnectorClustersRequest{
@@ -820,7 +825,8 @@ func (a *ConnectorClustersApiService) ListConnectorClusters(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return ConnectorClusterList
+//
+//	@return ConnectorClusterList
 func (a *ConnectorClustersApiService) ListConnectorClustersExecute(r ApiListConnectorClustersRequest) (*ConnectorClusterList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -941,9 +947,9 @@ UpdateConnectorClusterById udpate a connector cluster
 
 udpate a connector cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiUpdateConnectorClusterByIdRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiUpdateConnectorClusterByIdRequest
 */
 func (a *ConnectorClustersApiService) UpdateConnectorClusterById(ctx context.Context, connectorClusterId string) ApiUpdateConnectorClusterByIdRequest {
 	return ApiUpdateConnectorClusterByIdRequest{

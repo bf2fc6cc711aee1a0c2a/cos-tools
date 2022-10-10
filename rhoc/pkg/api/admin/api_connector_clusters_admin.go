@@ -42,9 +42,9 @@ func (r ApiDeleteConnectorRequest) Execute() (*Error, *http.Response, error) {
 /*
 DeleteConnector Delete a connector
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorId The id of the connector to delete
- @return ApiDeleteConnectorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorId The id of the connector to delete
+	@return ApiDeleteConnectorRequest
 */
 func (a *ConnectorClustersAdminApiService) DeleteConnector(ctx context.Context, connectorId string) ApiDeleteConnectorRequest {
 	return ApiDeleteConnectorRequest{
@@ -55,7 +55,8 @@ func (a *ConnectorClustersAdminApiService) DeleteConnector(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return Error
+//
+//	@return Error
 func (a *ConnectorClustersAdminApiService) DeleteConnectorExecute(r ApiDeleteConnectorRequest) (*Error, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
@@ -182,9 +183,9 @@ func (r ApiDeleteConnectorNamespaceRequest) Execute() (*Error, *http.Response, e
 /*
 DeleteConnectorNamespace Delete a connector namespace
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param namespaceId The id of the namespace to delete
- @return ApiDeleteConnectorNamespaceRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param namespaceId The id of the namespace to delete
+	@return ApiDeleteConnectorNamespaceRequest
 */
 func (a *ConnectorClustersAdminApiService) DeleteConnectorNamespace(ctx context.Context, namespaceId string) ApiDeleteConnectorNamespaceRequest {
 	return ApiDeleteConnectorNamespaceRequest{
@@ -195,7 +196,8 @@ func (a *ConnectorClustersAdminApiService) DeleteConnectorNamespace(ctx context.
 }
 
 // Execute executes the request
-//  @return Error
+//
+//	@return Error
 func (a *ConnectorClustersAdminApiService) DeleteConnectorNamespaceExecute(r ApiDeleteConnectorNamespaceRequest) (*Error, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
@@ -343,9 +345,9 @@ func (r ApiGetClusterConnectorsRequest) Execute() (*ConnectorAdminViewList, *htt
 /*
 GetClusterConnectors Get a list of available connectors in a cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiGetClusterConnectorsRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiGetClusterConnectorsRequest
 */
 func (a *ConnectorClustersAdminApiService) GetClusterConnectors(ctx context.Context, connectorClusterId string) ApiGetClusterConnectorsRequest {
 	return ApiGetClusterConnectorsRequest{
@@ -356,7 +358,8 @@ func (a *ConnectorClustersAdminApiService) GetClusterConnectors(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return ConnectorAdminViewList
+//
+//	@return ConnectorAdminViewList
 func (a *ConnectorClustersAdminApiService) GetClusterConnectorsExecute(r ApiGetClusterConnectorsRequest) (*ConnectorAdminViewList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -520,9 +523,9 @@ func (r ApiGetClusterDeploymentsRequest) Execute() (*ConnectorDeploymentAdminVie
 /*
 GetClusterDeployments Get a list of available deployments in a cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the cluster
- @return ApiGetClusterDeploymentsRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the cluster
+	@return ApiGetClusterDeploymentsRequest
 */
 func (a *ConnectorClustersAdminApiService) GetClusterDeployments(ctx context.Context, connectorClusterId string) ApiGetClusterDeploymentsRequest {
 	return ApiGetClusterDeploymentsRequest{
@@ -533,7 +536,8 @@ func (a *ConnectorClustersAdminApiService) GetClusterDeployments(ctx context.Con
 }
 
 // Execute executes the request
-//  @return ConnectorDeploymentAdminViewList
+//
+//	@return ConnectorDeploymentAdminViewList
 func (a *ConnectorClustersAdminApiService) GetClusterDeploymentsExecute(r ApiGetClusterDeploymentsRequest) (*ConnectorDeploymentAdminViewList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -693,9 +697,9 @@ func (r ApiGetClusterNamespacesRequest) Execute() (*ConnectorNamespaceList, *htt
 /*
 GetClusterNamespaces Get a list of available connector namespaces in cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiGetClusterNamespacesRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiGetClusterNamespacesRequest
 */
 func (a *ConnectorClustersAdminApiService) GetClusterNamespaces(ctx context.Context, connectorClusterId string) ApiGetClusterNamespacesRequest {
 	return ApiGetClusterNamespacesRequest{
@@ -706,7 +710,8 @@ func (a *ConnectorClustersAdminApiService) GetClusterNamespaces(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return ConnectorNamespaceList
+//
+//	@return ConnectorNamespaceList
 func (a *ConnectorClustersAdminApiService) GetClusterNamespacesExecute(r ApiGetClusterNamespacesRequest) (*ConnectorNamespaceList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -837,9 +842,9 @@ GetConnector Get a connector
 
 Get a connector
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorId The id of the connector to delete
- @return ApiGetConnectorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorId The id of the connector to delete
+	@return ApiGetConnectorRequest
 */
 func (a *ConnectorClustersAdminApiService) GetConnector(ctx context.Context, connectorId string) ApiGetConnectorRequest {
 	return ApiGetConnectorRequest{
@@ -850,7 +855,8 @@ func (a *ConnectorClustersAdminApiService) GetConnector(ctx context.Context, con
 }
 
 // Execute executes the request
-//  @return ConnectorAdminView
+//
+//	@return ConnectorAdminView
 func (a *ConnectorClustersAdminApiService) GetConnectorExecute(r ApiGetConnectorRequest) (*ConnectorAdminView, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -967,9 +973,9 @@ func (r ApiGetConnectorClusterRequest) Execute() (*ConnectorCluster, *http.Respo
 /*
 GetConnectorCluster Get a connector cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiGetConnectorClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiGetConnectorClusterRequest
 */
 func (a *ConnectorClustersAdminApiService) GetConnectorCluster(ctx context.Context, connectorClusterId string) ApiGetConnectorClusterRequest {
 	return ApiGetConnectorClusterRequest{
@@ -980,7 +986,8 @@ func (a *ConnectorClustersAdminApiService) GetConnectorCluster(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return ConnectorCluster
+//
+//	@return ConnectorCluster
 func (a *ConnectorClustersAdminApiService) GetConnectorClusterExecute(r ApiGetConnectorClusterRequest) (*ConnectorCluster, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1090,10 +1097,10 @@ GetConnectorDeployment Get a connector deployment
 
 Get a connector deployment
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @param deploymentId The id of the connector deployment
- @return ApiGetConnectorDeploymentRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@param deploymentId The id of the connector deployment
+	@return ApiGetConnectorDeploymentRequest
 */
 func (a *ConnectorClustersAdminApiService) GetConnectorDeployment(ctx context.Context, connectorClusterId string, deploymentId string) ApiGetConnectorDeploymentRequest {
 	return ApiGetConnectorDeploymentRequest{
@@ -1105,7 +1112,8 @@ func (a *ConnectorClustersAdminApiService) GetConnectorDeployment(ctx context.Co
 }
 
 // Execute executes the request
-//  @return ConnectorDeploymentAdminView
+//
+//	@return ConnectorDeploymentAdminView
 func (a *ConnectorClustersAdminApiService) GetConnectorDeploymentExecute(r ApiGetConnectorDeploymentRequest) (*ConnectorDeploymentAdminView, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1225,9 +1233,9 @@ GetConnectorNamespace Get a connector namespace
 
 Get a connector namespace
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param namespaceId The id of the namespace
- @return ApiGetConnectorNamespaceRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param namespaceId The id of the namespace
+	@return ApiGetConnectorNamespaceRequest
 */
 func (a *ConnectorClustersAdminApiService) GetConnectorNamespace(ctx context.Context, namespaceId string) ApiGetConnectorNamespaceRequest {
 	return ApiGetConnectorNamespaceRequest{
@@ -1238,7 +1246,8 @@ func (a *ConnectorClustersAdminApiService) GetConnectorNamespace(ctx context.Con
 }
 
 // Execute executes the request
-//  @return ConnectorNamespace
+//
+//	@return ConnectorNamespace
 func (a *ConnectorClustersAdminApiService) GetConnectorNamespaceExecute(r ApiGetConnectorNamespaceRequest) (*ConnectorNamespace, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1369,9 +1378,9 @@ func (r ApiGetConnectorUpgradesByOperatorRequest) Execute() (*ConnectorAvailable
 /*
 GetConnectorUpgradesByOperator Get a list of available connector operator upgrades
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiGetConnectorUpgradesByOperatorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiGetConnectorUpgradesByOperatorRequest
 */
 func (a *ConnectorClustersAdminApiService) GetConnectorUpgradesByOperator(ctx context.Context, connectorClusterId string) ApiGetConnectorUpgradesByOperatorRequest {
 	return ApiGetConnectorUpgradesByOperatorRequest{
@@ -1382,7 +1391,8 @@ func (a *ConnectorClustersAdminApiService) GetConnectorUpgradesByOperator(ctx co
 }
 
 // Execute executes the request
-//  @return ConnectorAvailableOperatorUpgradeList
+//
+//	@return ConnectorAvailableOperatorUpgradeList
 func (a *ConnectorClustersAdminApiService) GetConnectorUpgradesByOperatorExecute(r ApiGetConnectorUpgradesByOperatorRequest) (*ConnectorAvailableOperatorUpgradeList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1533,9 +1543,9 @@ func (r ApiGetNamespaceConnectorsRequest) Execute() (*ConnectorAdminViewList, *h
 /*
 GetNamespaceConnectors Get a list of available connectors in a namespace
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param namespaceId The id of the namespace
- @return ApiGetNamespaceConnectorsRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param namespaceId The id of the namespace
+	@return ApiGetNamespaceConnectorsRequest
 */
 func (a *ConnectorClustersAdminApiService) GetNamespaceConnectors(ctx context.Context, namespaceId string) ApiGetNamespaceConnectorsRequest {
 	return ApiGetNamespaceConnectorsRequest{
@@ -1546,7 +1556,8 @@ func (a *ConnectorClustersAdminApiService) GetNamespaceConnectors(ctx context.Co
 }
 
 // Execute executes the request
-//  @return ConnectorAdminViewList
+//
+//	@return ConnectorAdminViewList
 func (a *ConnectorClustersAdminApiService) GetNamespaceConnectorsExecute(r ApiGetNamespaceConnectorsRequest) (*ConnectorAdminViewList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1710,9 +1721,9 @@ func (r ApiGetNamespaceDeploymentsRequest) Execute() (*ConnectorDeploymentAdminV
 /*
 GetNamespaceDeployments Get a list of available deployments in a namespace
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param namespaceId The id of the namespace
- @return ApiGetNamespaceDeploymentsRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param namespaceId The id of the namespace
+	@return ApiGetNamespaceDeploymentsRequest
 */
 func (a *ConnectorClustersAdminApiService) GetNamespaceDeployments(ctx context.Context, namespaceId string) ApiGetNamespaceDeploymentsRequest {
 	return ApiGetNamespaceDeploymentsRequest{
@@ -1723,7 +1734,8 @@ func (a *ConnectorClustersAdminApiService) GetNamespaceDeployments(ctx context.C
 }
 
 // Execute executes the request
-//  @return ConnectorDeploymentAdminViewList
+//
+//	@return ConnectorDeploymentAdminViewList
 func (a *ConnectorClustersAdminApiService) GetNamespaceDeploymentsExecute(r ApiGetNamespaceDeploymentsRequest) (*ConnectorDeploymentAdminViewList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1882,8 +1894,8 @@ func (r ApiListConnectorClustersRequest) Execute() (*ConnectorClusterList, *http
 /*
 ListConnectorClusters Returns a list of connector clusters
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiListConnectorClustersRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListConnectorClustersRequest
 */
 func (a *ConnectorClustersAdminApiService) ListConnectorClusters(ctx context.Context) ApiListConnectorClustersRequest {
 	return ApiListConnectorClustersRequest{
@@ -1893,7 +1905,8 @@ func (a *ConnectorClustersAdminApiService) ListConnectorClusters(ctx context.Con
 }
 
 // Execute executes the request
-//  @return ConnectorClusterList
+//
+//	@return ConnectorClusterList
 func (a *ConnectorClustersAdminApiService) ListConnectorClustersExecute(r ApiListConnectorClustersRequest) (*ConnectorClusterList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2021,10 +2034,10 @@ PatchConnectorClusterDeploymentAdmin Patch a deployment
 
 Patch a deployment
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @param deploymentId The id of the connector deployment
- @return ApiPatchConnectorClusterDeploymentAdminRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@param deploymentId The id of the connector deployment
+	@return ApiPatchConnectorClusterDeploymentAdminRequest
 */
 func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmin(ctx context.Context, connectorClusterId string, deploymentId string) ApiPatchConnectorClusterDeploymentAdminRequest {
 	return ApiPatchConnectorClusterDeploymentAdminRequest{
@@ -2036,7 +2049,8 @@ func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdmin(
 }
 
 // Execute executes the request
-//  @return ConnectorDeploymentAdminView
+//
+//	@return ConnectorDeploymentAdminView
 func (a *ConnectorClustersAdminApiService) PatchConnectorClusterDeploymentAdminExecute(r ApiPatchConnectorClusterDeploymentAdminRequest) (*ConnectorDeploymentAdminView, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -2190,9 +2204,9 @@ func (r ApiUpgradeConnectorsByOperatorRequest) Execute() (*http.Response, error)
 /*
 UpgradeConnectorsByOperator upgrade a connector cluster
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorClusterId The id of the connector cluster
- @return ApiUpgradeConnectorsByOperatorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorClusterId The id of the connector cluster
+	@return ApiUpgradeConnectorsByOperatorRequest
 */
 func (a *ConnectorClustersAdminApiService) UpgradeConnectorsByOperator(ctx context.Context, connectorClusterId string) ApiUpgradeConnectorsByOperatorRequest {
 	return ApiUpgradeConnectorsByOperatorRequest{

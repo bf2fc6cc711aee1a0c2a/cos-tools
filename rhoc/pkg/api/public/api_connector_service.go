@@ -35,8 +35,8 @@ GetVersionMetadata Returns the version metadata
 
 Returns the version metadata
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVersionMetadataRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVersionMetadataRequest
 */
 func (a *ConnectorServiceApiService) GetVersionMetadata(ctx context.Context) ApiGetVersionMetadataRequest {
 	return ApiGetVersionMetadataRequest{
@@ -46,7 +46,8 @@ func (a *ConnectorServiceApiService) GetVersionMetadata(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return VersionMetadata
+//
+//	@return VersionMetadata
 func (a *ConnectorServiceApiService) GetVersionMetadataExecute(r ApiGetVersionMetadataRequest) (*VersionMetadata, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet

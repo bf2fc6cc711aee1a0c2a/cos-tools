@@ -50,8 +50,8 @@ CreateConnector Create a new connector
 
 Create a new connector
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateConnectorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateConnectorRequest
 */
 func (a *ConnectorsApiService) CreateConnector(ctx context.Context) ApiCreateConnectorRequest {
 	return ApiCreateConnectorRequest{
@@ -61,7 +61,8 @@ func (a *ConnectorsApiService) CreateConnector(ctx context.Context) ApiCreateCon
 }
 
 // Execute executes the request
-//  @return Connector
+//
+//	@return Connector
 func (a *ConnectorsApiService) CreateConnectorExecute(r ApiCreateConnectorRequest) (*Connector, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -198,9 +199,9 @@ DeleteConnector Delete a connector
 
 Delete a connector
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id The ID of record
- @return ApiDeleteConnectorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id The ID of record
+	@return ApiDeleteConnectorRequest
 */
 func (a *ConnectorsApiService) DeleteConnector(ctx context.Context, id string) ApiDeleteConnectorRequest {
 	return ApiDeleteConnectorRequest{
@@ -211,7 +212,8 @@ func (a *ConnectorsApiService) DeleteConnector(ctx context.Context, id string) A
 }
 
 // Execute executes the request
-//  @return Error
+//
+//	@return Error
 func (a *ConnectorsApiService) DeleteConnectorExecute(r ApiDeleteConnectorRequest) (*Error, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
@@ -330,9 +332,9 @@ GetConnector Get a connector
 
 Get a connector
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id The ID of record
- @return ApiGetConnectorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id The ID of record
+	@return ApiGetConnectorRequest
 */
 func (a *ConnectorsApiService) GetConnector(ctx context.Context, id string) ApiGetConnectorRequest {
 	return ApiGetConnectorRequest{
@@ -343,7 +345,8 @@ func (a *ConnectorsApiService) GetConnector(ctx context.Context, id string) ApiG
 }
 
 // Execute executes the request
-//  @return Connector
+//
+//	@return Connector
 func (a *ConnectorsApiService) GetConnectorExecute(r ApiGetConnectorRequest) (*Connector, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -499,8 +502,8 @@ ListConnectors Returns a list of connector types
 
 Returns a list of connector types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiListConnectorsRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListConnectorsRequest
 */
 func (a *ConnectorsApiService) ListConnectors(ctx context.Context) ApiListConnectorsRequest {
 	return ApiListConnectorsRequest{
@@ -510,7 +513,8 @@ func (a *ConnectorsApiService) ListConnectors(ctx context.Context) ApiListConnec
 }
 
 // Execute executes the request
-//  @return ConnectorList
+//
+//	@return ConnectorList
 func (a *ConnectorsApiService) ListConnectorsExecute(r ApiListConnectorsRequest) (*ConnectorList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -637,9 +641,9 @@ PatchConnector Patch a connector
 
 Patch a connector
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id The ID of record
- @return ApiPatchConnectorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id The ID of record
+	@return ApiPatchConnectorRequest
 */
 func (a *ConnectorsApiService) PatchConnector(ctx context.Context, id string) ApiPatchConnectorRequest {
 	return ApiPatchConnectorRequest{
@@ -650,7 +654,8 @@ func (a *ConnectorsApiService) PatchConnector(ctx context.Context, id string) Ap
 }
 
 // Execute executes the request
-//  @return Connector
+//
+//	@return Connector
 func (a *ConnectorsApiService) PatchConnectorExecute(r ApiPatchConnectorRequest) (*Connector, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch

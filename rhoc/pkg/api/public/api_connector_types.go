@@ -37,9 +37,9 @@ GetConnectorTypeByID Get a connector type by id
 
 Get a connector type by id
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorTypeId The id of the connector type
- @return ApiGetConnectorTypeByIDRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorTypeId The id of the connector type
+	@return ApiGetConnectorTypeByIDRequest
 */
 func (a *ConnectorTypesApiService) GetConnectorTypeByID(ctx context.Context, connectorTypeId string) ApiGetConnectorTypeByIDRequest {
 	return ApiGetConnectorTypeByIDRequest{
@@ -50,7 +50,8 @@ func (a *ConnectorTypesApiService) GetConnectorTypeByID(ctx context.Context, con
 }
 
 // Execute executes the request
-//  @return ConnectorType
+//
+//	@return ConnectorType
 func (a *ConnectorTypesApiService) GetConnectorTypeByIDExecute(r ApiGetConnectorTypeByIDRequest) (*ConnectorType, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -206,8 +207,8 @@ GetConnectorTypes Returns a list of connector types
 
 Returns a list of connector types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetConnectorTypesRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetConnectorTypesRequest
 */
 func (a *ConnectorTypesApiService) GetConnectorTypes(ctx context.Context) ApiGetConnectorTypesRequest {
 	return ApiGetConnectorTypesRequest{
@@ -217,7 +218,8 @@ func (a *ConnectorTypesApiService) GetConnectorTypes(ctx context.Context) ApiGet
 }
 
 // Execute executes the request
-//  @return ConnectorTypeList
+//
+//	@return ConnectorTypeList
 func (a *ConnectorTypesApiService) GetConnectorTypesExecute(r ApiGetConnectorTypesRequest) (*ConnectorTypeList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet

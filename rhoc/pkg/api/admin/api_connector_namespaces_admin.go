@@ -40,8 +40,8 @@ func (r ApiCreateConnectorNamespaceRequest) Execute() (*ConnectorNamespace, *htt
 /*
 CreateConnectorNamespace Create a connector namespace
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateConnectorNamespaceRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateConnectorNamespaceRequest
 */
 func (a *ConnectorNamespacesAdminApiService) CreateConnectorNamespace(ctx context.Context) ApiCreateConnectorNamespaceRequest {
 	return ApiCreateConnectorNamespaceRequest{
@@ -51,7 +51,8 @@ func (a *ConnectorNamespacesAdminApiService) CreateConnectorNamespace(ctx contex
 }
 
 // Execute executes the request
-//  @return ConnectorNamespace
+//
+//	@return ConnectorNamespace
 func (a *ConnectorNamespacesAdminApiService) CreateConnectorNamespaceExecute(r ApiCreateConnectorNamespaceRequest) (*ConnectorNamespace, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -199,8 +200,8 @@ func (r ApiGetConnectorNamespacesRequest) Execute() (*ConnectorNamespaceList, *h
 /*
 GetConnectorNamespaces Get a list of available connector namespaces
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetConnectorNamespacesRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetConnectorNamespacesRequest
 */
 func (a *ConnectorNamespacesAdminApiService) GetConnectorNamespaces(ctx context.Context) ApiGetConnectorNamespacesRequest {
 	return ApiGetConnectorNamespacesRequest{
@@ -210,7 +211,8 @@ func (a *ConnectorNamespacesAdminApiService) GetConnectorNamespaces(ctx context.
 }
 
 // Execute executes the request
-//  @return ConnectorNamespaceList
+//
+//	@return ConnectorNamespaceList
 func (a *ConnectorNamespacesAdminApiService) GetConnectorNamespacesExecute(r ApiGetConnectorNamespacesRequest) (*ConnectorNamespaceList, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet

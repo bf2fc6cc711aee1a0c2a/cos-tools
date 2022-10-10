@@ -8,40 +8,93 @@ spec:
   groups:
     - name: rhoc-connectors-slo-rules
       rules:
-        - expr: avg_over_time(cos_fleetshard_sync_connector_state[30m])
-          labels:
-            service: rhoc-fleetshard
-          record: connector_state:interval30m
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[5m])) 
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[5m])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[5m])) )
+          record: slo_connector_availability_failure_rate:ratio_rate5m
 
-        - expr: min_over_time(cos_fleetshard_sync_connector_state[24h])
-          labels:
-            service: rhoc-fleetshard
-          record: connector_state_at_least_once:interval24h
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[30m])) 
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[30m])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[30m])) )
+          record: slo_connector_availability_failure_rate:ratio_rate30m
 
-        - expr: count by (cos_connector_type_id) (avg_over_time(cos_fleetshard_sync_connector_state[30m]) == 2)
-          labels:
-            service: rhoc-fleetshard
-          record: connectors_failing_per_type:interval30m
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[1h])) 
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[1h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[1h])) )
+          record: slo_connector_availability_failure_rate:ratio_rate1h
 
-        - expr: count by (cos_connector_type_id) (cos_fleetshard_sync_connector_state)
-          labels:
-            service: rhoc-fleetshard
-          record: connectors_per_type_count
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[2h])) 
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[2h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[2h])) )
+          record: slo_connector_availability_failure_rate:ratio_rate2h
 
-        - alert: ConnectorInFailedState
-          expr: connector_state:interval30m == 2 AND connector_state_at_least_once:interval24h == 1
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[6h]))
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[6h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[6h])) )
+          record: slo_connector_availability_failure_rate:ratio_rate6h
+
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[12h]))
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[12h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[12h])) )
+          record: slo_connector_availability_failure_rate:ratio_rate12h
+
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[24h]))
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[24h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[24h])) )
+          record: slo_connector_availability_failure_rate:ratio_rate24h
+
+        - expr: |
+            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[3d]))
+            /
+            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[3d])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[3d])) )
+          record: slo_connector_availability_failure_rate:ratio_rate3d
+
+        - alert: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
+          expr: |
+            (
+              slo_connector_availability_failure_rate:ratio_rate1h > (14.4 * (1 - 0.995)) # burning through 2% of monthly budget  within an hour
+              AND
+              slo_connector_availability_failure_rate:ratio_rate5m > (14.4 * (1 - 0.995))
+              )
+              OR
+              (
+              slo_connector_availability_failure_rate:ratio_rate6h > (6 * (1 - 0.995)) # burning through 5% of monthly budget within 6 hours
+              AND
+              slo_connector_availability_failure_rate:ratio_rate30m > (6 * (1 - 0.995))
+            )
           labels:
             severity: critical
           annotations:
-            summary: 'the connector {{ $labels.cos_connector_id }} is in FAILED state'
-            description: 'the connector {{ $labels.cos_connector_id }} type {{ $labels.cos_connector_type_id }} is in FAILED state'
-            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connector_in_failed_state.adoc'
+            summary: 'High 1h/6h Connectors availability budget burn for RHOC (current value: {{ $value | humanize }})'
+            description: 'An error budget greater than 2% has been burnt in the last 1h/6h period'
+            dashboard: 'https://grafana.app-sre.devshift.net/d/3lmqGVq7z/data-plane-overview?orgId=1'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_availability_error_budget_burnt.adoc'
 
-        - alert: ConnectorsPerTypeInFailedState
-          expr: connectors_failing_per_type:interval30m / connectors_per_type_count > 0.6
+        - alert: RHOCConnectorsAvailability2hTo24HOr6hTo3dBudgetBurn
+          expr: |
+            (
+              slo_connector_availability_failure_rate:ratio_rate24h > (3 * (1 - 0.995)) # burning through 2.5% of monthly budget within a day
+              AND
+              slo_connector_availability_failure_rate:ratio_rate2h > (3 * (1 - 0.995))
+              )
+              OR
+              (
+              slo_connector_availability_failure_rate:ratio_rate3d > (1 * (1 - 0.995)) # burning through 10% of monthly budget within 3 days
+              AND
+              slo_connector_availability_failure_rate:ratio_rate6h > (1 * (1 - 0.995))
+            )
           labels:
             severity: critical
           annotations:
-            summary: 'several connectors of type {{ $labels.cos_connector_type_id }} are in FAILED state'
-            description: 'several connectors of type {{ $labels.cos_connector_type_id }} are in FAILED state'
-            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_per_type_in_failed_state.adoc'
+            summary: 'High 3d/24h Connectors availability budget burn for RHOC (current value: {{ $value | humanize }})'
+            description: 'An error budget greater than 2.5% has been burnt in the last 1d period or an error budget greater 
+              than 10% has been burnt in the last 3 days period'
+            dashboard: 'https://grafana.app-sre.devshift.net/d/3lmqGVq7z/data-plane-overview?orgId=1'
+            sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_availability_error_budget_burnt.adoc'

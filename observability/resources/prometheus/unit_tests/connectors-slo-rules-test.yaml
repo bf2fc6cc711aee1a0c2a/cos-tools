@@ -6,164 +6,124 @@ evaluation_interval: 1m
 tests:
   - interval: 1m
     input_series:
-      # Total interval: 200 minutes
-      # 10 times 5, connector is in PROCESS for 10 minutes
-      # 40 times 2, connector transitioned to FAILED right after PROCESS and staid in FAILED for 40 minutes
-      # 40 times 1, connector transitioned to READY and staid 40 minutes in READY
-      # 50 times 2, connector transitioned to FAILED for 50 minutes
-      # 60 times 1, at last, the connector transitions to READY again
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1"}'
-        values: '5+0x10 2+0x40 1+0x40 2+0x50 1+0x60'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="cbvn81m9fbo9fmh5rn60", state="ready"}'
+        values: '1+1x2880'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="cbvn81m9fbo9fmh5rn60", state="stopped"}'
+        values: '0+0x2880'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="cbvn81m9fbo9fmh5rn60", state="failed"}'
+        values: '0+0x2880'
 
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1"}'
-        values: '2+0x200'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccbpo0absr9v601smbhg", state="ready"}'
+        values: '1+1x2880'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccbpo0absr9v601smbhg", state="stopped"}'
+        values: '0+0x2880'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccbpo0absr9v601smbhg", state="failed"}'
+        values: '0+0x2880'
 
-    promql_expr_test:
-      # connector_state:interval30m unit_tests
-      - expr: connector_state:interval30m
-        eval_time: 10m
-        exp_samples:
-          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 5
-          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
-      - expr: connector_state:interval30m
-        eval_time: 50m
-        exp_samples:
-          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
-          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
-      - expr: connector_state:interval30m
-        eval_time: 90m
-        exp_samples:
-          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 1
-          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
-      - expr: connector_state:interval30m
-        eval_time: 2h10m
-        exp_samples:
-          - labels: 'connector_state:interval30m{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
-          - labels: 'connector_state:interval30m{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqpe7g8sdu754v02vn0", state="ready"}'
+        values: '1+1x1439 1440+0x119 1440+1x1319'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqpe7g8sdu754v02vn0", state="stopped"}'
+        values: '0+0x2880'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqpe7g8sdu754v02vn0", state="failed"}'
+        values: '0+0x1439 1+1x119 120+0x1319'
 
-      # connector_state_at_least_once:interval24h unit_tests
-      - expr: connector_state_at_least_once:interval24h
-        eval_time: 2h
-        exp_samples:
-          - labels: 'connector_state_at_least_once:interval24h{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 1
-          - labels: 'connector_state_at_least_once:interval24h{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
-
-    alert_rule_test:
-      # A connector transitions to FAILED and never was in READY, no alert should be triggered
-      - eval_time: 40m
-        alertname: ConnectorInFailedState
-        exp_alerts: [ ]
-      # A connector transitions to READY after failing, no alert should be triggered
-      - eval_time: 70m
-        alertname: ConnectorInFailedState
-        exp_alerts: [ ]
-      # A connector transitions to FAILED after being READY, an alert should be triggered
-      - eval_time: 2h10m
-        alertname: ConnectorInFailedState
-        exp_alerts:
-          - exp_labels:
-              alertname: ConnectorInFailedState
-              severity: critical
-              service: 'rhoc-fleetshard'
-              cos_connector_id: 'cbvn81m9fbo9fmh5rn60'
-              cos_connector_type_id: 'aws_kinesis_source_0.1'
-            exp_annotations:
-              summary: 'the connector cbvn81m9fbo9fmh5rn60 is in FAILED state'
-              description: 'the connector cbvn81m9fbo9fmh5rn60 type aws_kinesis_source_0.1 is in FAILED state'
-              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connector_in_failed_state.adoc'
-      # A connector transitions to READY after failing, no alert should be triggered
-      - eval_time: 3h
-        alertname: ConnectorInFailedState
-        exp_alerts: [ ]
-
-  - interval: 1m
-    input_series:
-      # Total interval: 200 minutes
-
-      # 10 times 5, connector is in PROCESS for 10 minutes
-      # 40 times 2, connector transitioned to FAILED right after PROCESS and staid in FAILED for 40 minutes
-      # 40 times 1, connector transitioned to READY and staid 40 minutes in READY
-      # 50 times 2, connector transitioned to FAILED for 50 minutes
-      # 60 times 1, at last, the connector transitions to READY again
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_type_id="aws_kinesis_source_0.1"}'
-        values: '5+0x10 2+0x40 1+0x40 2+0x50 1+0x60'
-
-      # 180 times 2, connector failing all the time
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cc9kj3glhic77ch9kt5g", cos_connector_type_id="aws_kinesis_source_0.1"}'
-        values: '2+0x180'
-
-      # 100 times 2, connector transitioned to FAILED and staid 100 minutes in FAILED
-      # 100 times 1, connector transitioned to READY and staid in READY for 100 minutes
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="ccbpo0absr9v601smbhg", cos_connector_type_id="aws_kinesis_source_0.1"}'
-        values: '2+0x100 1+0x100'
-
-      # 10 times 5, connector is in PROCESS for 10 minutes
-      # 80 times 1, connector transitioned to READY right after PROCESS and staid in READY for 90 minutes
-      # 40 times 1, connector transitioned to FAILED and staid 100 minutes in FAILED
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="cccpkg2bsr9rhboumhd0", cos_connector_type_id="aws_kinesis_source_0.1"}'
-        values: '5+0x10 1+0x90 2+0x100'
-
-      # 200 times 1, connector running all the time
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="ccqpe7g8sdu754v02vn0", cos_connector_type_id="aws_kinesis_source_0.1"}'
-        values: '1+0x200'
-
-      # 100 times 2, connector transitioned to FAILED and staid 100 minutes in FAILED
-      # 100 times 1, connector transitioned to READY and staid in READY for 100 minutes
-      - series: 'cos_fleetshard_sync_connector_state{cos_connector_id="ccqkkc33ts1p3ohhbq9g", cos_connector_type_id="debezium_postgres_0.1"}'
-        values: '2+0x100 1+0x100'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqkkc33ts1p3ohhbq9g", state="ready"}'
+        values: '1+1x1499 1500+0x59 1440+1x1319'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqkkc33ts1p3ohhbq9g", state="stopped"}'
+        values: '0+0x2880'
+      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqkkc33ts1p3ohhbq9g", state="failed"}'
+        values: '0+0x1499 1+1x59 120+0x1319'
 
     promql_expr_test:
-      # connectors_per_type_count unit_tests
-      - expr: connectors_per_type_count
-        eval_time: 10m
+      # recordings used in tested alerts, for clarity
+      # slo_connector_availability_failure_rate:ratio_rate5m
+      - expr: slo_connector_availability_failure_rate:ratio_rate5m
+        eval_time: 24h20m
         exp_samples:
-          - labels: 'connectors_per_type_count{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 5
-          - labels: 'connectors_per_type_count{cos_connector_type_id="debezium_postgres_0.1", service="rhoc-fleetshard"}'
-            value: 1
-      - expr: connectors_per_type_count
-        eval_time: 190m
+          - labels: 'slo_connector_availability_failure_rate:ratio_rate5m'
+            value: 0.25
+      - expr: slo_connector_availability_failure_rate:ratio_rate5m
+        eval_time: 24h40m
         exp_samples:
-          - labels: 'connectors_per_type_count{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 4
-          - labels: 'connectors_per_type_count{cos_connector_type_id="debezium_postgres_0.1", service="rhoc-fleetshard"}'
-            value: 1
+          - labels: 'slo_connector_availability_failure_rate:ratio_rate5m'
+            value: 0.25
+      - expr: slo_connector_availability_failure_rate:ratio_rate5m
+        eval_time: 25h10m
+        exp_samples:
+          - labels: 'slo_connector_availability_failure_rate:ratio_rate5m'
+            value: 0.50
 
-      # connectors_failing_per_type:interval30m unit_tests
-      - expr: connectors_failing_per_type:interval30m
-        eval_time: 10m
+      # slo_connector_availability_failure_rate:ratio_rate1h
+      - expr: slo_connector_availability_failure_rate:ratio_rate1h
+        eval_time: 24h20m
         exp_samples:
-          - labels: 'connectors_failing_per_type:interval30m{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
-          - labels: 'connectors_failing_per_type:interval30m{cos_connector_type_id="debezium_postgres_0.1", service="rhoc-fleetshard"}'
-            value: 1
-      - expr: connectors_failing_per_type:interval30m
-        eval_time: 180m
+          - labels: 'slo_connector_availability_failure_rate:ratio_rate1h'
+            value: 8.750000000000001E-02
+      - expr: slo_connector_availability_failure_rate:ratio_rate1h
+        eval_time: 24h40m
         exp_samples:
-          - labels: 'connectors_failing_per_type:interval30m{cos_connector_type_id="aws_kinesis_source_0.1", service="rhoc-fleetshard"}'
-            value: 2
+          - labels: 'slo_connector_availability_failure_rate:ratio_rate1h'
+            value: 1.7083333333333334E-01
+      - expr: slo_connector_availability_failure_rate:ratio_rate1h
+        eval_time: 25h10m
+        exp_samples:
+          - labels: 'slo_connector_availability_failure_rate:ratio_rate1h'
+            value: 2.9583333333333334E-01
 
     alert_rule_test:
-      # A connector transitions to FAILED and never was in READY, no alert should be triggered
-      - eval_time: 10m
-        alertname: ConnectorsPerTypeInFailedState
+      # RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
+      # For this scenario we have 4 connectors running for a total of 172800 a month
+      # 1 connector runs 43200 minutes a month (x4 = 172800). SLO 99.5% leaving a 0,5% of error capacity.
+      # Error Budget = 172800 * 0.5 / 100 = 864 minutes
+      # At at error rate of 0.25, it should trigger after 17.28 minutes which is the 2% of the error budget
+      - eval_time: 24h
+        alertname: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
+        exp_alerts: []
+      - eval_time: 24h15m
+        alertname: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
+        exp_alerts: []
+      - eval_time: 24h20m
+        alertname: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
         exp_alerts:
           - exp_labels:
-              alertname: ConnectorsPerTypeInFailedState
+              alertname: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
               severity: critical
-              service: 'rhoc-fleetshard'
-              cos_connector_type_id: 'debezium_postgres_0.1'
             exp_annotations:
-              summary: 'several connectors of type debezium_postgres_0.1 are in FAILED state'
-              description: 'several connectors of type debezium_postgres_0.1 are in FAILED state'
-              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_per_type_in_failed_state.adoc'
+              summary: "High 1h/6h Connectors availability budget burn for RHOC (current value: 87.5m)"
+              description: "An error budget greater than 2% has been burnt in the last 1h/6h period"
+              dashboard: "https://grafana.app-sre.devshift.net/d/3lmqGVq7z/data-plane-overview?orgId=1"
+              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_availability_error_budget_burnt.adoc'
+      - eval_time: 25h10m
+        alertname: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
+        exp_alerts:
+          - exp_labels:
+              alertname: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
+              severity: critical
+            exp_annotations:
+              summary: "High 1h/6h Connectors availability budget burn for RHOC (current value: 295.8m)"
+              description: "An error budget greater than 2% has been burnt in the last 1h/6h period"
+              dashboard: "https://grafana.app-sre.devshift.net/d/3lmqGVq7z/data-plane-overview?orgId=1"
+              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_availability_error_budget_burnt.adoc'
+      - eval_time: 26h40m
+        alertname: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn
+        exp_alerts: []
+
+      # RHOCConnectorsAvailability2hTo24HOr6hTo3dBudgetBurn
+      # For this scenario we have 4 connectors running for a total of 172800 a month
+      # 1 connector runs 43200 minutes a month (x4 = 172800). SLO 99.5% leaving a 0,5% of error capacity.
+      # Error Budget = 172800 * 0.5 / 100 = 864 minutes
+      # At at error rate of 0.25, it should trigger after 17.28 minutes which is the 2.5% of the error budget
+      - eval_time: 24h
+        alertname: RHOCConnectorsAvailability2hTo24HOr6hTo3dBudgetBurn
+        exp_alerts: []
+      - eval_time: 24h30m
+        alertname: RHOCConnectorsAvailability2hTo24HOr6hTo3dBudgetBurn
+        exp_alerts:
+          - exp_labels:
+              alertname: RHOCConnectorsAvailability2hTo24HOr6hTo3dBudgetBurn
+              severity: critical
+            exp_annotations:
+              summary: "High 3d/24h Connectors availability budget burn for RHOC (current value: 5.269m)"
+              description: "An error budget greater than 2.5% has been burnt in the last 1d period or an error budget greater than 10% has been burnt in the last 3 days period"
+              dashboard: "https://grafana.app-sre.devshift.net/d/3lmqGVq7z/data-plane-overview?orgId=1"
+              sop_url: 'https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/alerts/connectors_availability_error_budget_burnt.adoc'

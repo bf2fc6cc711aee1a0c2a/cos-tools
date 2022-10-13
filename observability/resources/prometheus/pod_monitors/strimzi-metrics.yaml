@@ -13,3 +13,6 @@ spec:
   podMetricsEndpoints:
     - path: /metrics
       port: http
+      metricRelabelings:
+        - regex: endpoint|instance|job|namespace|receive|pod|prometheus
+          action: labeldrop

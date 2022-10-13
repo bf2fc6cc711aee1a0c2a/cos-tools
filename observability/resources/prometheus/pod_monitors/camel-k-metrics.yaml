@@ -13,3 +13,6 @@ spec:
     any: true
   podMetricsEndpoints:
     - port: metrics
+      metricRelabelings:
+        - regex: endpoint|instance|job|namespace|receive|pod|prometheus
+          action: labeldrop

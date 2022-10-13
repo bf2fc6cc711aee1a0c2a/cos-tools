@@ -13,6 +13,9 @@ spec:
   podMetricsEndpoints:
     - path: /metrics
       port: tcp-prometheus
+      metricRelabelings:
+        - regex: endpoint|instance|job|receive|pod|prometheus
+          action: labeldrop
       relabelings:
         - sourceLabels: [__meta_kubernetes_pod_label_cos_bf2_org_connector_id]
           separator: ;

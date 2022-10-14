@@ -221,6 +221,12 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
     targetLabel: __tmp_keep
+  - action: replace
+    regex: cos_fleetshard_sync_connector_state_count_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
 
   # WHAT: Restart Status of a connector
   - action: replace

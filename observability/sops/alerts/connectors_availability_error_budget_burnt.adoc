@@ -163,7 +163,7 @@ LAST SEEN   TYPE      REASON               OBJECT                               
 oc logs -f strimzi-cluster-operator-6ddcb45f47-2jpp2
 ----
 
-Some useful information can be found in the resources managed by the feet and the fleet operators.
+Some useful information can be found in the resources managed by the fleetshard operators.
 
 * Inspect ManagedConnector resource:
 +

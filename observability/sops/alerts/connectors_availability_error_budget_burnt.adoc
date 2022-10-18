@@ -16,7 +16,7 @@ toc::[]
 
 == Description
 
-The purpose of this SOP is to outline the process of resolving the alerts `RHOCConnectorsAvailability*`. There are four error budget burn alerts that are used to protect the RHOC Connectors availability SLO.
+The purpose of this SOP is to outline the process of resolving the alerts `RHOCConnectorsAvailability*`. The rules for this alert operate within an OSD cluster. There are four error budget burn alerts that are used to protect the RHOC Connectors availability SLO.
 
 * slo_connector_availability_failure_rate:ratio_rate1h
 * slo_connector_availability_failure_rate:ratio_rate6h
@@ -45,8 +45,7 @@ the failing connector must reach CONNECTOR_STATE_READY before failing meaning th
 greatly affect the accuracy of this metric. Restarting the cos-fleetshard-sync pod will reset the `cos_fleetshard_sync_connector_state`
 counter and possibly tamper with the rate if the period of time used to calculate includes the restart.
 
-More info on this concept of multi-window multi-burn-rate alerts can
-be found
+More info on this concept of multi-window multi-burn-rate alerts can be found
 https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts[here].
 
 More info on the SLO related to these alerts can be found
@@ -162,6 +161,57 @@ LAST SEEN   TYPE      REASON               OBJECT                               
 [source]
 ----
 oc logs -f strimzi-cluster-operator-6ddcb45f47-2jpp2
+----
+
+Some useful information can be found in the resources managed by the feet and the fleet operators.
+
+* Inspect ManagedConnector resource:
++
+[source]
+----
+oc get ManagedConnector -l cos.bf2.org/connector.id=<connectorId> -n redhat-openshift-connectors-<namespaceId>
+----
+
+* Inspect the fleetshard operator camel
++
+[source]
+----
+oc get pod -l app.kubernetes.io/name=cos-fleetshard-operator-camel
+oc logs -l app.kubernetes.io/name=cos-fleetshard-operator-camel -f
+----
+
+* Inspect the KameletBinding resource
++
+[source]
+----
+oc get KameletBinding -n redhat-openshift-connectors-<namespaceId>
+oc get KameletBinding -l cos.bf2.org/connector.id=<connectorId> -n redhat-openshift-connectors-<namespaceId>
+----
+
+* Inspect the camelk operator
++
+[source]
+----
+oc get pod -l app=camel-k
+oc logs -l app=camel-k -f
+----
+
+* Inspect the Integration resource
++
+[source]
+----
+oc get Integration -n redhat-openshift-connectors-<namespaceId>
+oc get Integration -l cos.bf2.org/connector.id=<connectorId> -n redhat-openshift-connectors-<namespaceId>
+----
+
+* Inspect the connector Deployment
++
+[source]
+----
+oc get Deployment -l cos.bf2.org/connector.id=<connectorId> -n redhat-openshift-connectors-<namespaceId>
+oc get ReplicaSet -l cos.bf2.org/connector.id=<connectorId> -n redhat-openshift-connectors-<namespaceId>
+oc get Pod -l cos.bf2.org/connector.id=<connectorId> -n redhat-openshift-connectors-<namespaceId>
+oc logs -l cos.bf2.org/connector.id=<connectorId> -n redhat-openshift-connectors-<namespaceId> -f
 ----
 
 == Further Reading

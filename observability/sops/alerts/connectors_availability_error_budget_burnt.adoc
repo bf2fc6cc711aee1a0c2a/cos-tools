@@ -10,33 +10,109 @@ endif::[]
 :toc: macro
 :toc-title: pass:[<b>Table of Contents</b>]
 // end header
-= Some SOP/Alert Name
+= RHOC Connectors Availability / SLO Error budget burn
 
 toc::[]
 
 == Description
 
-The purpose of this SOP is to describe the process of resolving the alert `ConnectorInFailedState`.
+The purpose of this SOP is to outline the process of resolving the alerts `RHOCConnectorsAvailability*`. There are four error budget burn alerts that are used to protect the RHOC Connectors availability SLO.
 
-// Include the following step in every alert SOP, changing required parts
-The source of the alert is the `cos_fleetshard_sync_connector_state` metric which can have 5 values representing following connector's states:
+* slo_connector_availability_failure_rate:ratio_rate1h
+* slo_connector_availability_failure_rate:ratio_rate6h
+* slo_connector_availability_failure_rate:ratio_rate24h
+* slo_connector_availability_failure_rate:ratio_rate3d
 
-- CONNECTOR_STATE_READY = 1
-- CONNECTOR_STATE_FAILED = 2
-- CONNECTOR_STATE_DELETED = 3
-- CONNECTOR_STATE_STOPPED = 4
-- CONNECTOR_STATE_IN_PROCESS = 5
+The source of the alert is the
+`cos_fleetshard_sync_connector_state` metric,
+and fires when it's error rate is high over a short window of time and a
+longer one, indicating that the error budget is being burned at an unsafe rate.
 
-It fires when a connector's been in CONNECTOR_STATE_FAILED for a period of 30 minutes. In order for this alert to trigger, the failing connector must reach CONNECTOR_STATE_READY before failing meaning the conector was able to run in the past.
+The state of a connector determines the availability. A connector have 5 states:
+
+- CONNECTOR_STATE_READY
+- CONNECTOR_STATE_FAILED
+- CONNECTOR_STATE_DELETED
+- CONNECTOR_STATE_STOPPED
+- CONNECTOR_STATE_IN_PROCESS
+
+These vales are recorded in the label `cos_connector_state` which is part of `cos_fleetshard_sync_connector_state` metric.
+The error rate is calculated using  CONNECTOR_STATE_READY and CONNECTOR_STATE_FAILED. In order for this alert to trigger,
+the failing connector must reach CONNECTOR_STATE_READY before failing meaning the connector was able to run in the past.
+
+[NOTE]
+`cos_fleetshard_sync_connector_state` is reported by the cos-fleetshard-sync. Problems with the cos-fleetshard-sync could
+greatly affect the accuracy of this metric. Restarting the cos-fleetshard-sync pod will reset the `cos_fleetshard_sync_connector_state`
+counter and possibly tamper with the rate if the period of time used to calculate includes the restart.
+
+More info on this concept of multi-window multi-burn-rate alerts can
+be found
+https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts[here].
+
+More info on the SLO related to these alerts can be found
+https://docs.google.com/document/d/1GS8SROrDSZqWy6DD03TjJd0BM6OyLipv_BxAVb32XYk/edit#[here].
+
+[WARNING]
+SLO LIMIT for Managed Connectors is 99,5%
 
 == Prerequisites
 
-* Access to the OSD cluster via Backplane. The cluster ID is provided by the alert via a label.
-* The ID of the affected connector. This is provided by the alert via a label. It should look something like this: `c5ff3f4ctr234ihcgr8g`.
+* Access to the OSD cluster via Backplane.
+* The ID of the affected cluster. This is provided by the alert via a label. It should look something like this: `c5ff3f4ctr234ihcgr8g`.
+* https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tags[RHOC cli] installed. You have to be part of cos-fleet-manager-admin-full-prod rover group
+in order to effectively use the cli.
 
 == Execute/Resolution
 
-. Log in to the OSD cluster that generated the alert
+. Store the cluster id in a variable for better access
++
+----
+export CLUSTER_ID=cc6ae6o7764p8lrcfbj0
+----
+
+. List connectors to identify which one is failing(STATE=failed).
++
+----
+% rhoc connectors list --cluster-id ${CLUSTER_ID}
+
+  ID (5)                 NAMESPACE_ID           OWNER                         CONNECTOR_TYPE_ID         DESIRED_STATE   STATE    VERSION   AGE
+----------------------- ---------------------- ----------------------------- ------------------------- --------------- -------- --------- --------
+  cd74mms89ot9kejrreng   cc6ae6o7764p8lrcfbk0   openbridge_kafka_supporting   slack_sink_0.1            ready           ready    121805    154m
+  cd755ss89ot9kejrs13g   cc6ae6o7764p8lrcfbk0   openbridge_kafka_supporting   slack_sink_0.1            ready           ready    121870    122m
+  cd76o7takkggo7fhv170   cd75ogc89ot9kejrspng   mk-test-e2e-primary           data_generator_0.1        ready           ready    122013    14m
+  cd71vs5akkggo7fhpj8g   cd71tbtakkggo7fhpgmg   yxing@redhat.com              aws_cloudwatch_sink_0.1   ready           failed   121802    5h39m
+  cd1ur6dakkggo7fcikbg   cc6ae6o7764p8lrcfbk0   openbridge_kafka_supporting   slack_sink_0.1            ready           ready    121803    7d23h
+----
+
+. The project where the failing connector is running will have the NAMESPACE_ID attached to the name. For this case `cd71tbtakkggo7fhpgmg`
++
+----
+oc projects | grep cc6ae6o7764p8lrcfbk0
+redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0                  Active
+
+oc project redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0
+Now using project "redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0"
+----
+
+. List pods in the namespace. A failing connector will most likely restart frequently
+or it won't start up at all.
++
+----
+% oc get pods
+NAME                                         READY   STATUS    RESTARTS   AGE
+mctr-cd1ur6bhl69lnuj0urn0-7c5d4cd55f-shnvx   1/1     Running   0          3h49m
+mctr-cd74mmrhl69lnuj68vag-c5d8dd8c9-tz8rw    1/1     Running   0          3h3m
+mctr-cd755t3hl69lnuj69jq0-856f75b99-dmnbq    1/1     Running   0          151m
+mctr-cd779jbhl69lnuj6cbc0-7765f5d48c-f7fzm   0/1     Running   0          6m51s
+----
+
+. The CONNECTOR_ID is NOT part of the pod name, but it is a label named `cos.bf2.org/connector.id`. Check that you have the right pod
++
+----
+oc get pod mctr-cd779jbhl69lnuj6cbc0-7765f5d48c-f7fzm -o template --template '{{.metadata.labels}}'
+map[camel.apache.org/integration:mctr-cd779jbhl69lnuj6cbc0 cos.bf2.org/connector.id:cd779jbhl69lnuj6cba0 cos.bf2.org/connector.type.id:aws_sqs_source_0.1 cos.bf2.org/deployment.id:cd779jbhl69lnuj6cbc0 cos.bf2.org/operator.type:camel-connector-operator pod-template-hash:7765f5d48c]
+
+----
 
 . Identify the reason why the connector is failing by tailing the pod logs. The connector will fail if external systems can't be reached or accessed. For instance a mysql connector will fail if the mysql server is unreachable or if the provided credentials are wrong.
 
@@ -46,7 +122,7 @@ What steps are required to verify that the procedure has been followed correctly
 
 . Check the alert is no longer firing.
 . Check that the connector logs are clean of errors.
-. Check the dashboard shows `cos_fleetshard_sync_connector_state = 1` for the troubled connector.
+. Check the dashboard for `cos_fleetshard_sync_connector_state{cos_connector_id="<CONNECTOR_ID>" cos_connector_state="failed"}` counter.
 
 == Troubleshooting
 

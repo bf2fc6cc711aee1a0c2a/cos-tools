@@ -9,51 +9,51 @@ spec:
     - name: rhoc-connectors-slo-rules
       rules:
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[5m])) 
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[5m])) 
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[5m])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[5m])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[5m])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[5m])) )
           record: slo_connector_availability_failure_rate:ratio_rate5m
 
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[30m])) 
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[30m])) 
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[30m])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[30m])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[30m])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[30m])) )
           record: slo_connector_availability_failure_rate:ratio_rate30m
 
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[1h])) 
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[1h])) 
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[1h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[1h])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[1h])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[1h])) )
           record: slo_connector_availability_failure_rate:ratio_rate1h
 
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[2h])) 
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[2h])) 
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[2h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[2h])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[2h])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[2h])) )
           record: slo_connector_availability_failure_rate:ratio_rate2h
 
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[6h]))
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[6h]))
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[6h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[6h])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[6h])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[6h])) )
           record: slo_connector_availability_failure_rate:ratio_rate6h
 
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[12h]))
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[12h]))
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[12h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[12h])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[12h])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[12h])) )
           record: slo_connector_availability_failure_rate:ratio_rate12h
 
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[24h]))
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[24h]))
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[24h])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[24h])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[24h])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[24h])) )
           record: slo_connector_availability_failure_rate:ratio_rate24h
 
         - expr: |
-            sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[3d]))
+            sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[3d]))
             /
-            ( sum(rate(cos_fleetshard_sync_connector_state_count{state="ready"}[3d])) + sum(rate(cos_fleetshard_sync_connector_state_count{state="failed"}[3d])) )
+            ( sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="ready"}[3d])) + sum(rate(cos_fleetshard_sync_connector_state_count_total{cos_connector_state="failed_but_ready"}[3d])) )
           record: slo_connector_availability_failure_rate:ratio_rate3d
 
         - alert: RHOCConnectorsAvailability5mTo1hOr30mTo6hP2BudgetBurn

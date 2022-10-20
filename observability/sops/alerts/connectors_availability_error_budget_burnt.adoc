@@ -24,7 +24,7 @@ The purpose of this SOP is to outline the process of resolving the alerts `RHOCC
 * slo_connector_availability_failure_rate:ratio_rate3d
 
 The source of the alert is the
-`cos_fleetshard_sync_connector_state` metric,
+`cos_fleetshard_sync_connector_state_count_total` metric,
 and fires when it's error rate is high over a short window of time and a
 longer one, indicating that the error budget is being burned at an unsafe rate.
 
@@ -36,13 +36,13 @@ The state of a connector determines the availability. A connector have 5 states:
 - CONNECTOR_STATE_STOPPED
 - CONNECTOR_STATE_IN_PROCESS
 
-These vales are recorded in the label `cos_connector_state` which is part of `cos_fleetshard_sync_connector_state` metric.
+These vales are recorded in the label `cos_connector_state` which is part of `cos_fleetshard_sync_connector_state_count_total` metric.
 The error rate is calculated using  CONNECTOR_STATE_READY and CONNECTOR_STATE_FAILED. In order for this alert to trigger,
 the failing connector must reach CONNECTOR_STATE_READY before failing meaning the connector was able to run in the past.
 
 [NOTE]
-`cos_fleetshard_sync_connector_state` is reported by the cos-fleetshard-sync. Problems with the cos-fleetshard-sync could
-greatly affect the accuracy of this metric. Restarting the cos-fleetshard-sync pod will reset the `cos_fleetshard_sync_connector_state`
+`cos_fleetshard_sync_connector_state_count_total` is reported by the cos-fleetshard-sync. Problems with the cos-fleetshard-sync could
+greatly affect the accuracy of this metric. Restarting the cos-fleetshard-sync pod will reset the `cos_fleetshard_sync_connector_state_count_total`
 counter and possibly tamper with the rate if the period of time used to calculate includes the restart.
 
 More info on this concept of multi-window multi-burn-rate alerts can be found
@@ -121,7 +121,7 @@ What steps are required to verify that the procedure has been followed correctly
 
 . Check the alert is no longer firing.
 . Check that the connector logs are clean of errors.
-. Check the dashboard for `cos_fleetshard_sync_connector_state{cos_connector_id="<CONNECTOR_ID>" cos_connector_state="failed"}` counter.
+. Check the dashboard for `cos_fleetshard_sync_connector_state_count_total{cos_connector_id="<CONNECTOR_ID>" cos_connector_state="failed_but_ready"}` counter.
 
 == Troubleshooting
 

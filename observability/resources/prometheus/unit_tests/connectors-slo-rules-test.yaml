@@ -6,32 +6,32 @@ evaluation_interval: 1m
 tests:
   - interval: 1m
     input_series:
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="cbvn81m9fbo9fmh5rn60", state="ready"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_state="ready"}'
         values: '1+1x2880'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="cbvn81m9fbo9fmh5rn60", state="stopped"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_state="stopped"}'
         values: '0+0x2880'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="cbvn81m9fbo9fmh5rn60", state="failed"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="cbvn81m9fbo9fmh5rn60", cos_connector_state="failed_but_ready"}'
         values: '0+0x2880'
 
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccbpo0absr9v601smbhg", state="ready"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccbpo0absr9v601smbhg", cos_connector_state="ready"}'
         values: '1+1x2880'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccbpo0absr9v601smbhg", state="stopped"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccbpo0absr9v601smbhg", cos_connector_state="stopped"}'
         values: '0+0x2880'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccbpo0absr9v601smbhg", state="failed"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccbpo0absr9v601smbhg", cos_connector_state="failed_but_ready"}'
         values: '0+0x2880'
 
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqpe7g8sdu754v02vn0", state="ready"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccqpe7g8sdu754v02vn0", cos_connector_state="ready"}'
         values: '1+1x1439 1440+0x119 1440+1x1319'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqpe7g8sdu754v02vn0", state="stopped"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccqpe7g8sdu754v02vn0", cos_connector_state="stopped"}'
         values: '0+0x2880'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqpe7g8sdu754v02vn0", state="failed"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccqpe7g8sdu754v02vn0", cos_connector_state="failed_but_ready"}'
         values: '0+0x1439 1+1x119 120+0x1319'
 
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqkkc33ts1p3ohhbq9g", state="ready"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccqkkc33ts1p3ohhbq9g", cos_connector_state="ready"}'
         values: '1+1x1499 1500+0x59 1440+1x1319'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqkkc33ts1p3ohhbq9g", state="stopped"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccqkkc33ts1p3ohhbq9g", cos_connector_state="stopped"}'
         values: '0+0x2880'
-      - series: 'cos_fleetshard_sync_connector_state_count{cos_connector_id="ccqkkc33ts1p3ohhbq9g", state="failed"}'
+      - series: 'cos_fleetshard_sync_connector_state_count_total{cos_connector_id="ccqkkc33ts1p3ohhbq9g", cos_connector_state="failed_but_ready"}'
         values: '0+0x1499 1+1x59 120+0x1319'
 
     promql_expr_test:

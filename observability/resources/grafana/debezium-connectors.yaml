@@ -24,8 +24,8 @@ spec:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 7,
-      "iteration": 1662638978254,
+      "id": 5,
+      "iteration": 1666262501625,
       "links": [],
       "panels": [
         {
@@ -44,7 +44,7 @@ spec:
         },
         {
           "datasource": null,
-          "description": "Type of the Debezium Connector",
+          "description": "Type of Debezium Connector",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -55,10 +55,6 @@ spec:
                   {
                     "color": "green",
                     "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
               }
@@ -66,7 +62,7 @@ spec:
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 4,
             "w": 6,
             "x": 0,
             "y": 1
@@ -74,7 +70,7 @@ spec:
           "id": 5,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
@@ -115,10 +111,6 @@ spec:
                   {
                     "color": "green",
                     "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
               }
@@ -126,7 +118,7 @@ spec:
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 4,
             "w": 6,
             "x": 6,
             "y": 1
@@ -134,7 +126,7 @@ spec:
           "id": 2,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
@@ -142,7 +134,7 @@ spec:
                 "last"
               ],
               "fields": "/^connector_id$/",
-              "values": false
+              "values": true
             },
             "textMode": "auto"
           },
@@ -164,21 +156,18 @@ spec:
         },
         {
           "datasource": null,
-          "description": "Namespace of the Debezium Connector",
+          "description": "Namespace of Debezium Connector",
           "fieldConfig": {
             "defaults": {
               "custom": {},
               "mappings": [],
+              "min": 0,
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
                     "color": "green",
                     "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
               }
@@ -186,7 +175,7 @@ spec:
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 4,
             "w": 6,
             "x": 12,
             "y": 1
@@ -194,7 +183,7 @@ spec:
           "id": 7,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
@@ -202,7 +191,7 @@ spec:
                 "last"
               ],
               "fields": "/^namespace$/",
-              "values": false
+              "values": true
             },
             "textMode": "auto"
           },
@@ -224,7 +213,7 @@ spec:
         },
         {
           "datasource": null,
-          "description": "Deployment ID of the Debezium Connector",
+          "description": "Deployment ID of  Debezium Connector",
           "fieldConfig": {
             "defaults": {
               "custom": {},
@@ -235,10 +224,6 @@ spec:
                   {
                     "color": "green",
                     "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
               }
@@ -246,7 +231,7 @@ spec:
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 4,
             "w": 6,
             "x": 18,
             "y": 1
@@ -254,7 +239,7 @@ spec:
           "id": 8,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
@@ -262,7 +247,7 @@ spec:
                 "last"
               ],
               "fields": "/^deployment_id$/",
-              "values": false
+              "values": true
             },
             "textMode": "auto"
           },
@@ -289,7 +274,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 5
           },
           "id": 10,
           "panels": [],
@@ -298,7 +283,159 @@ spec:
         },
         {
           "datasource": null,
-          "description": "",
+          "description": "The number of milliseconds between the last change event’s timestamp and the connector processing it. The values will incorporate any differences between the clocks on the machines where the database server and the connector are running",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": null,
+                "filterable": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 6
+          },
+          "id": 12,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "debezium_metrics_MilliSecondsBehindSource{pod=\"$pod\", namespace=\"$namespace\"}",
+              "format": "time_series",
+              "instant": true,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "Milliseconds Behind Source",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Milliseconds Behind Source",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 10
+          },
+          "id": 34,
+          "panels": [],
+          "title": "Snapshot Specific",
+          "type": "row"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [
+                {
+                  "from": "",
+                  "id": 1,
+                  "text": "NO",
+                  "to": "",
+                  "type": 1,
+                  "value": "0"
+                },
+                {
+                  "from": "",
+                  "id": 2,
+                  "text": "YES",
+                  "to": "",
+                  "type": 1,
+                  "value": "1"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 11
+          },
+          "id": 36,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "debezium_metrics_SnapshotRunning{pod=\"$pod\", namespace=\"$namespace\"}",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Snapshot Running",
+          "type": "stat"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "The total number of events that this connector has seen since the last start or metrics reset",
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -322,126 +459,16 @@ spec:
             },
             "overrides": []
           },
-          "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 0,
-            "y": 8
-          },
-          "id": 12,
-          "options": {
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "7.3.10",
-          "targets": [
-            {
-              "expr": "debezium_metrics_MilliSecondsBehindSource{pod=\"$pod\", namespace=\"$namespace\"}",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "Milliseconds Behind Source",
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Milliseconds Behind Source",
-          "type": "gauge"
-        },
-        {
-          "datasource": null,
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 12,
-            "y": 8
-          },
-          "id": 14,
-          "options": {
-            "reduceOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "7.3.10",
-          "targets": [
-            {
-              "expr": "debezium_metrics_MilliSecondsSinceLastEvent{pod=\"$pod\", namespace=\"$namespace\", context=\"streaming\"}",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "Streaming",
-              "refId": "A"
-            },
-            {
-              "expr": "debezium_metrics_MilliSecondsSinceLastEvent{pod=\"$pod\", namespace=\"$namespace\", context=\"snapshot\"}",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "Snapshot",
-              "refId": "B"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Milliseconds Since Last Event",
-          "type": "gauge"
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": null,
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {}
-            },
-            "overrides": []
-          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 0,
-            "y": 17
+            "h": 8,
+            "w": 9,
+            "x": 6,
+            "y": 11
           },
           "hiddenSeries": false,
-          "id": 13,
+          "id": 38,
           "legend": {
             "avg": false,
             "current": false,
@@ -467,13 +494,6 @@ spec:
           "stack": false,
           "steppedLine": false,
           "targets": [
-            {
-              "expr": "debezium_metrics_TotalNumberOfEventsSeen{pod=\"$pod\", namespace=\"$namespace\", context=\"streaming\"}",
-              "instant": false,
-              "interval": "",
-              "legendFormat": "Streaming",
-              "refId": "A"
-            },
             {
               "expr": "debezium_metrics_TotalNumberOfEventsSeen{pod=\"$pod\", namespace=\"$namespace\", context=\"snapshot\"}",
               "interval": "",
@@ -528,10 +548,13 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
-          "description": "",
+          "description": "The free capacity of the queue used to pass events between the streamer and the main Kafka Connect loop",
           "fieldConfig": {
             "defaults": {
-              "custom": {},
+              "custom": {
+                "align": null,
+                "filterable": false
+              },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -539,10 +562,6 @@ spec:
                   {
                     "color": "green",
                     "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
               }
@@ -552,13 +571,13 @@ spec:
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 12,
-            "y": 17
+            "h": 8,
+            "w": 9,
+            "x": 15,
+            "y": 11
           },
           "hiddenSeries": false,
-          "id": 15,
+          "id": 39,
           "legend": {
             "avg": false,
             "current": false,
@@ -584,12 +603,6 @@ spec:
           "stack": false,
           "steppedLine": false,
           "targets": [
-            {
-              "expr": "debezium_metrics_QueueRemainingCapacity{pod=\"$pod\", namespace=\"$namespace\", context=\"streaming\"}",
-              "interval": "",
-              "legendFormat": "Streaming",
-              "refId": "A"
-            },
             {
               "expr": "debezium_metrics_QueueRemainingCapacity{pod=\"$pod\", namespace=\"$namespace\", context=\"snapshot\"}",
               "interval": "",
@@ -639,13 +652,848 @@ spec:
           }
         },
         {
+          "datasource": null,
+          "description": "\t\nThe number of milliseconds since the connector has read and processed the most recent event",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 15
+          },
+          "id": 37,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "debezium_metrics_MilliSecondsSinceLastEvent{pod=\"$pod\", namespace=\"$namespace\", context=\"snapshot\"}",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "Snapshot",
+              "refId": "B"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Milliseconds Since Last Event",
+          "transformations": [],
+          "type": "stat"
+        },
+        {
           "collapsed": false,
           "datasource": null,
           "gridPos": {
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 19
+          },
+          "id": 41,
+          "panels": [],
+          "title": "Streaming Specific",
+          "type": "row"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [
+                {
+                  "from": "",
+                  "id": 1,
+                  "text": "NO",
+                  "to": "",
+                  "type": 1,
+                  "value": "0"
+                },
+                {
+                  "from": "",
+                  "id": 2,
+                  "text": "YES",
+                  "to": "",
+                  "type": 1,
+                  "value": "1"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 20
+          },
+          "id": 42,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "debezium_metrics_Connected{pod=\"$pod\", namespace=\"$namespace\"}",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Streaming Running",
+          "type": "stat"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "The total number of events that this connector has seen since the last start or metrics reset",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": null,
+                "filterable": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 9,
+            "x": 6,
+            "y": 20
+          },
+          "hiddenSeries": false,
+          "id": 13,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "debezium_metrics_TotalNumberOfEventsSeen{pod=\"$pod\", namespace=\"$namespace\", context=\"streaming\"}",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "Streaming",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Total Number of Events Seen",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "The free capacity of the queue used to pass events between the streamer and the main Kafka Connect loop ",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": null,
+                "filterable": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 9,
+            "x": 15,
+            "y": 20
+          },
+          "hiddenSeries": false,
+          "id": 15,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "debezium_metrics_QueueRemainingCapacity{pod=\"$pod\", namespace=\"$namespace\", context=\"streaming\"}",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "Streaming",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Queue Remaining Capacity",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "datasource": null,
+          "description": "\t\nThe number of milliseconds since the connector has read and processed the most recent event",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 5
+                  },
+                  {
+                    "color": "red",
+                    "value": 30
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 24
+          },
+          "id": 14,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "debezium_metrics_MilliSecondsSinceLastEvent{pod=\"$pod\", namespace=\"$namespace\", context=\"streaming\"}",
+              "format": "time_series",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "Streaming",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Milliseconds Since Last Event",
+          "transformations": [],
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 28
+          },
+          "id": 27,
+          "panels": [],
+          "title": "Kafka Connect Specific",
+          "type": "row"
+        },
+        {
+          "datasource": null,
+          "description": "The status of the connector. One of 'unassigned', 'running', 'paused', 'failed', or 'restarting'.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": null,
+                "filterable": false
+              },
+              "mappings": [
+                {
+                  "from": "",
+                  "id": 3,
+                  "text": "UNASSIGNED",
+                  "to": "",
+                  "type": 1,
+                  "value": "0"
+                },
+                {
+                  "from": "",
+                  "id": 4,
+                  "text": "RUNNING",
+                  "to": "",
+                  "type": 1,
+                  "value": "1"
+                },
+                {
+                  "from": "",
+                  "id": 5,
+                  "text": "PAUSED",
+                  "to": "",
+                  "type": 1,
+                  "value": "2"
+                },
+                {
+                  "from": "",
+                  "id": 6,
+                  "text": "FAILED",
+                  "to": "",
+                  "type": 1,
+                  "value": "3"
+                },
+                {
+                  "from": "",
+                  "id": 7,
+                  "text": "DESTROYED",
+                  "to": "",
+                  "type": 1,
+                  "value": "4"
+                },
+                {
+                  "from": "",
+                  "id": 8,
+                  "text": "RESTARTING",
+                  "to": "",
+                  "type": 1,
+                  "value": "5"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 29
+          },
+          "id": 29,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "kafka_connect_connector_status{pod=\"$pod\", namespace=\"$namespace\"}",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Connector Status",
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "description": "The current number of in-flight requests awaiting a response",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 29
+          },
+          "id": 32,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "kafka_producer_requests_in_flight{pod=\"$pod\", namespace=\"$namespace\"}",
+              "format": "table",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Total Requests in Flight",
+          "type": "stat"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "The total number of outgoing bytes sent to all servers",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 29
+          },
+          "hiddenSeries": false,
+          "id": 31,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.10",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "kafka_connect_outgoing_byte_total{namespace=\"$namespace\",pod=\"$pod\"}",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "Outgoing Bytes Total",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Outgoing Bytes Total",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "datasource": null,
+          "description": "The task status of the connector. One of 'unassigned', 'running', 'paused', 'failed', or 'restarting'.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": null,
+                "filterable": false
+              },
+              "mappings": [
+                {
+                  "from": "",
+                  "id": 3,
+                  "text": "UNASSIGNED",
+                  "to": "",
+                  "type": 1,
+                  "value": "0"
+                },
+                {
+                  "from": "",
+                  "id": 4,
+                  "text": "RUNNING",
+                  "to": "",
+                  "type": 1,
+                  "value": "1"
+                },
+                {
+                  "from": "",
+                  "id": 5,
+                  "text": "PAUSED",
+                  "to": "",
+                  "type": 1,
+                  "value": "2"
+                },
+                {
+                  "from": "",
+                  "id": 6,
+                  "text": "FAILED",
+                  "to": "",
+                  "type": 1,
+                  "value": "3"
+                },
+                {
+                  "from": "",
+                  "id": 7,
+                  "text": "DESTROYED",
+                  "to": "",
+                  "type": 1,
+                  "value": "4"
+                },
+                {
+                  "from": "",
+                  "id": 8,
+                  "text": "RESTARTING",
+                  "to": "",
+                  "type": 1,
+                  "value": "5"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 33
+          },
+          "id": 43,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.3.10",
+          "targets": [
+            {
+              "expr": "kafka_connect_connector_task_status{pod=\"$pod\", namespace=\"$namespace\"}",
+              "format": "time_series",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Connector Task Status",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 37
           },
           "id": 17,
           "panels": [],
@@ -658,7 +1506,7 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
-          "description": "Total CPU Usage",
+          "description": "CPU Utilization for the connector\n\n",
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -668,10 +1516,10 @@ spec:
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 10,
+            "h": 9,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 38
           },
           "hiddenSeries": false,
           "id": 19,
@@ -702,6 +1550,7 @@ spec:
           "targets": [
             {
               "expr": "process_cpu_seconds_total{pod=\"$pod\", namespace=\"$namespace\"}",
+              "format": "time_series",
               "instant": false,
               "interval": "",
               "legendFormat": "CPU Usage",
@@ -756,7 +1605,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 37
+            "y": 47
           },
           "id": 21,
           "panels": [],
@@ -769,6 +1618,7 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Maximum JVM bytes allocated in Heap vs Nonheap",
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -781,7 +1631,7 @@ spec:
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 38
+            "y": 48
           },
           "hiddenSeries": false,
           "id": 23,
@@ -870,6 +1720,7 @@ spec:
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
+          "description": "Total JVM bytes used in Heap vs Nonheap",
           "fieldConfig": {
             "defaults": {
               "custom": {}
@@ -882,7 +1733,7 @@ spec:
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 38
+            "y": 48
           },
           "hiddenSeries": false,
           "id": 25,
@@ -964,310 +1815,9 @@ spec:
             "align": false,
             "alignLevel": null
           }
-        },
-        {
-          "collapsed": false,
-          "datasource": null,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 47
-          },
-          "id": 27,
-          "panels": [],
-          "title": "Kafka Specific",
-          "type": "row"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 8,
-            "x": 0,
-            "y": 48
-          },
-          "id": 29,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "7.3.10",
-          "targets": [
-            {
-              "expr": "kafka_connect_connector_status{pod=\"$pod\", namespace=\"$namespace\"}",
-              "format": "time_series",
-              "instant": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Connector Status",
-          "type": "stat"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 8,
-            "x": 8,
-            "y": 48
-          },
-          "id": 30,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "last"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "7.3.10",
-          "targets": [
-            {
-              "expr": "kafka_connect_connector_task_status{pod=\"$pod\", namespace=\"$namespace\"}",
-              "format": "time_series",
-              "instant": true,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Connector Task Status",
-          "type": "stat"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 8,
-            "x": 16,
-            "y": 48
-          },
-          "id": 32,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "last"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "7.3.10",
-          "targets": [
-            {
-              "expr": "kafka_producer_requests_in_flight{pod=\"$pod\", namespace=\"$namespace\"}",
-              "format": "table",
-              "instant": false,
-              "interval": "",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Total Requests in Flight",
-          "type": "stat"
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "fill": 1,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 10,
-            "w": 24,
-            "x": 0,
-            "y": 54
-          },
-          "hiddenSeries": false,
-          "id": 31,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
-          "options": {
-            "alertThreshold": true
-          },
-          "percentage": false,
-          "pluginVersion": "7.3.10",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "kafka_connect_outgoing_byte_total{namespace=\"$namespace\",pod=\"$pod\"}",
-              "format": "time_series",
-              "instant": false,
-              "interval": "",
-              "legendFormat": "Outgoing Bytes Total",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Outgoing Bytes Total",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
         }
       ],
+      "refresh": "30s",
       "schemaVersion": 26,
       "style": "dark",
       "tags": [],
@@ -1304,8 +1854,8 @@ spec:
             "allValue": null,
             "current": {
               "selected": false,
-              "text": "ccct3uabsr9rhbouuel0",
-              "value": "ccct3uabsr9rhbouuel0"
+              "text": "cd8hvi48b755n96djab0",
+              "value": "cd8hvi48b755n96djab0"
             },
             "datasource": "Prometheus",
             "definition": "label_values(debezium_metrics_Connected{namespace=\"$namespace\"}, connector_id)",
@@ -1330,9 +1880,10 @@ spec:
           {
             "allValue": null,
             "current": {
-              "selected": false,
-              "text": "mctr-ccct3uibsr9rhbouuemg-connect-5b9b5bc744-4lgjk",
-              "value": "mctr-ccct3uibsr9rhbouuemg-connect-5b9b5bc744-4lgjk"
+              "isNone": true,
+              "selected": true,
+              "text": "None",
+              "value": ""
             },
             "datasource": "Prometheus",
             "definition": "label_values(debezium_metrics_Connected{namespace=\"$namespace\", connector_id=\"$connector_id\"}, pod)",
@@ -1357,12 +1908,12 @@ spec:
         ]
       },
       "time": {
-        "from": "now-15m",
+        "from": "now-6h",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
       "title": "Debezium Connectors",
       "uid": "r7wVVJMVk",
-      "version": 4
+      "version": 8
     }

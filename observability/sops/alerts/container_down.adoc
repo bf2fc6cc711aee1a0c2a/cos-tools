@@ -1,0 +1,85 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+// end header
+= Container down, crashing or restarting
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the generic troubleshooting process for a container that is down, crashing constantly (CrashLoopBackoff) or frequenty restarting. If you reached this SOP from a firing alert, keep in mind that this is purposely generic as the number of reasons for a container going down is massive and largely related to what the containers job is. This SOP focuses on the common troubleshooting steps for containers in OpenShift. A good working knowledge of OpenShift and RHOC is assumed and necessary to make sense of the troubleshooting output, and ultimately figure out and fix the cause.
+
+NOTE: When a fleetshard operator fails to start the existing user workload is not affected. The impact of operators failing to start or restarting frequently is that the user won't be able to modify his workload (adding, deleting or modifying connectors might not be possible).
+
+== Prerequisites
+* Access to the OSD cluster via Backplane.
+* The ID of the affected cluster. This is provided by the alert via a label. It should look something like this: `c5ff3f4ctr234ihcgr8g`.
+
+
+== Execute/Resolution
+Check the affected container logs for errors or reasons for it not running/crashing.
+[source,sh]
+----
+oc logs <pod_name> -n <namespace>
+----
+Checking logs of the previous pod can sometimes be helpful too
+[source,sh]
+----
+oc logs <pod_name> -p -n <namespace>
+----
+If the container is 1 of many in a pod, you can specify the container name with `-c`. You can use this method to get logs for a crashing init container too.
+[source,sh]
+----
+oc logs <pod_name> -c <container_name -n <namespace>
+----
+If the container is running but not getting to a ready state, try force it to rollout again.
+[source,sh]
+----
+oc rollout latest <deployment> -n <namespace>
+----
+If the pod is part of a stateful set, you can kill the pod instead to force a new pod to start.
+[source,sh]
+----
+oc delete pod <pod_name> -n <namespace>
+----
+The recent events can sometimes give a hint of what's wrong with a container e.g. a volume binding issue.
+[source,sh]
+----
+oc get events
+----
+Follow up on any leads from the logs or events. For example, if the events mention a volume issue, check the status of PVCs and Volumes. Some volumes may be mounted from secrets or configmaps. If the logs indicate a problem communicating to a different service, check that service.
+
+If there are other alerts firing, they may add useful context as to why this container is down. Alternatively, this container being down may be the reason for another alert firing.
+
+Check for any recent changes to the operator that manages the container that is down. If the container itself is an operator, check the InstallPlan, Subscription and CSV for any recent changes.
+
+Sometimes there may be an underlying platform issue. Checking for any OSD alerts firing in the openshift-monitoring prometheus can quickly rule this in or out. If there are firing alerts here, it may warrant communication with SREP.
+
+== Validate
+
+Check the container and pod are running and ready.
+[source,sh]
+----
+oc get pod <pod_name> -n <namespace>
+----
+Check the logs for any errors
+[source,sh]
+----
+oc logs <pod_name> -n <namespace>
+----
+
+== Troubleshooting
+N/A
+
+== Escalate to engineering
+
+* If the above hasn't worked contact engineering.

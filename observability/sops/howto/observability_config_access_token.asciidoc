@@ -1,0 +1,77 @@
+// begin header
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:numbered:
+:toc: macro
+:toc-title: pass:[<b>Table of Contents</b>]
+:github-credentials: https://vault.devshift.net/ui/vault/secrets/managed-connectors-services/show/observability/github
+:production: https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-connectors-api/production/service/observatorium
+:stage: https://vault.devshift.net/ui/vault/secrets/app-interface/show/managed-connectors-api/stage/service/observatorium
+:app-interface: https://gitlab.cee.redhat.com/service/app-interface
+:prod-secret-app-interface: https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-connectors/namespaces/managed-connectors-production.yaml
+:stage-secret-app-interface: https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/managed-connectors/namespaces/managed-connectors-stage.yaml
+// end header
+= rhoc-rts personal access token refresh SOP
+
+toc::[]
+
+== Description
+
+The purpose of this SOP is to describe the process of rotating `observability-config-access.token` in {production}[production] or {stage}[stage] (those links are restricted to a limited number of people, therefore you might not have access to view them).
+
+== Prerequisites
+
+1. Access to {github-credentials}[github credentials] in vault.
+2. Access to {production}[prod] and {stage}[stage] vault credentials.
+3. Permissions to create merge requests in the {app-interface}[app-interface] repository.
+
+== Execute/Resolution
+
+The Observability stack requires a Personal Access Token (PAT) to read externalized configuration from within the bf2 organization.
+
+The PAT is assigned to a special user account with the name `rhoc-rts`.
+
+=== Generate a new Github Personal Access Token for mk-config-user
+
+1. Login to vault and navigate to {github-credentials}[the RHOC observability section].
+
+2. Retrieve the username and password for `rhoc-rts` github user.
+
+3. Login to Github with those credentials. You will be asked to provide a second factor.
+
+4. Select `Enter a two-factor recovery code` instead and provide a recovery code from the list of the `recovery_codes`.
+
+5. Once logged in, navigate to `Settings -> Developer Settings -> Personal access tokens`. If the token does not exist, it has been revoked.
+
+6. Click on `Regenerate` and take note of the new token. Ensure the token has the correct 'repo' permission ONLY.
++
+NOTE: If the previous token had been revoked, you will need to create a new token with 'repo' permission ONLY.
+
+7. Open {stage}[stage] vault credentials and update `observability-config-access.token`.
+
+8. Repeat step 7 for {production}[production].
+
+9. Take note of the new vault versions for prod and stage.
+
+10. Update the `cos-fleet-manager` resource under `openshiftResources` in {prod-secret-app-interface}[app-interface for production] and {stage-secret-app-interface}[stage] with the new version.
+
+NOTE: it can take approx 10 seconds for the token change to update
+
+== Validate
+
+. Verify that the Observability Operator on stage and prod is not failing to fetch the config repository by observing the log output.
+.. Login to either the stage console or the prod console in OpenShift.
+.. Navigate to the `redhat-openshift-connectors-observability` namespace.
+.. View the logs of a pod starting with `observability-operator-controller-manager-*` in that namespace.
+... Make sure there are no errors in the log for at least one hour after the credential rollout.
+
+NOTE: it can take up to one hour for the Observability Operator to attempt to fetch the config repository.
+
+== Troubleshooting
+
+N/A

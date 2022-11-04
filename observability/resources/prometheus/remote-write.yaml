@@ -253,6 +253,62 @@ writeRelabelConfigs:
     sourceLabels:
       - __name__
     targetLabel: __tmp_keep
+    
+  - action: replace
+    regex: debezium_metrics_.*$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
+  - action: replace
+    regex: kafka_connect_connector_task_status$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
+  - action: replace
+    regex: kafka_connect_connector_status$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
+  - action: replace
+    regex: kafka_connect_outgoing_byte_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
+  - action: replace
+    regex: kafka_producer_requests_in_flight$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
+  - action: replace
+    regex: process_cpu_seconds_total$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
+  - action: replace
+    regex: jvm_memory_bytes_max$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
+
+  - action: replace
+    regex: jvm_memory_bytes_used$
+    replacement: 'true'
+    sourceLabels:
+      - __name__
+    targetLabel: __tmp_keep
 
   # LEAVE THIS AT BOTTOM OF FILE
   - action: keep

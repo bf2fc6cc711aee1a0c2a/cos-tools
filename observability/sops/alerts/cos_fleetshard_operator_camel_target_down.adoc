@@ -83,5 +83,5 @@ N/A
 == Escalate to engineering
 
 * If the above hasn't worked contact engineering.
-** Use the ROHC  Run The Service https://coreos.slack.com/archives/C03AC361WCA[channel in slack].
+** Use the RHOC Run The Service channel in slack: #rhoc-rts.
 ** Send a mail to rhoc-rts@redhat.com.

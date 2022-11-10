@@ -30,7 +30,6 @@ type options struct {
 
 type ocmInfo struct {
 	ID            string `json:"id,omitempty" yaml:"id,omitempty"`
-	ClusterID     string `json:"cluster_id,omitempty" yaml:"cluster_id,omitempty"`
 	Console       string `json:"cluster_console,omitempty" yaml:"cluster_console,omitempty"`
 	ProductID     string `json:"product_id,omitempty" yaml:"product_id,omitempty"`
 	CloudProvider string `json:"cloud_provider,omitempty" yaml:"cloud_provider,omitempty"`
@@ -101,8 +100,7 @@ func run(opts *options) error {
 
 	if cluster != nil {
 		i.Ocm = &ocmInfo{
-			ID:        cluster.ExternalID(),
-			ClusterID: cluster.ID(),
+			ID: cluster.ID(),
 		}
 
 		if cluster.Product() != nil {

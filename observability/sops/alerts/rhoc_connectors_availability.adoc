@@ -48,9 +48,6 @@ counter and possibly tamper with the rate if the period of time used to calculat
 More info on this concept of multi-window multi-burn-rate alerts can be found
 https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts[here].
 
-More info on the SLO related to these alerts can be found
-https://docs.google.com/document/d/1GS8SROrDSZqWy6DD03TjJd0BM6OyLipv_BxAVb32XYk/edit#[here].
-
 [WARNING]
 SLO LIMIT for Managed Connectors is 99,5%
 

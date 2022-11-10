@@ -58,7 +58,7 @@ SLO LIMIT for Managed Connectors is 99,5%
 
 * Access to the OSD cluster via Backplane.
 * The ID of the affected cluster. This is provided by the alert via a label. It should look something like this: `c5ff3f4ctr234ihcgr8g`.
-* https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tags[RHOC cli] installed. You have to be part of cos-fleet-manager-admin-full-prod rover group
+* [OPTIONAL] https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/tags[RHOC cli] installed. You have to be part of cos-fleet-manager-admin-full-prod rover group
 in order to effectively use the cli.
 
 == Execute/Resolution
@@ -82,6 +82,22 @@ export CLUSTER_ID=cc6ae6o7764p8lrcfbj0
   cd71vs5akkggo7fhpj8g   cd71tbtakkggo7fhpgmg   yxing@redhat.com              aws_cloudwatch_sink_0.1   ready           failed   121802    5h39m
   cd1ur6dakkggo7fcikbg   cc6ae6o7764p8lrcfbk0   openbridge_kafka_supporting   slack_sink_0.1            ready           ready    121803    7d23h
 ----
+
+Alternatively you can use oc commands to list connectors and look for pods that are unable to start
+----
+% oc get pods --all-namespaces | grep mctr
+redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0   mctr-cd1ur6bhl69lnuj0urn0-5f59fb5776-5xbpf                        1/1     Running                  0               2d18h
+redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0   mctr-cdl60k5ajgdagid3bp00-d69fbdbdd-fvhgk                         0/1     Running                  0               42h
+----
+
+Double check with the list of ManagedConnectors. This is because some times not even a Deployment can be created and listing pods wont show a faulty connector.
+----
+% oc get ManagedConnectors --all-namespaces
+NAMESPACE                                          NAME                        CLUSTER_ID             CONNECTOR_ID           CONNECTOR_TYPE_ID   DEPLOYMENT_ID          PHASE     DEPLOYMENT_PHASE
+redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0   mctr-cd1ur6bhl69lnuj0urn0   cc6ae6o7764p8lrcfbj0   cd1ur6dakkggo7fcikbg   slack_sink_0.1      cd1ur6bhl69lnuj0urn0   Monitor   ready
+redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0   mctr-cdl60k5ajgdagid3bp00   cc6ae6o7764p8lrcfbj0   cdl60jtajgdagid3bov0   http_sink_0.1       cdl60k5ajgdagid3bp00   Monitor   failed
+----
+
 
 . The project where the failing connector is running will have the NAMESPACE_ID attached to the name. For this case `cd71tbtakkggo7fhpgmg`
 +

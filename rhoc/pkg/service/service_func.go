@@ -277,7 +277,8 @@ func ListDeploymentsForCluster(c *AdminAPI, opts request.ListDeploymentsOptions,
 
 			return items, response.Error(err, httpRes)
 		}
-		if len(result.Items) == 0 {
+
+		if result.Size == 0 || result.Items == nil || len(result.Items) == 0 {
 			break
 		}
 

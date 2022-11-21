@@ -29,10 +29,7 @@ require (
 	github.com/jeremywohl/flatten/v2 v2.0.0-20211013061545-07e4a09fb8e4
 )
 
-require (
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
-	github.com/openconfig/goyang v1.0.0 // indirect
-)
+require github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 
 require (
 	github.com/BurntSushi/toml v1.2.0 // indirect

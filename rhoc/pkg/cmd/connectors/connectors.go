@@ -24,7 +24,7 @@ func NewConnectorsCommand(f *factory.Factory) *cobra.Command {
 		delete.NewDeletesCommand(f),
 		get.NewGetCommand(f),
 		types.NeConnectorTypesCommand(f),
-		patch.NewReadyCommand(f),
+		patch.NewStartCommand(f),
 		patch.NewStopCommand(f))
 
 	return cmd

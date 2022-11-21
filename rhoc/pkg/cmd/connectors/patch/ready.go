@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewReadyCommand(f *factory.Factory) *cobra.Command {
+func NewStartCommand(f *factory.Factory) *cobra.Command {
 	opts := options{
 		f: f,
 	}

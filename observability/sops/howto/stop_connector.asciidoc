@@ -23,14 +23,23 @@ The purpose of this SOP is to describe the process of stopping a connector.
 1. You need the connector ID.
 2. You will need access to the relevant Fleet Shard OSD cluster and know the namespace in which the connector workload is running.
 3. You also will need access to the COS Fleet Manager instance that manages the OSD cluster.
+4. When using the rhoc-cli, you have to be part of cos-fleet-manager-admin-full-prod rover group.
 
 == Execute/Resolution
-1. Stop the desired connector by sending a patch call to the cos-fleet-manager, setting the desired_state to `stopped`:
+Stop the desired connector. This can be achieved by:
+
+1.  Sending a patch call to the cos-fleet-manager, setting the desired_state to `stopped`
 +
 ```
 ./bin/update-connector $ID '{ "desired_state": "stopped" }'
 ```
+
+2. Or by using the rhoc-cli utility
 +
+```
+./rhoc-cli connectors stop --id $ID
+```
+
 The cos-fleetshard-sync should pick the changes and apply them. It should not take longer than few seconds. If the connector doesn't stop, proceed to delete the connector Custom Resource.
 
 1. Delete the connector custom resource (only needed if previous step didn't succeed).
@@ -43,7 +52,7 @@ oc get ManagedConnectors -n $NAMESPACE | grep $ID
 oc delete ManagedConnector $MC_ID
 ```
 +
-Once the ManagedConnector is deleted, the cos-fleet-manager wull recreate it and the `PHASE` should be `stopped`
+Once the ManagedConnector is deleted, the cos-fleet-manager will recreate it and the `PHASE` should be `stopped`
 
 == Validate
 

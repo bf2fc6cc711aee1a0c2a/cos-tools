@@ -95,7 +95,6 @@ redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0   mctr-cd1ur6bhl69lnuj0urn0   c
 redhat-openshift-connectors-cc6ae6o7764p8lrcfbk0   mctr-cdl60k5ajgdagid3bp00   cc6ae6o7764p8lrcfbj0   cdl60jtajgdagid3bov0   http_sink_0.1       cdl60k5ajgdagid3bp00   Monitor   failed
 ----
 
-
 . The project where the failing connector is running will have the NAMESPACE_ID attached to the name. For this case `cd71tbtakkggo7fhpgmg`
 +
 ----
@@ -127,6 +126,8 @@ map[camel.apache.org/integration:mctr-cd779jbhl69lnuj6cbc0 cos.bf2.org/connector
 ----
 
 . Identify the reason why the connector is failing by tailing the pod logs. The connector will fail if external systems can't be reached or accessed. For instance a mysql connector will fail if the mysql server is unreachable or if the provided credentials are wrong.
+
+. When the connector fails to run due to external systems, consider https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/blob/main/observability/sops/howto/stop_connector.asciidoc[stopping the connector] and informing the customer.
 
 == Validate
 

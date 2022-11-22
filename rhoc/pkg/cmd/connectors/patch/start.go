@@ -25,7 +25,7 @@ func NewStartCommand(f *factory.Factory) *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return opts.ready()
+			return opts.start()
 		},
 	}
 
@@ -36,7 +36,7 @@ func NewStartCommand(f *factory.Factory) *cobra.Command {
 	return cmd
 }
 
-func (opts options) ready() error {
+func (opts options) start() error {
 	if !opts.skipConfirm {
 		confirm, promptErr := cmdutil.PromptConfirm("Are you sure you want to start the connector with id '%s'?", opts.id)
 		if promptErr != nil {

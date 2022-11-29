@@ -766,8 +766,8 @@ github.com/prometheus/procfs v0.7.3 h1:4jVXhlkAyzOScmCkXBTOLRLTz8EeU+eyjrwB/EPq0
 github.com/prometheus/procfs v0.7.3/go.mod h1:cz+aTbrPOrUb4q7XlbU9ygM+/jj0fzG6c1xBZuNvfVA=
 github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
-github.com/redhat-developer/app-services-cli v0.51.3 h1:Lcyp8XCQou7y+ehH430sPYM0iHMEkgJDocl0+2dAT5g=
-github.com/redhat-developer/app-services-cli v0.51.3/go.mod h1:ymaEMnece1pgH8dW5iWtcaXvjcFSOogT6lTjJbWNRbs=
+github.com/redhat-developer/app-services-cli v0.51.7 h1:iWorpI9P8l7NpjRrY4nno/sPO6M48hNUsFKV0zwmCuk=
+github.com/redhat-developer/app-services-cli v0.51.7/go.mod h1:gDm1pe3MnII8woC8k0Zmy5Wb/TSLcTLVZELTrhp86PM=
 github.com/redhat-developer/app-services-sdk-go v0.10.0/go.mod h1:enn8Zz6IT0HZYzS6LSttiME2apwnvfVWZnGRS81A4rk=
 github.com/redhat-developer/app-services-sdk-go v0.11.0 h1:4r5YKDW2LN2oa51PXrYidByiWfTXB9Z+1YqjtnPaBZ0=
 github.com/redhat-developer/app-services-sdk-go v0.11.0/go.mod h1:XAuy1xpY6OxnZ2VhJFTM0HM0WMJ0R31AFRFDvYcvkTE=
@@ -779,10 +779,12 @@ github.com/redhat-developer/app-services-sdk-go/kafkainstance v0.9.0 h1:AEjtq7k3
 github.com/redhat-developer/app-services-sdk-go/kafkainstance v0.9.0/go.mod h1:yazwUm4IHuIWrQ0CCsqN0h7rHZx51nlFbYWKnUn7B84=
 github.com/redhat-developer/app-services-sdk-go/kafkamgmt v0.13.0 h1:aSuONBf3znnotUX7ywLh6xvOVVFsPRIUCfsEBWTWEM0=
 github.com/redhat-developer/app-services-sdk-go/kafkamgmt v0.13.0/go.mod h1:ILvcakLEXMLZyRdO//WJZNk9fdFbnU+cM3XrBvubE64=
-github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.1 h1:S2nGyknlqS1vibgI8ya5KWch/bbxm5QkwWasVSrQhz0=
-github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.1/go.mod h1:HkNzOWHTW/SomobQ4343+yR4oTmiyvm85BIWlsh0qbA=
+github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.2 h1:U2je87d/DIeOaQIycg2Y7TLiESmGu0/0rQC5n64Od0Y=
+github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.2/go.mod h1:HkNzOWHTW/SomobQ4343+yR4oTmiyvm85BIWlsh0qbA=
 github.com/redhat-developer/app-services-sdk-go/registrymgmt v0.10.0 h1:9kqTCGoz5jR6VE+cgz8fl5Zt9Ctctg9GN1XlkzheVQw=
 github.com/redhat-developer/app-services-sdk-go/registrymgmt v0.10.0/go.mod h1:UoxuqkUN+g5Ni8zgsCA7zidR5s774m9fqhZ5o4eOSIM=
+github.com/redhat-developer/app-services-sdk-go/serviceaccountmgmt v0.9.0 h1:kMvH66RXnxrF7FKraWu7n1BnaWrCUchw2unYa9rl/IM=
+github.com/redhat-developer/app-services-sdk-go/serviceaccountmgmt v0.9.0/go.mod h1:kpEKXWqyD6GUiQjBHCGzp/LIbCBfkTWpPo4VqkQ9zq4=
 github.com/rivo/uniseg v0.2.0 h1:S1pD9weZBuJdFmowNwbpi7BJ8TNftyUImj/0WQi72jY=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=

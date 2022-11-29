@@ -12,7 +12,7 @@ require (
 	github.com/openshift-online/ocm-cli v0.1.60
 	github.com/openshift-online/ocm-sdk-go v0.1.287
 	github.com/pkg/errors v0.9.1
-	github.com/redhat-developer/app-services-cli v0.51.3
+	github.com/redhat-developer/app-services-cli v0.51.7
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.8.1
@@ -29,7 +29,10 @@ require (
 	github.com/jeremywohl/flatten/v2 v2.0.0-20211013061545-07e4a09fb8e4
 )
 
-require github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+require (
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/redhat-developer/app-services-sdk-go/serviceaccountmgmt v0.9.0 // indirect
+)
 
 require (
 	github.com/BurntSushi/toml v1.2.0 // indirect
@@ -108,7 +111,7 @@ require (
 	github.com/redhat-developer/app-services-sdk-go/connectormgmt v0.8.0 // indirect
 	github.com/redhat-developer/app-services-sdk-go/kafkainstance v0.9.0 // indirect
 	github.com/redhat-developer/app-services-sdk-go/kafkamgmt v0.13.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.1 // indirect
+	github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.2 // indirect
 	github.com/redhat-developer/app-services-sdk-go/registrymgmt v0.10.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/segmentio/ksuid v1.0.3 // indirect

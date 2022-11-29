@@ -2,7 +2,7 @@
 
 == Installing the RHOC CLI
 
-You can install `rhoc` on Linux, macOS, or Windows by downloading the related binary from the `rhoc` https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/releasess[Releases page]
+You can install `rhoc` on Linux, macOS, or Windows by downloading the related binary from the `rhoc` https://github.com/bf2fc6cc711aee1a0c2a/cos-tools/releases[Releases page]
 
 == Logging in to RHOC
 

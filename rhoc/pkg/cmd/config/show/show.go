@@ -12,6 +12,7 @@ type keyVal struct {
 }
 
 func NewConfigShowCommand(f *factory.Factory) *cobra.Command {
+
 	cmd := &cobra.Command{
 		Use:  "show",
 		Args: cobra.NoArgs,
@@ -40,7 +41,19 @@ func NewConfigShowCommand(f *factory.Factory) *cobra.Command {
 				},
 			}
 
+			configLocation, err := f.Config.Location()
+			if err != nil {
+				return err
+			}
+
+			contextLocation, err := f.ServiceContext.Location()
+			if err != nil {
+				return err
+			}
+
 			dumper.DumpTable(config, f.IOStreams.Out, []keyVal{
+				{key: "Config Path", val: configLocation},
+				{key: "Context Path", val: contextLocation},
 				{key: "API URL", val: c.APIUrl},
 				{key: "Auth URL", val: c.AuthURL},
 			})

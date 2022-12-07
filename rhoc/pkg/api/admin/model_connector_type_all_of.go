@@ -24,9 +24,11 @@ type ConnectorTypeAllOf struct {
 	IconHref string `json:"icon_href,omitempty"`
 	// Labels used to categorize the connector
 	Labels []string `json:"labels,omitempty"`
+	// Name-value string annotations for resource
+	Annotations map[string]string `json:"annotations,omitempty"`
 	// Ranking for featured connectors
 	FeaturedRank int32 `json:"featured_rank,omitempty"`
-	// The capabilities supported by the conenctor
+	// The capabilities supported by the connector
 	Capabilities []string `json:"capabilities,omitempty"`
 	// A json schema that can be used to validate a ConnectorRequest connector field.
 	Schema map[string]interface{} `json:"schema,omitempty"`

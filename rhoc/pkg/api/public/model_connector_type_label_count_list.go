@@ -11,8 +11,7 @@ Contact: rhosak-support@redhat.com
 
 package public
 
-// ConnectorStatusStatus struct for ConnectorStatusStatus
-type ConnectorStatusStatus struct {
-	State ConnectorState `json:"state,omitempty"`
-	Error string         `json:"error,omitempty"`
+// ConnectorTypeLabelCountList struct for ConnectorTypeLabelCountList
+type ConnectorTypeLabelCountList struct {
+	Items []ConnectorTypeLabelCount `json:"items,omitempty"`
 }

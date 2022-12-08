@@ -2,11 +2,10 @@ package cmdutil
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build"
 	"github.com/redhat-developer/app-services-cli/pkg/core/cmdutil/flagutil"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
+	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	p "github.com/gertd/go-pluralize"
@@ -362,6 +361,45 @@ func AddRevision(cmd *cobra.Command, output *int64) *FlagOptions {
 		name,
 		0,
 		"Revision to update to",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddClusterAmount(cmd *cobra.Command, output *int) *FlagOptions {
+	name := "clusterAmount"
+
+	cmd.Flags().IntVar(
+		output,
+		name,
+		3,
+		"Amount of clusters to query when taking the snapshot",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddOutputFile(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "outputFile"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"File to write the output to",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddInputFile(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "inputFile"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"File to read the input from",
 	)
 
 	return withFlagOptions(cmd, name)

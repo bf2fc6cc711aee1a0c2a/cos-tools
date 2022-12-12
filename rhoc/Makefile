@@ -1,8 +1,13 @@
 MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 PROJECT_PATH := $(patsubst %/,%,$(dir $(MKFILE_PATH)))
 LOCAL_BIN_PATH := ${PROJECT_PATH}/bin
-CLI_VERSION ?= $(shell git rev-parse --short HEAD)
+
+ifeq ($(CLI_VERSION),)
+CLI_VERSION := $(shell git rev-parse --short HEAD)
+endif
+
 GO_LDFLAGS := -X github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/internal/build.Version=$(CLI_VERSION) $(GO_LDFLAGS)
+
 
 SHELL = bash
 

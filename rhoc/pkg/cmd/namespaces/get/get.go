@@ -1,9 +1,9 @@
 package get
 
 import (
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -18,6 +18,11 @@ type options struct {
 	outputFormat string
 
 	f *factory.Factory
+}
+
+type namespaceDetail struct {
+	admin.ConnectorNamespace `json:",inline" yaml:",inline"`
+	PlatformID               string `json:"platform_id,omitempty" yaml:"platform_id,omitempty"`
 }
 
 func NewGetCommand(f *factory.Factory) *cobra.Command {
@@ -54,15 +59,20 @@ func run(opts *options) error {
 		return err
 	}
 
-	result, httpRes, err := c.Clusters().GetConnectorNamespace(opts.f.Context, opts.id).Execute()
-	if httpRes != nil {
-		defer func() {
-			_ = httpRes.Body.Close()
-		}()
-	}
+	namespace, err := service.GetNamespaceByID(c, opts.id)
 	if err != nil {
-		return response.Error(err, httpRes)
+		return err
 	}
 
-	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, result)
+	cluster, err := service.GetClusterByID(c, namespace.ClusterId)
+	if err != nil {
+		return err
+	}
+
+	detail := namespaceDetail{
+		ConnectorNamespace: *namespace,
+		PlatformID:         cluster.Status.Platform.Id,
+	}
+
+	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, detail)
 }

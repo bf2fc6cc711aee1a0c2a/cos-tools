@@ -2,25 +2,25 @@ package list
 
 import (
 	"fmt"
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"io"
 	"strconv"
 	"time"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, style dumper.TableStyle) {
-	config := dumper.TableConfig[admin.ConnectorNamespace]{
+func dumpAsTable(out io.Writer, items []namespaceDetail, wide bool, style dumper.TableStyle) {
+	config := dumper.TableConfig[namespaceDetail]{
 		Style: style,
 		Wide:  wide,
-		Columns: []dumper.Column[admin.ConnectorNamespace]{
+		Columns: []dumper.Column[namespaceDetail]{
 			{
 				Name: "ID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Id,
 					}
@@ -29,16 +29,25 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "ClusterID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.ClusterId,
 					}
 				},
 			},
 			{
+				Name: "PlatformID",
+				Wide: true,
+				Getter: func(in *namespaceDetail) dumper.Row {
+					return dumper.Row{
+						Value: in.PlatformID,
+					}
+				},
+			},
+			{
 				Name: "Name",
 				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Name,
 					}
@@ -47,7 +56,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "Owner",
 				Wide: false,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					r := dumper.Row{
 						Value: in.Owner,
 					}
@@ -63,7 +72,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "TenantKind",
 				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: string(in.Tenant.Kind),
 					}
@@ -73,7 +82,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "TenantID",
 				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Tenant.Id,
 					}
@@ -82,7 +91,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "State",
 				Wide: false,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					r := dumper.Row{
 						Value: string(in.Status.State),
 					}
@@ -107,7 +116,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "Version",
 				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: strconv.FormatInt(in.ResourceVersion, 10),
 					}
@@ -116,7 +125,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "Connectors",
 				Wide: false,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: fmt.Sprint(in.Status.ConnectorsDeployed),
 					}
@@ -125,7 +134,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "Expiration",
 				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 
 					r := dumper.Row{
 						Value: in.Expiration,
@@ -144,7 +153,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "Age",
 				Wide: false,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					age := duration.HumanDuration(time.Since(in.CreatedAt))
 					if in.CreatedAt.IsZero() {
 						age = ""
@@ -158,7 +167,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "CreatedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.CreatedAt.Format(time.RFC3339),
 					}
@@ -167,7 +176,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 			{
 				Name: "ModifiedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorNamespace) dumper.Row {
+				Getter: func(in *namespaceDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.ModifiedAt.Format(time.RFC3339),
 					}
@@ -176,5 +185,5 @@ func dumpAsTable(out io.Writer, items admin.ConnectorNamespaceList, wide bool, s
 		},
 	}
 
-	dumper.DumpTable(config, out, items.Items)
+	dumper.DumpTable(config, out, items)
 }

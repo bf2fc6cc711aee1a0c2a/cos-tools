@@ -77,14 +77,16 @@ func (api *AdminAPI) do(relativePath string, method, contentType string, body io
 		r, w := io.Pipe()
 
 		go func() {
-			defer w.Close()
+			defer func() {
+				_ = w.Close()
+			}()
 
 			if _, err := io.Copy(w, body); err != nil {
-				w.CloseWithError(err)
+				_ = w.CloseWithError(err)
 				return
 			}
 			if err := w.Close(); err != nil {
-				w.CloseWithError(err)
+				_ = w.CloseWithError(err)
 				return
 			}
 		}()
@@ -114,7 +116,11 @@ func (api *AdminAPI) do(relativePath string, method, contentType string, body io
 	if resp.StatusCode > http.StatusBadRequest {
 		return nil, resp, errors.New(resp.Status)
 	}
-	defer resp.Body.Close()
+	if resp.Body != nil {
+		defer func() {
+			_ = resp.Body.Close()
+		}()
+	}
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {

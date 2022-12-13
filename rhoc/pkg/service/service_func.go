@@ -377,3 +377,73 @@ func ListConnectorTypes(c *AdminAPI, opts request.ListOptions) (admin.ConnectorT
 
 	return items, nil
 }
+
+func GetClusterForNamespace(c *AdminAPI, namespaceID string) (*admin.ConnectorClusterAdminView, error) {
+	result, httpRes, err := c.Clusters().GetConnectorNamespace(c.Context(), namespaceID).Execute()
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return nil, response.Error(err, httpRes)
+	}
+
+	return GetClusterByID(c, result.ClusterId)
+}
+
+func GetClusterByID(c *AdminAPI, clusterID string) (*admin.ConnectorClusterAdminView, error) {
+	result, httpRes, err := c.Clusters().GetConnectorCluster(c.Context(), clusterID).Execute()
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return nil, response.Error(err, httpRes)
+	}
+
+	return result, nil
+}
+
+func GetConnectorByID(c *AdminAPI, connectorID string) (*admin.ConnectorAdminView, error) {
+	result, httpRes, err := c.Clusters().GetConnector(c.Context(), connectorID).Execute()
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return nil, response.Error(err, httpRes)
+	}
+
+	return result, nil
+}
+
+func GetNamespaceByID(c *AdminAPI, namespaceID string) (*admin.ConnectorNamespace, error) {
+	result, httpRes, err := c.Clusters().GetConnectorNamespace(c.Context(), namespaceID).Execute()
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return nil, response.Error(err, httpRes)
+	}
+
+	return result, nil
+}
+
+func GetDeploymentByID(c *AdminAPI, clusterID string, deploymentID string) (*admin.ConnectorDeploymentAdminView, error) {
+	result, httpRes, err := c.Clusters().GetConnectorDeployment(c.Context(), clusterID, deploymentID).Execute()
+	if httpRes != nil {
+		defer func() {
+			_ = httpRes.Body.Close()
+		}()
+	}
+	if err != nil {
+		return nil, response.Error(err, httpRes)
+	}
+
+	return result, nil
+}

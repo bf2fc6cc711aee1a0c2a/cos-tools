@@ -1,9 +1,9 @@
 package get
 
 import (
+	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/response"
 	"github.com/redhat-developer/app-services-cli/pkg/core/ioutil/dump"
 	"github.com/redhat-developer/app-services-cli/pkg/shared/factory"
 	"github.com/spf13/cobra"
@@ -19,6 +19,11 @@ type options struct {
 	outputFormat string
 
 	f *factory.Factory
+}
+
+type deploymentDetail struct {
+	admin.ConnectorDeploymentAdminView `json:",inline" yaml:",inline"`
+	PlatformID                         string `json:"platform_id,omitempty" yaml:"platform_id,omitempty"`
 }
 
 func NewGetCommand(f *factory.Factory) *cobra.Command {
@@ -56,15 +61,20 @@ func run(opts *options) error {
 		return err
 	}
 
-	result, httpRes, err := c.Clusters().GetConnectorDeployment(opts.f.Context, opts.clusterID, opts.id).Execute()
-	if httpRes != nil {
-		defer func() {
-			_ = httpRes.Body.Close()
-		}()
-	}
+	deployment, err := service.GetDeploymentByID(c, opts.clusterID, opts.id)
 	if err != nil {
-		return response.Error(err, httpRes)
+		return err
 	}
 
-	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, result)
+	cluster, err := service.GetClusterByID(c, deployment.Spec.ClusterId)
+	if err != nil {
+		return err
+	}
+
+	detail := deploymentDetail{
+		ConnectorDeploymentAdminView: *deployment,
+		PlatformID:                   cluster.Status.Platform.Id,
+	}
+
+	return dump.Formatted(opts.f.IOStreams.Out, opts.outputFormat, detail)
 }

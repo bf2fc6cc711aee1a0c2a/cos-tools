@@ -5,21 +5,20 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, style dumper.TableStyle) {
-	config := dumper.TableConfig[admin.ConnectorAdminView]{
+func dumpAsTable(out io.Writer, items []connectorDetail, wide bool, style dumper.TableStyle) {
+	config := dumper.TableConfig[connectorDetail]{
 		Style: style,
 		Wide:  wide,
-		Columns: []dumper.Column[admin.ConnectorAdminView]{
+		Columns: []dumper.Column[connectorDetail]{
 			{
 				Name: "ID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Id,
 					}
@@ -28,16 +27,34 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "NamespaceId",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.NamespaceId,
 					}
 				},
 			},
 			{
+				Name: "ClusterId",
+				Wide: true,
+				Getter: func(in *connectorDetail) dumper.Row {
+					return dumper.Row{
+						Value: in.ClusterID,
+					}
+				},
+			},
+			{
+				Name: "PlatformId",
+				Wide: true,
+				Getter: func(in *connectorDetail) dumper.Row {
+					return dumper.Row{
+						Value: in.PlatformID,
+					}
+				},
+			},
+			{
 				Name: "Name",
 				Wide: true,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Name,
 					}
@@ -46,7 +63,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "Owner",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Owner,
 					}
@@ -55,7 +72,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "ConnectorTypeId",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.ConnectorTypeId,
 					}
@@ -64,7 +81,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "DesiredState",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: string(in.DesiredState),
 					}
@@ -73,7 +90,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "State",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					r := dumper.Row{
 						Value: string(in.Status.State),
 					}
@@ -93,7 +110,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "Reason",
 				Wide: true,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Status.Error,
 					}
@@ -102,7 +119,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "Version",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: strconv.FormatInt(in.ResourceVersion, 10),
 					}
@@ -111,7 +128,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "Age",
 				Wide: false,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					age := duration.HumanDuration(time.Since(in.CreatedAt))
 					if in.CreatedAt.IsZero() {
 						age = ""
@@ -125,7 +142,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "CreatedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.CreatedAt.Format(time.RFC3339),
 					}
@@ -134,7 +151,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 			{
 				Name: "ModifiedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorAdminView) dumper.Row {
+				Getter: func(in *connectorDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.ModifiedAt.Format(time.RFC3339),
 					}
@@ -143,5 +160,5 @@ func dumpAsTable(out io.Writer, items admin.ConnectorAdminViewList, wide bool, s
 		},
 	}
 
-	dumper.DumpTable(config, out, items.Items)
+	dumper.DumpTable(config, out, items)
 }

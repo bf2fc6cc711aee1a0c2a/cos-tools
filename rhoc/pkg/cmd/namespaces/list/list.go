@@ -26,6 +26,11 @@ type options struct {
 	f *factory.Factory
 }
 
+type namespaceDetail struct {
+	admin.ConnectorNamespace `json:",inline" yaml:",inline"`
+	PlatformID               string `json:"platform_id,omitempty" yaml:"platform_id,omitempty"`
+}
+
 func NewListCommand(f *factory.Factory) *cobra.Command {
 	opts := options{
 		f: f,
@@ -66,22 +71,42 @@ func run(opts *options) error {
 		return err
 	}
 
-	var items admin.ConnectorNamespaceList
+	var namespaces admin.ConnectorNamespaceList
 
 	switch {
 	case opts.clusterID != "":
-		items, err = service.ListNamespacesForCluster(c, opts.ListOptions, opts.clusterID)
+		namespaces, err = service.ListNamespacesForCluster(c, opts.ListOptions, opts.clusterID)
 	default:
-		items, err = service.ListNamespaces(c, opts.ListOptions)
+		namespaces, err = service.ListNamespaces(c, opts.ListOptions)
 	}
 
 	if err != nil {
 		return err
 	}
 
-	if len(items.Items) == 0 && opts.outputFormat == "" {
+	if len(namespaces.Items) == 0 && opts.outputFormat == "" {
 		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "No result\n")
 		return nil
+	}
+
+	clusters := make(map[string]*admin.ConnectorClusterAdminView)
+
+	items := make([]namespaceDetail, len(namespaces.Items))
+	for i := range namespaces.Items {
+		cluster := clusters[namespaces.Items[i].ClusterId]
+		if cluster == nil {
+			cluster, err = service.GetClusterByID(c, namespaces.Items[i].ClusterId)
+			if err != nil {
+				return err
+			}
+
+			clusters[namespaces.Items[i].ClusterId] = cluster
+		}
+
+		items[i] = namespaceDetail{
+			ConnectorNamespace: namespaces.Items[i],
+			PlatformID:         cluster.Status.Platform.Id,
+		}
 	}
 
 	switch opts.outputFormat {

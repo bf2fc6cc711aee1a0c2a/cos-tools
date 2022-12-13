@@ -5,22 +5,21 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/dumper"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/request"
 	"github.com/olekukonko/tablewriter"
 	"k8s.io/apimachinery/pkg/util/duration"
 )
 
-func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, options request.ListDeploymentsOptions, wide bool, style dumper.TableStyle) {
-	config := dumper.TableConfig[admin.ConnectorDeploymentAdminView]{
+func dumpAsTable(out io.Writer, items []deploymentDetail, options request.ListDeploymentsOptions, wide bool, style dumper.TableStyle) {
+	config := dumper.TableConfig[deploymentDetail]{
 		Style: style,
 		Wide:  wide,
-		Columns: []dumper.Column[admin.ConnectorDeploymentAdminView]{
+		Columns: []dumper.Column[deploymentDetail]{
 			{
 				Name: "ID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Id,
 					}
@@ -29,7 +28,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "ConnectorID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Spec.ConnectorId,
 					}
@@ -38,7 +37,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "NamespaceID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Spec.NamespaceId,
 					}
@@ -47,16 +46,25 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "ClusterID",
 				Wide: false,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Spec.ClusterId,
 					}
 				},
 			},
 			{
+				Name: "PlatformId",
+				Wide: true,
+				Getter: func(in *deploymentDetail) dumper.Row {
+					return dumper.Row{
+						Value: in.PlatformID,
+					}
+				},
+			},
+			{
 				Name: "Type",
 				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Spec.ConnectorTypeId,
 					}
@@ -65,7 +73,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "TypeRevision",
 				Wide: !options.ChannelUpdate,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					if typeRevision, ok := in.Spec.ShardMetadata["connector_revision"]; ok {
 						floatRevision, isfloat64 := typeRevision.(float64)
 						if isfloat64 {
@@ -86,7 +94,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "UpdatableTypeRevision",
 				Wide: !options.ChannelUpdate,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					var updatableTypeRevision string
 					if in.Status.ShardMetadata.Available.Revision == 0 {
 						updatableTypeRevision = "-"
@@ -101,7 +109,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "TypeImage",
 				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					if image, ok := in.Spec.ShardMetadata["connector_image"]; ok {
 						return dumper.Row{
 							Value: image.(string),
@@ -119,7 +127,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "DesiredState",
 				Wide: false,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: string(in.Spec.DesiredState),
 					}
@@ -128,7 +136,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "State",
 				Wide: false,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					r := dumper.Row{
 						Value: string(in.Status.Phase),
 					}
@@ -148,7 +156,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "Version",
 				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: strconv.FormatInt(in.Metadata.ResourceVersion, 10),
 					}
@@ -157,7 +165,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "DeploymentVersion",
 				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					r := dumper.Row{
 						Value: strconv.FormatInt(in.Status.ResourceVersion, 10),
 					}
@@ -178,7 +186,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "Age",
 				Wide: false,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					age := duration.HumanDuration(time.Since(in.Metadata.CreatedAt))
 					if in.Metadata.CreatedAt.IsZero() {
 						age = ""
@@ -192,7 +200,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "CreatedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Metadata.CreatedAt.Format(time.RFC3339),
 					}
@@ -201,7 +209,7 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 			{
 				Name: "ModifiedAt",
 				Wide: true,
-				Getter: func(in *admin.ConnectorDeploymentAdminView) dumper.Row {
+				Getter: func(in *deploymentDetail) dumper.Row {
 					return dumper.Row{
 						Value: in.Metadata.UpdatedAt.Format(time.RFC3339),
 					}
@@ -210,5 +218,5 @@ func dumpAsTable(out io.Writer, items admin.ConnectorDeploymentAdminViewList, op
 		},
 	}
 
-	dumper.DumpTable(config, out, items.Items)
+	dumper.DumpTable(config, out, items)
 }

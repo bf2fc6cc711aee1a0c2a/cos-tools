@@ -3,7 +3,6 @@ package list
 import (
 	"errors"
 	"fmt"
-
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/api/admin"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/service"
 	"github.com/bf2fc6cc711aee1a0c2a/cos-tools/rhoc/pkg/util/cmdutil"
@@ -27,6 +26,12 @@ type options struct {
 	namespaceID  string
 
 	f *factory.Factory
+}
+
+type connectorDetail struct {
+	admin.ConnectorAdminView `json:",inline" yaml:",inline"`
+	ClusterID                string `json:"cluster_id,omitempty" yaml:"cluster_id,omitempty"`
+	PlatformID               string `json:"platform_id,omitempty" yaml:"platform_id,omitempty"`
 }
 
 func NewListCommand(f *factory.Factory) *cobra.Command {
@@ -82,22 +87,38 @@ func run(opts *options) error {
 		return err
 	}
 
-	var items admin.ConnectorAdminViewList
+	var connectors admin.ConnectorAdminViewList
+	var cluster *admin.ConnectorClusterAdminView
 
 	switch {
 	case opts.clusterID != "":
-		items, err = service.ListConnectorsForCluster(c, opts.ListOptions, opts.clusterID)
+		connectors, err = service.ListConnectorsForCluster(c, opts.ListOptions, opts.clusterID)
+		if err == nil {
+			cluster, err = service.GetClusterByID(c, opts.clusterID)
+		}
 	case opts.namespaceID != "":
-		items, err = service.ListConnectorsForNamespace(c, opts.ListOptions, opts.namespaceID)
+		connectors, err = service.ListConnectorsForNamespace(c, opts.ListOptions, opts.namespaceID)
+		if err == nil {
+			cluster, err = service.GetClusterForNamespace(c, opts.namespaceID)
+		}
 	}
 
 	if err != nil {
 		return err
 	}
 
-	if len(items.Items) == 0 && opts.outputFormat == "" {
+	if len(connectors.Items) == 0 && opts.outputFormat == "" {
 		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "No result\n")
 		return nil
+	}
+
+	items := make([]connectorDetail, len(connectors.Items))
+	for i := range connectors.Items {
+		items[i] = connectorDetail{
+			ConnectorAdminView: connectors.Items[i],
+			ClusterID:          cluster.Id,
+			PlatformID:         cluster.Status.Platform.Id,
+		}
 	}
 
 	switch opts.outputFormat {

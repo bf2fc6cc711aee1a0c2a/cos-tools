@@ -29,6 +29,11 @@ type options struct {
 	f *factory.Factory
 }
 
+type deploymentDetail struct {
+	admin.ConnectorDeploymentAdminView `json:",inline" yaml:",inline"`
+	PlatformID                         string `json:"platform_id,omitempty" yaml:"platform_id,omitempty"`
+}
+
 func NewListCommand(f *factory.Factory) *cobra.Command {
 	opts := options{
 		f: f,
@@ -80,22 +85,37 @@ func run(opts *options) error {
 		return err
 	}
 
-	var items admin.ConnectorDeploymentAdminViewList
+	var deployments admin.ConnectorDeploymentAdminViewList
+	var cluster *admin.ConnectorClusterAdminView
 
 	switch {
 	case opts.clusterID != "":
-		items, err = service.ListDeploymentsForCluster(c, opts.ListDeploymentsOptions, opts.clusterID)
+		deployments, err = service.ListDeploymentsForCluster(c, opts.ListDeploymentsOptions, opts.clusterID)
+		if err == nil {
+			cluster, err = service.GetClusterByID(c, opts.clusterID)
+		}
 	case opts.namespaceID != "":
-		items, err = service.ListDeploymentsForNamespace(c, opts.ListOptions, opts.namespaceID)
+		deployments, err = service.ListDeploymentsForNamespace(c, opts.ListOptions, opts.namespaceID)
+		if err == nil {
+			cluster, err = service.GetClusterForNamespace(c, opts.namespaceID)
+		}
 	}
 
 	if err != nil {
 		return err
 	}
 
-	if len(items.Items) == 0 && opts.outputFormat == "" {
+	if len(deployments.Items) == 0 && opts.outputFormat == "" {
 		_, _ = fmt.Fprint(opts.f.IOStreams.Out, "No result\n")
 		return nil
+	}
+
+	items := make([]deploymentDetail, len(deployments.Items))
+	for i := range deployments.Items {
+		items[i] = deploymentDetail{
+			ConnectorDeploymentAdminView: deployments.Items[i],
+			PlatformID:                   cluster.Status.Platform.Id,
+		}
 	}
 
 	switch opts.outputFormat {

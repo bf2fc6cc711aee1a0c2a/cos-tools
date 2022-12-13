@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/antihax/optional v1.0.0
-	github.com/gertd/go-pluralize v0.2.0
+	github.com/gertd/go-pluralize v0.2.1
 	github.com/gobeam/stringy v0.0.5
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/olekukonko/tablewriter v0.0.5

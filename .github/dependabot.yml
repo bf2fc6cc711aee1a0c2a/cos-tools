@@ -6,3 +6,9 @@ updates:
       interval: daily
       time: "19:30"
       timezone: Europe/Paris
+  - package-ecosystem: "gomod"
+    directory: "/rhoc"
+    schedule:
+      interval: daily
+      time: "19:30"
+      timezone: Europe/Paris

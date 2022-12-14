@@ -9,7 +9,7 @@ require (
 	github.com/gobeam/stringy v0.0.5
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/openshift-online/ocm-cli v0.1.60
+	github.com/openshift-online/ocm-cli v0.1.64
 	github.com/openshift-online/ocm-sdk-go v0.1.300
 	github.com/pkg/errors v0.9.1
 	github.com/redhat-developer/app-services-cli v0.51.8
@@ -31,7 +31,6 @@ require (
 
 require (
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/redhat-developer/app-services-sdk-go/serviceaccountmgmt v0.9.0 // indirect

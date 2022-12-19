@@ -2,6 +2,6 @@
 
 for ID in "$@"
 do
-    rhoc request "/kafka_connectors/${ID}/" -X "DELETE"
+    rhoc connectors delete "${ID}"
 done
 

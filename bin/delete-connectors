@@ -7,4 +7,3 @@ for ID in "$@"
 do
     curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s -D /dev/stderr -XDELETE "${CONNECTORS_BASE}"/"${ID}" | jq
 done
-

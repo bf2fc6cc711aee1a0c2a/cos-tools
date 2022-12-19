@@ -20,4 +20,3 @@ curl \
   --data client_id="${myarray[client-id]}" \
   --data client_secret="${myarray[client-secret]}" \
   "${myarray[mas-sso-base-url]}/auth/realms/${myarray[mas-sso-realm]}/protocol/openid-connect/token" 2>/dev/null | jq -r '.access_token'
-

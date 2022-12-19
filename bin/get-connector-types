@@ -21,4 +21,4 @@ curl -L --insecure --oauth2-bearer "$(ocm token)" -S -s "${CONNECTORS_BASE}" \
             ]) 
             | @tsv
         ' \
-    | column -t -s $'\t' 
+    | column -t -s $'\t'

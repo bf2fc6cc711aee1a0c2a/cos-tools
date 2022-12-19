@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
+BASE_PATH=$(dirname -- "$( readlink -f -- "$0"; )";)
 BASE=${COS_BASE_PATH}/api/connector_mgmt/v1/agent
 CLUSTER_ID="${1}"
 CLUSTER_BASE=${BASE}/kafka_connector_clusters/${CLUSTER_ID}
 
-curl -L --insecure --oauth2-bearer $(get-sso-token "${CLUSTER_ID}") -S -s "${CLUSTER_BASE}/namespaces?gv=0" \
+curl -L --insecure --oauth2-bearer $($BASE_PATH/get-sso-token "${CLUSTER_ID}") -S -s "${CLUSTER_BASE}/namespaces?gv=0" \
     | jq -r '
             ([
                 "CLUSTER_ID",

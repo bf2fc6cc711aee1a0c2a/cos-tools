@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-CLUSTERS=$(get-api kafka_connector_clusters | jq '.items')
-NAMESPACES=$(get-api kafka_connector_namespaces | jq '.items')
-CONNECTORS=$(get-api kafka_connectors | jq '.items')
+BASE_PATH=$(dirname -- "$( readlink -f -- "$0"; )";)
+CLUSTERS=$($BASE_PATH/get-api kafka_connector_clusters | jq '.items')
+NAMESPACES=$($BASE_PATH/get-api kafka_connector_namespaces | jq '.items')
+CONNECTORS=$($BASE_PATH/get-api kafka_connectors | jq '.items')
 
 echo "$CLUSTERS $NAMESPACES $CONNECTORS" | jq -s '
         INDEX(.[0][]; .id) as $c

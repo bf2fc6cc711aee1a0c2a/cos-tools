@@ -2,6 +2,6 @@
 
 for ID in "$@"
 do
-    rhoc request "/kafka_connectors/${ID}/" '{"desired_state": "stopped"}' -X "PATCH"
+    rhoc connectors stop "${ID}"
 done
 

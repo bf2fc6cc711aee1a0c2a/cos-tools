@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+for ID in "$@"
+do
+    rhoc request "/kafka_connectors/${ID}/" -X "DELETE"
+done
+

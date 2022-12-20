@@ -12,7 +12,7 @@ require (
 	github.com/openshift-online/ocm-cli v0.1.65
 	github.com/openshift-online/ocm-sdk-go v0.1.301
 	github.com/pkg/errors v0.9.1
-	github.com/redhat-developer/app-services-cli v0.51.8
+	github.com/redhat-developer/app-services-cli v0.51.9
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.14.0
@@ -106,7 +106,7 @@ require (
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/redhat-developer/app-services-sdk-go v0.11.0 // indirect
 	github.com/redhat-developer/app-services-sdk-go/accountmgmt v0.3.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go/connectormgmt v0.9.0 // indirect
+	github.com/redhat-developer/app-services-sdk-go/connectormgmt v0.10.0 // indirect
 	github.com/redhat-developer/app-services-sdk-go/kafkainstance v0.11.0 // indirect
 	github.com/redhat-developer/app-services-sdk-go/kafkamgmt v0.15.0 // indirect
 	github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.2 // indirect

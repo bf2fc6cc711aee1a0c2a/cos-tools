@@ -525,8 +525,8 @@ github.com/prometheus/procfs v0.6.0/go.mod h1:cz+aTbrPOrUb4q7XlbU9ygM+/jj0fzG6c1
 github.com/prometheus/procfs v0.7.3/go.mod h1:cz+aTbrPOrUb4q7XlbU9ygM+/jj0fzG6c1xBZuNvfVA=
 github.com/prometheus/procfs v0.8.0 h1:ODq8ZFEaYeCaZOJlZZdJA2AbQR98dSHSM1KW/You5mo=
 github.com/prometheus/procfs v0.8.0/go.mod h1:z7EfXMXOkbkqb9IINtpCn86r/to3BnA0uaxHdg830/4=
-github.com/redhat-developer/app-services-cli v0.51.9 h1:oAHmdvND+J9cTW3A/5PlQGbB+JY9zM07q2SCkwq+obg=
-github.com/redhat-developer/app-services-cli v0.51.9/go.mod h1:vCAmfjvjU0O/N9HRFVvRhLZWbOOlTRM1E3+flZwprR8=
+github.com/redhat-developer/app-services-cli v0.52.0 h1:LBAr/YtReZKjrRBk4rQa3ef9MJFRblwOyqp3fJD6MOM=
+github.com/redhat-developer/app-services-cli v0.52.0/go.mod h1:vCAmfjvjU0O/N9HRFVvRhLZWbOOlTRM1E3+flZwprR8=
 github.com/redhat-developer/app-services-sdk-go v0.10.0/go.mod h1:enn8Zz6IT0HZYzS6LSttiME2apwnvfVWZnGRS81A4rk=
 github.com/redhat-developer/app-services-sdk-go v0.11.0 h1:4r5YKDW2LN2oa51PXrYidByiWfTXB9Z+1YqjtnPaBZ0=
 github.com/redhat-developer/app-services-sdk-go v0.11.0/go.mod h1:XAuy1xpY6OxnZ2VhJFTM0HM0WMJ0R31AFRFDvYcvkTE=

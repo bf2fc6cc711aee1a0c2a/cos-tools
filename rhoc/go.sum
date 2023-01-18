@@ -482,8 +482,8 @@ github.com/onsi/gomega v1.19.0/go.mod h1:LY+I3pBVzYsTBU1AnDwOSxaYi9WoWiqgwooUqq9
 github.com/onsi/gomega v1.23.0 h1:/oxKu9c2HVap+F3PfKort2Hw5DEU+HGlW8n+tguWsys=
 github.com/openshift-online/ocm-cli v0.1.65 h1:GSleKek+tFfEwPmuNfqAKV2u/g8b2bjJG+48t/WyAqU=
 github.com/openshift-online/ocm-cli v0.1.65/go.mod h1:mwqx30zOzIGdgnuOfG04sr6WUYvTvLWZySZ7tMv+XpA=
-github.com/openshift-online/ocm-sdk-go v0.1.306 h1:DK3icgVGoWppPVnZR++Knae87v1wvXaHwuuTz/+Vz6w=
-github.com/openshift-online/ocm-sdk-go v0.1.306/go.mod h1:KYOw8kAKAHyPrJcQoVR82CneQ4ofC02Na4cXXaTq4Nw=
+github.com/openshift-online/ocm-sdk-go v0.1.309 h1:YixpVtProwSvomld5fSOt0vkK2lAKvIx1d6TyOgvrOY=
+github.com/openshift-online/ocm-sdk-go v0.1.309/go.mod h1:KYOw8kAKAHyPrJcQoVR82CneQ4ofC02Na4cXXaTq4Nw=
 github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3ve8=
 github.com/pelletier/go-toml v1.9.5/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml/v2 v2.0.6 h1:nrzqCb7j9cDFj2coyLNLaZuJTLjWjlaz6nvTvIwycIU=

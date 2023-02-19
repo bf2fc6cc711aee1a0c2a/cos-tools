@@ -263,6 +263,10 @@ func ListDeploymentsForCluster(c *AdminAPI, opts request.ListDeploymentsOptions,
 			e = e.ChannelUpdates(opts.ChannelUpdate)
 		}
 
+		if opts.OperatorUpdate {
+			e = e.OperatorUpdates(opts.OperatorUpdate)
+		}
+
 		result, httpRes, err := e.Execute()
 
 		if httpRes != nil {

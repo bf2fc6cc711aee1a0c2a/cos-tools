@@ -107,6 +107,24 @@ func dumpAsTable(out io.Writer, items []deploymentDetail, options request.ListDe
 				},
 			},
 			{
+				Name: "AssignedOperatorId",
+				Wide: !options.OperatorUpdate,
+				Getter: func(in *deploymentDetail) dumper.Row {
+					return dumper.Row{
+						Value: in.Status.Operators.Assigned.Id,
+					}
+				},
+			},
+			{
+				Name: "AvailableOperatorId",
+				Wide: !options.OperatorUpdate,
+				Getter: func(in *deploymentDetail) dumper.Row {
+					return dumper.Row{
+						Value: in.Status.Operators.Available.Id,
+					}
+				},
+			},
+			{
 				Name: "TypeImage",
 				Wide: true,
 				Getter: func(in *deploymentDetail) dumper.Row {

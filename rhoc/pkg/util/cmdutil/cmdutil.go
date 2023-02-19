@@ -341,6 +341,19 @@ func AddChannelUpdate(cmd *cobra.Command, output *bool) *FlagOptions {
 	return withFlagOptions(cmd, name)
 }
 
+func AddOperatorUpdate(cmd *cobra.Command, output *bool) *FlagOptions {
+	name := "operator-update"
+
+	cmd.Flags().BoolVar(
+		output,
+		name,
+		false,
+		"Filter deployment with operator updates available",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
 func AddDanglingDeployments(cmd *cobra.Command, output *bool) *FlagOptions {
 	name := "dangling-deployments"
 
@@ -361,7 +374,20 @@ func AddRevision(cmd *cobra.Command, output *int64) *FlagOptions {
 		output,
 		name,
 		0,
-		"Revision to update to",
+		"Revision to update to. At least one between this and operator-id must be specified.",
+	)
+
+	return withFlagOptions(cmd, name)
+}
+
+func AddOperatorId(cmd *cobra.Command, output *string) *FlagOptions {
+	name := "operator-id"
+
+	cmd.Flags().StringVar(
+		output,
+		name,
+		"",
+		"OperatorId to switch to. At least one between this and revision must be specified.",
 	)
 
 	return withFlagOptions(cmd, name)

@@ -53,8 +53,8 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 			if opts.clusterID == "" && opts.namespaceID == "" {
 				return errors.New("either cluster-id or namespace-id are required")
 			}
-			if opts.namespaceID != "" && (opts.DanglingDeployments || opts.ChannelUpdate) {
-				return errors.New("dangling-deployments and channel-update are not supported with namespace-id at the moment")
+			if opts.namespaceID != "" && (opts.DanglingDeployments || opts.ChannelUpdate || opts.OperatorUpdate) {
+				return errors.New("dangling-deployments, channel-update and operator-update are not supported with namespace-id at the moment")
 			}
 
 			return nil
@@ -72,6 +72,7 @@ func NewListCommand(f *factory.Factory) *cobra.Command {
 	cmdutil.AddClusterID(cmd, &opts.clusterID)
 	cmdutil.AddNamespaceID(cmd, &opts.namespaceID)
 	cmdutil.AddChannelUpdate(cmd, &opts.ChannelUpdate)
+	cmdutil.AddOperatorUpdate(cmd, &opts.OperatorUpdate)
 	cmdutil.AddDanglingDeployments(cmd, &opts.DanglingDeployments)
 
 	return cmd

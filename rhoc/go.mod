@@ -12,7 +12,7 @@ require (
 	github.com/openshift-online/ocm-cli v0.1.65
 	github.com/openshift-online/ocm-sdk-go v0.1.315
 	github.com/pkg/errors v0.9.1
-	github.com/redhat-developer/app-services-cli v0.52.0
+	github.com/redhat-developer/app-services-cli v0.53.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.15.0
@@ -33,7 +33,14 @@ require (
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
-	github.com/redhat-developer/app-services-sdk-go/serviceaccountmgmt v0.9.0 // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go v0.2.0 // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go/accountmgmt/apiv1/client v0.0.0-20230216114230-4ff0373de47f // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go/connectormgmt v0.0.0-20230222114134-d97c4c88765b // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go/kafkainstance v0.0.0-20230222114134-d97c4c88765b // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go/kafkamgmt v0.0.0-20230220160753-3c2c52e7e98a // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go/registryinstance v0.0.0-20230222114134-d97c4c88765b // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go/registrymgmt v0.0.0-20230222114134-d97c4c88765b // indirect
+	github.com/redhat-developer/app-services-sdk-core/app-services-sdk-go/serviceaccountmgmt v0.0.0-20230222114134-d97c4c88765b // indirect
 )
 
 require (
@@ -103,13 +110,6 @@ require (
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.38.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go v0.11.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go/accountmgmt v0.3.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go/connectormgmt v0.10.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go/kafkainstance v0.11.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go/kafkamgmt v0.15.0 // indirect
-	github.com/redhat-developer/app-services-sdk-go/registryinstance v0.8.2 // indirect
-	github.com/redhat-developer/app-services-sdk-go/registrymgmt v0.11.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/segmentio/ksuid v1.0.3 // indirect
 	github.com/spf13/afero v1.9.3 // indirect

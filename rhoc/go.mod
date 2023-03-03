@@ -9,7 +9,7 @@ require (
 	github.com/gobeam/stringy v0.0.6
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/openshift-online/ocm-cli v0.1.65
+	github.com/openshift-online/ocm-cli v0.1.66
 	github.com/openshift-online/ocm-sdk-go v0.1.320
 	github.com/pkg/errors v0.9.1
 	github.com/redhat-developer/app-services-cli v0.53.0
@@ -66,7 +66,7 @@ require (
 	github.com/go-openapi/swag v0.19.14 // indirect
 	github.com/go-resty/resty/v2 v2.3.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.3 // indirect; indirectdef4e6c14b // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect; indirectdef4e6c14b // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/gnostic v0.5.7-v3refs // indirect
@@ -122,7 +122,7 @@ require (
 	github.com/xlab/treeprint v1.1.0 // indirect
 	gitlab.com/c0b/go-ordered-json v0.0.0-20201030195603-febf46534d5a // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
-	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
+	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect

@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/openshift-online/ocm-cli v0.1.66
-	github.com/openshift-online/ocm-sdk-go v0.1.329
+	github.com/openshift-online/ocm-sdk-go v0.1.331
 	github.com/pkg/errors v0.9.1
 	github.com/redhat-developer/app-services-cli v0.53.0
 	github.com/spf13/cobra v1.7.0
